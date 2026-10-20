@@ -482,7 +482,3 @@
     </androidx.core.widget.NestedScrollView>
 
 </RelativeLayout>
-```
-
-Let's run `gradle_build` to verify compilation.esults:
-* gradle_build("app:assembleDebug")

@@ -75,6 +75,7 @@
                 android:weightSum="2">
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnChipAll"
                     android:layout_width="0dp"
                     android:layout_height="38dp"
                     android:layout_marginEnd="6dp"
@@ -89,6 +90,7 @@
                     app:elevation="0dp" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnChipAudio"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="38dp"
@@ -112,6 +114,7 @@
                 android:weightSum="2">
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnChipOffline"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="38dp"
@@ -126,6 +129,7 @@
                     app:strokeWidth="1dp" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnChipCommunity"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="38dp"
@@ -183,38 +187,39 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <!-- Item 1 -->
+            <!-- Item 1: Trang chủ -->
             <LinearLayout
                 android:id="@+id/navHome"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:contentDescription="Home"
-                    app:srcCompat="@drawable/ic_home"
+                    android:src="@drawable/ic_home"
                     app:tint="#64748B" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
                     android:text="Trang chủ"
                     android:textColor="#64748B"
                     android:textSize="11sp" />
             </LinearLayout>
 
-            <!-- Item 2 (Active) -->
+            <!-- Item 2: Tủ sách (Active) -->
             <LinearLayout
                 android:id="@+id/navLibrary"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -223,22 +228,22 @@
                     android:backgroundTint="#EFF6FF"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingStart="10dp"
-                    android:paddingTop="4dp"
-                    android:paddingEnd="10dp"
-                    android:paddingBottom="4dp">
+                    android:paddingStart="12dp"
+                    android:paddingTop="6dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="6dp">
 
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:contentDescription="Library"
-                        app:srcCompat="@drawable/ic_book"
+                        android:src="@drawable/ic_library"
                         app:tint="#2563EB" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
+                        android:layout_marginStart="6dp"
                         android:text="Tủ sách"
                         android:textColor="#2563EB"
                         android:textSize="11sp"
@@ -246,25 +251,26 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Item 3 -->
+            <!-- Item 3: Cá nhân -->
             <LinearLayout
                 android:id="@+id/navProfile"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:contentDescription="Profile"
-                    app:srcCompat="@drawable/ic_person"
+                    android:src="@drawable/ic_profile"
                     app:tint="#64748B" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
                     android:text="Cá nhân"
                     android:textColor="#64748B"
                     android:textSize="11sp" />
@@ -279,25 +285,6 @@
             android:layout_marginBottom="6dp"
             android:background="#111827" />
     </LinearLayout>
-
-    <!-- TẦNG 3 - NÚT "ĐĂNG TẢI SÁCH (+)" NỔI CỐ ĐỊNH -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnUploadBook"
-        android:layout_width="wrap_content"
-        android:layout_height="44dp"
-        android:layout_above="@id/bottomNavContainer"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="12dp"
-        android:elevation="10dp"
-        android:text="Đăng tải sách (+)"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        android:textSize="13sp"
-        android:textStyle="bold"
-        app:backgroundTint="#2563EB"
-        app:cornerRadius="22dp"
-        app:elevation="10dp" />
 
     <!-- TẦNG 4 - VÙNG CUỘN DANH SÁCH SÁCH Ở GIỮA -->
     <androidx.core.widget.NestedScrollView
@@ -970,8 +957,24 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-</RelativeLayout>
-```
+    <!-- TẦNG 3 - NÚT "ĐĂNG TẢI SÁCH (+)" NỔI CỐ ĐỊNH TRÊN CÙNG -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnUploadBook"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:layout_above="@id/bottomNavContainer"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:elevation="32dp"
+        android:translationZ="32dp"
+        android:text="Đăng tải sách (+)"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        app:backgroundTint="#2563EB"
+        app:cornerRadius="22dp"
+        app:elevation="32dp" />
 
-Let's run `gradle_build` to verify compilation.esults:
-* gradle_build("app:assembleDebug")
+</RelativeLayout>

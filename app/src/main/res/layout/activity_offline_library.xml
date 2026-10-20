@@ -67,8 +67,7 @@
         android:layout_height="match_parent"
         android:layout_above="@id/bottomBarContainer"
         android:layout_below="@id/topHeader"
-        android:clipToPadding="false"
-        android:fillViewport="true">
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -678,7 +677,3 @@
     </androidx.core.widget.NestedScrollView>
 
 </RelativeLayout>
-```
-
-Let's run `gradle_build` to verify compilation.esults:
-* gradle_build("app:assembleDebug")

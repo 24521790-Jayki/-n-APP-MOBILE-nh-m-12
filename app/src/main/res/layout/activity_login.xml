@@ -163,22 +163,23 @@
             android:textSize="13sp"
             android:textStyle="bold" />
 
-        <!-- 3. hCaptcha Section -->
+        <!-- 3. Cloudflare Turnstile Captcha Section -->
         <TextView
             android:id="@+id/tvHCaptchaLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="start"
-            android:text="Xác minh hCaptcha"
+            android:text="Xác minh Cloudflare Turnstile"
             android:textColor="#1F2937"
             android:textSize="14sp"
             android:textStyle="bold" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardHCaptcha"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="6dp"
             app:cardBackgroundColor="#FFFFFF"
             app:cardCornerRadius="12dp"
@@ -190,7 +191,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="10dp">
+                android:padding="6dp">
 
                 <!-- Row 1: Header -->
                 <LinearLayout
@@ -201,27 +202,34 @@
 
                     <ImageView
                         android:id="@+id/imgHCaptchaLogo"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:contentDescription="hCaptcha Logo"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:contentDescription="Turnstile Logo"
                         android:src="@drawable/ic_hcaptcha" />
 
                     <TextView
                         android:id="@+id/tvHCaptchaHeader"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="Xác minh hCaptcha"
+                        android:layout_marginStart="6dp"
+                        android:text="Cloudflare Turnstile"
                         android:textColor="#1F2937"
-                        android:textSize="13sp"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <!-- Row 2: Checkbox -->
+                <!-- Row 2: Turnstile WebView Widget -->
+                <WebView
+                    android:id="@+id/wvTurnstile"
+                    android:layout_width="match_parent"
+                    android:layout_height="65dp"
+                    android:layout_marginTop="4dp" />
+
+                <!-- Row 3: Checkbox Check -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="4dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -240,7 +248,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
                         android:layout_weight="1"
-                        android:text="Tôi không phải là robot — xác minh hCaptcha để tiếp tục."
+                        android:text="Tôi không phải là robot — Cloudflare Turnstile đã xác thực."
                         android:textColor="#4B5563"
                         android:textSize="11sp" />
                 </LinearLayout>
