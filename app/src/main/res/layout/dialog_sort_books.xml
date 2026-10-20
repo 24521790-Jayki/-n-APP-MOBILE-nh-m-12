@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginHorizontal="20dp"
+    app:cardBackgroundColor="#FFFFFF"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="16dp"
+    app:strokeColor="#E2E8F0"
+    app:strokeWidth="1dp"
+    tools:context=".MainActivity"
+    tools:showIn="@layout/activity_library">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- 1. Top Header Hộp thoại (Tiêu đề & Nút đóng) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/bg_home_indicator"
+                android:backgroundTint="#EFF6FF">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="Sort Icon"
+                    android:src="@drawable/ic_sort"
+                    app:tint="#2563EB" />
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="Sắp xếp sách"
+                android:textColor="#111827"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/btnCloseDialog"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Close"
+                android:padding="6dp"
+                app:srcCompat="@drawable/ic_close"
+                app:tint="#9CA3AF" />
+        </LinearLayout>
+
+        <!-- 2. Subtitle (Mô tả) -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Chọn thứ tự hiển thị trong thư viện."
+            android:textColor="#6B7280"
+            android:textSize="13sp" />
+
+        <!-- 3. Đường kẻ phân cách (Divider) -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
+            android:background="#F1F5F9" />
+
+        <!-- 4. Danh sách lựa chọn (Radio Group Options) -->
+        <RadioGroup
+            android:id="@+id/rgSortOptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Option 1: "Mới nhất" (ACTIVE) -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_home_indicator"
+                android:backgroundTint="#EEF2FF"
+                android:paddingStart="14dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="14dp"
+                android:paddingBottom="2dp">
+
+                <RadioButton
+                    android:id="@+id/rbNewest"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:buttonTint="#2563EB"
+                    android:paddingVertical="10dp"
+                    android:text="Mới nhất"
+                    android:textColor="#2563EB"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
+            <!-- Option 2: "Cũ nhất" -->
+            <RadioButton
+                android:id="@+id/rbOldest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:paddingVertical="10dp"
+                android:text="Cũ nhất"
+                android:textColor="#1F2937"
+                android:textSize="14sp" />
+
+            <!-- Option 3: "Tên sách (A–Z)" -->
+            <RadioButton
+                android:id="@+id/rbTitleAZ"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:paddingVertical="10dp"
+                android:text="Tên sách (A–Z)"
+                android:textColor="#1F2937"
+                android:textSize="14sp" />
+
+            <!-- Option 4: "Tên tác giả (A–Z)" -->
+            <RadioButton
+                android:id="@+id/rbAuthorAZ"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:paddingVertical="10dp"
+                android:text="Tên tác giả (A–Z)"
+                android:textColor="#1F2937"
+                android:textSize="14sp" />
+
+            <!-- Option 5: "Đọc gần đây" -->
+            <RadioButton
+                android:id="@+id/rbRecentRead"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:paddingVertical="10dp"
+                android:text="Đọc gần đây"
+                android:textColor="#1F2937"
+                android:textSize="14sp" />
+
+        </RadioGroup>
+
+        <!-- 5. Nút Bấm Thực Thi (Action Button) -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnApplySort"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="20dp"
+            android:text="Áp dụng"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:backgroundTint="#2563EB"
+            app:cornerRadius="24dp"
+            app:elevation="0dp" />
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
