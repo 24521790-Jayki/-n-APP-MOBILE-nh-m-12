@@ -495,7 +495,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginTop="16dp"
-                        android:text="Lưu vào Từ vựng của tôi"
+                        android:text="LLưu vào Từ vựng của tôi"
                         android:textAllCaps="false"
                         android:textColor="#00796B"
                         android:textSize="12sp"
@@ -516,7 +516,3 @@
     </androidx.core.widget.NestedScrollView>
 
 </RelativeLayout>
-```
-
-Let's test build using `gradle_build`.esults:
-* gradle_build("app:assembleDebug")
