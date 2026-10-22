@@ -4,19 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8FAFC"
-    tools:context=".MainActivity">
+    android:background="#FAF8F5"
+    tools:context=".AudioPlayerActivity">
 
-    <!-- TẦNG 1: Top Header cố định ở đỉnh -->
-    <LinearLayout
-        android:id="@+id/topHeader"
+    <!-- 1. TOP BAR CỐ ĐỊNH Ở ĐỈNH -->
+    <RelativeLayout
+        android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:background="#F8FAFC"
-        android:elevation="2dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:background="#FAF8F5"
+        android:elevation="0dp"
         android:paddingStart="16dp"
         android:paddingTop="32dp"
         android:paddingEnd="16dp"
@@ -26,43 +24,49 @@
             android:id="@+id/btnBack"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Back"
             android:padding="8dp"
             app:srcCompat="@drawable/ic_arrow_back"
-            app:tint="#111827" />
+            app:tint="#4C1D95" />
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginStart="8dp"
-            android:layout_weight="1"
+            android:layout_toEndOf="@id/btnBack"
             android:text="Đang phát Sách nói"
             android:textColor="#111827"
-            android:textSize="18sp"
+            android:textSize="17sp"
             android:textStyle="bold" />
 
         <ImageButton
             android:id="@+id/btnFavorite"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Favorite"
             android:padding="8dp"
             app:srcCompat="@drawable/ic_favorite_border"
             app:tint="#7C3AED" />
-    </LinearLayout>
+    </RelativeLayout>
 
-    <!-- TẦNG 2: Home Indicator cố định ở đáy -->
+    <!-- 2. BOTTOM BAR CỐ ĐỊNH Ở ĐÁY -->
     <LinearLayout
         android:id="@+id/bottomBarContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#F8FAFC"
+        android:background="#FAF8F5"
         android:gravity="center"
-        android:paddingTop="4dp"
-        android:paddingBottom="8dp">
+        android:orientation="vertical"
+        android:paddingTop="2dp"
+        android:paddingBottom="24dp">
 
         <View
             android:layout_width="134dp"
@@ -71,45 +75,42 @@
             android:background="#111827" />
     </LinearLayout>
 
-    <!-- TẦNG 3: NestedScrollView ở giữa -->
+    <!-- 3. VÙNG NỘI DUNG CHÍNH (NESTEDSCROLLVIEW) -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottomBarContainer"
-        android:layout_below="@id/topHeader"
+        android:layout_below="@id/topBar"
         android:clipToPadding="false"
-        android:fillViewport="true"
-        android:paddingBottom="24dp">
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:paddingStart="20dp"
+            android:paddingHorizontal="20dp"
             android:paddingTop="4dp"
-            android:paddingEnd="20dp"
-            android:paddingBottom="32dp">
+            android:paddingBottom="24dp">
 
-            <!-- TextView Badge -->
+            <!-- Nhãn thể loại nhỏ -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="14dp"
                 android:text="🎧 Sách nói / Audio"
                 android:textColor="#7C3AED"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:textStyle="bold" />
 
-            <!-- MaterialCardView (Bìa sách) -->
+            <!-- Ảnh bìa sách (Book Cover) -->
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="220dp"
-                android:layout_height="220dp"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
                 android:layout_gravity="center_horizontal"
-                app:cardBackgroundColor="#CBD5E1"
+                app:cardBackgroundColor="#0F172A"
                 app:cardCornerRadius="24dp"
-                app:cardElevation="8dp"
+                app:cardElevation="12dp"
                 app:strokeWidth="0dp">
 
                 <FrameLayout
@@ -124,40 +125,57 @@
                         android:contentDescription="Book Cover"
                         android:scaleType="centerCrop" />
 
-                    <TextView
+                    <!-- Text minh họa nếu chưa có ảnh -->
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:padding="16dp"
-                        android:text="THƯ VIỆN\nNỬA ĐÊM"
-                        android:textColor="#FFFFFF"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="THƯ VIỆN\nNỬA ĐÊM"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="32dp"
+                            android:text="MATT HAIG"
+                            android:textColor="#94A3B8"
+                            android:textSize="10sp"
+                            android:letterSpacing="0.2" />
+                    </LinearLayout>
                 </FrameLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Tên sách, Tác giả, Giọng đọc -->
+            <!-- Thông tin sách -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:gravity="center"
                 android:text="Thư viện nửa đêm"
                 android:textColor="#111827"
-                android:textSize="18sp"
+                android:textSize="22sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="4dp"
                 android:gravity="center"
                 android:text="Matt Haig"
                 android:textColor="#6B7280"
                 android:textSize="13sp" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:gravity="center"
@@ -165,11 +183,11 @@
                 android:textColor="#9CA3AF"
                 android:textSize="11sp" />
 
-            <!-- RelativeLayout (Thông tin chương & Tốc độ) -->
+            <!-- Khối chương & Tốc độ phát nằm cùng 1 hàng -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="24dp">
 
                 <TextView
                     android:id="@+id/tvChapterTitle"
@@ -178,23 +196,20 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:text="Chương 3 - Những lựa chọn"
-                    android:textColor="#7C3AED"
+                    android:textColor="#4B5563"
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
-                <!-- LinearLayout Chọn tốc độ -->
+                <!-- Selector Tốc Độ dạng pill -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:background="@drawable/bg_home_indicator"
-                    android:backgroundTint="#F3E8FF"
+                    android:backgroundTint="#EDE9FE"
                     android:orientation="horizontal"
-                    android:paddingStart="4dp"
-                    android:paddingTop="2dp"
-                    android:paddingEnd="4dp"
-                    android:paddingBottom="2dp">
+                    android:padding="2dp">
 
                     <TextView
                         android:id="@+id/btnSpeed10"
@@ -202,10 +217,8 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_home_indicator"
                         android:backgroundTint="#7C3AED"
-                        android:paddingStart="8dp"
-                        android:paddingTop="3dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="3dp"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="4dp"
                         android:text="1.0x"
                         android:textColor="#FFFFFF"
                         android:textSize="11sp"
@@ -215,17 +228,16 @@
                         android:id="@+id/btnSpeed125"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingStart="8dp"
-                        android:paddingTop="3dp"
-                        android:paddingEnd="8dp"
-                        android:paddingBottom="3dp"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="4dp"
                         android:text="1.25x"
                         android:textColor="#7C3AED"
-                        android:textSize="11sp" />
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </RelativeLayout>
 
-            <!-- SeekBar & Thời gian -->
+            <!-- Thanh SeekBar -->
             <SeekBar
                 android:id="@+id/seekBarAudio"
                 android:layout_width="match_parent"
@@ -247,7 +259,7 @@
                     android:layout_alignParentStart="true"
                     android:text="14:20"
                     android:textColor="#6B7280"
-                    android:textSize="12sp" />
+                    android:textSize="11sp" />
 
                 <TextView
                     android:id="@+id/tvTotalTime"
@@ -256,102 +268,181 @@
                     android:layout_alignParentEnd="true"
                     android:text="48:30"
                     android:textColor="#6B7280"
-                    android:textSize="12sp" />
+                    android:textSize="11sp" />
             </RelativeLayout>
 
-            <!-- LinearLayout (Bộ điều khiển media gồm 5 nút ngang) -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageButton
-                    android:id="@+id/btnRewind15"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:background="@drawable/bg_circle_light_purple"
-                    android:contentDescription="Rewind 15s"
-                    android:padding="10dp"
-                    app:srcCompat="@drawable/ic_replay_15"
-                    app:tint="#7C3AED" />
-
-                <ImageButton
-                    android:id="@+id/btnPrevious"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginStart="10dp"
-                    android:background="@drawable/bg_circle_light_purple"
-                    android:contentDescription="Previous"
-                    android:padding="10dp"
-                    app:srcCompat="@drawable/ic_skip_previous"
-                    app:tint="#7C3AED" />
-
-                <ImageButton
-                    android:id="@+id/btnPlayPause"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_marginStart="14dp"
-                    android:layout_marginEnd="14dp"
-                    android:background="@drawable/bg_circle_purple_solid"
-                    android:contentDescription="Play/Pause"
-                    android:elevation="6dp"
-                    android:padding="16dp"
-                    app:srcCompat="@drawable/ic_pause"
-                    app:tint="#FFFFFF" />
-
-                <ImageButton
-                    android:id="@+id/btnNext"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/bg_circle_light_purple"
-                    android:contentDescription="Next"
-                    android:padding="10dp"
-                    app:srcCompat="@drawable/ic_skip_next"
-                    app:tint="#7C3AED" />
-
-                <ImageButton
-                    android:id="@+id/btnForward15"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:background="@drawable/bg_circle_light_purple"
-                    android:contentDescription="Forward 15s"
-                    android:padding="10dp"
-                    app:srcCompat="@drawable/ic_forward_15"
-                    app:tint="#7C3AED" />
-            </LinearLayout>
-
-            <!-- LinearLayout (2 Thẻ tính năng phụ song song: Card Hẹn giờ tắt & Danh sách chương) -->
+            <!-- Khối nút điều khiển phát nhạc (Control Bar) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:orientation="horizontal">
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:weightSum="5">
 
+                <!-- Nút Tua lùi 15s -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:id="@+id/btnRewind15"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_circle_light_purple"
+                        android:backgroundTint="#F3E8FF">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="Rewind 15s"
+                            android:src="@drawable/ic_replay_15"
+                            app:tint="#7C3AED" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom|center_horizontal"
+                            android:layout_marginBottom="4dp"
+                            android:text="15s"
+                            android:textColor="#7C3AED"
+                            android:textSize="8sp"
+                            android:textStyle="bold" />
+                    </FrameLayout>
+                </LinearLayout>
+
+                <!-- Nút Bài trước -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/btnPrevious"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_circle_light_purple"
+                        android:backgroundTint="#F3E8FF"
+                        android:contentDescription="Previous"
+                        android:padding="12dp"
+                        app:srcCompat="@drawable/ic_skip_previous"
+                        app:tint="#7C3AED" />
+                </LinearLayout>
+
+                <!-- Nút Play/Pause lớn (Tím đậm nổi bật) -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/btnPlayPause"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:background="@drawable/bg_circle_purple_solid"
+                        android:backgroundTint="#7C3AED"
+                        android:contentDescription="Play/Pause"
+                        android:elevation="6dp"
+                        android:padding="18dp"
+                        app:srcCompat="@drawable/ic_pause"
+                        app:tint="#FFFFFF" />
+                </LinearLayout>
+
+                <!-- Nút Bài tiếp theo -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/btnNext"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_circle_light_purple"
+                        android:backgroundTint="#F3E8FF"
+                        android:contentDescription="Next"
+                        android:padding="12dp"
+                        app:srcCompat="@drawable/ic_skip_next"
+                        app:tint="#7C3AED" />
+                </LinearLayout>
+
+                <!-- Nút Tua tới 15s -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:id="@+id/btnForward15"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_circle_light_purple"
+                        android:backgroundTint="#F3E8FF">
+
+                        <ImageView
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="Forward 15s"
+                            android:src="@drawable/ic_forward_15"
+                            app:tint="#7C3AED" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom|center_horizontal"
+                            android:layout_marginBottom="4dp"
+                            android:text="15s"
+                            android:textColor="#7C3AED"
+                            android:textSize="8sp"
+                            android:textStyle="bold" />
+                    </FrameLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Hàng nút chức năng phụ (Hẹn giờ tắt & Danh sách chương) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <!-- Thẻ 1: Hẹn giờ tắt -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/btnTimer"
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
+                    android:layout_height="64dp"
                     android:layout_marginEnd="6dp"
                     android:layout_weight="1"
                     app:cardBackgroundColor="#FFFFFF"
-                    app:cardCornerRadius="14dp"
+                    app:cardCornerRadius="16dp"
                     app:cardElevation="0dp"
-                    app:strokeColor="#E2E8F0"
+                    app:strokeColor="#E5E7EB"
                     app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="10dp">
 
                         <ImageView
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:contentDescription="Timer"
                             android:src="@drawable/ic_clock"
                             app:tint="#7C3AED" />
@@ -367,27 +458,29 @@
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
+                <!-- Thẻ 2: Danh sách chương -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/btnPlaylist"
                     android:layout_width="0dp"
-                    android:layout_height="50dp"
+                    android:layout_height="64dp"
                     android:layout_marginStart="6dp"
                     android:layout_weight="1"
                     app:cardBackgroundColor="#FFFFFF"
-                    app:cardCornerRadius="14dp"
+                    app:cardCornerRadius="16dp"
                     app:cardElevation="0dp"
-                    app:strokeColor="#E2E8F0"
+                    app:strokeColor="#E5E7EB"
                     app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:padding="10dp">
 
                         <ImageView
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:contentDescription="Playlist"
                             android:src="@drawable/ic_playlist"
                             app:tint="#7C3AED" />
@@ -397,34 +490,35 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:text="Danh sách chương"
-                            android:textColor="#1F2937"
+                            android:textColor="#111827"
                             android:textSize="13sp"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-            <!-- MaterialButton (Nút dưới cùng: Chuyển sang đọc sách chữ) -->
+            <!-- Nút CTA chuyển đổi sang đọc sách chữ -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSwitchToText"
                 android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:layout_marginTop="14dp"
-                android:text="📖  Chuyển sang đọc sách chữ"
+                android:layout_height="52dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="Chuyển sang đọc sách chữ"
                 android:textAllCaps="false"
                 android:textColor="#7C3AED"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:backgroundTint="#F3E8FF"
-                app:cornerRadius="23dp"
+                app:cornerRadius="26dp"
                 app:elevation="0dp"
+                app:icon="@drawable/ic_book"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                app:iconTint="#7C3AED"
                 app:strokeWidth="0dp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
 </RelativeLayout>
-```
-
-Let's run `gradle_build` to verify compilation.esults:
-* gradle_build("app:assembleDebug")
