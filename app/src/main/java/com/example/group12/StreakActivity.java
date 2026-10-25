@@ -10,12 +10,10 @@ import com.example.group12.databinding.ActivityStreakBinding;
 
 public class StreakActivity extends AppCompatActivity {
 
-    private ActivityStreakBinding binding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityStreakBinding.inflate(getLayoutInflater());
+        ActivityStreakBinding binding = ActivityStreakBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Nút Quay lại

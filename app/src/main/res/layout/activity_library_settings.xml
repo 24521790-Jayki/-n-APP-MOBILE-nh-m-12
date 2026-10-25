@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/overlaySettingsModal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#660F172A"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    tools:ignore="HardcodedText,ContentDescription,SmallSp,UseCompoundDrawables,DisableBaselineAlignment">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="320dp"

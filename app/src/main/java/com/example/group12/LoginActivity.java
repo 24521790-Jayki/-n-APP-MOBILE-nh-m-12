@@ -5,19 +5,28 @@ import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.example.group12.databinding.ActivityLoginBinding;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private ActivityLoginBinding binding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        EdgeToEdge.enable(this);
+        ActivityLoginBinding binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         // Khởi tạo Cloudflare Turnstile Captcha
         TurnstileHelper.setupTurnstile(binding.wvTurnstile, TurnstileHelper.DEMO_SITE_KEY, new TurnstileHelper.TurnstileListener() {
@@ -55,11 +64,29 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        // Nút Đăng nhập -> Sang Dashboard
+        // Nút Đăng nhập -> Kiểm tra thông tin & Sang Dashboard
         binding.btnLogin.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
-            startActivity(intent);
-            finish();
+            String username = binding.edtUsername.getText() != null ? binding.edtUsername.getText().toString().trim() : "";
+            String password = binding.edtPassword.getText() != null ? binding.edtPassword.getText().toString().trim() : "";
+
+            binding.tilUsername.setError(null);
+            binding.tilPassword.setError(null);
+
+            boolean isValid = true;
+            if (username.isEmpty()) {
+                binding.tilUsername.setError("Vui lòng nhập tên đăng nhập hoặc email!");
+                isValid = false;
+            }
+            if (password.isEmpty()) {
+                binding.tilPassword.setError("Vui lòng nhập mật khẩu!");
+                isValid = false;
+            }
+
+            if (isValid) {
+                Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
+                startActivity(intent);
+                finish();
+            }
         });
 
         // Đăng nhập bằng Google

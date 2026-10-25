@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">GROUP 12</string>
+    <string name="app_name">Trạm đọc</string>
+    <string name="nav_home">Trang chủ</string>
+    <string name="nav_library">Tủ sách</string>
+    <string name="nav_profile">Cá nhân</string>
+    <string name="btn_back">Quay lại</string>
+    <string name="btn_close">Đóng</string>
+    <string name="btn_favorite">Yêu thích</string>
+    <string name="btn_read_now">Đọc sách ngay</string>
+    <string name="btn_listen_audio">Nghe Audio</string>
 </resources>

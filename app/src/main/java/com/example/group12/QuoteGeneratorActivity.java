@@ -9,12 +9,10 @@ import com.example.group12.databinding.ActivityQuoteGeneratorBinding;
 
 public class QuoteGeneratorActivity extends AppCompatActivity {
 
-    private ActivityQuoteGeneratorBinding binding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityQuoteGeneratorBinding.inflate(getLayoutInflater());
+        ActivityQuoteGeneratorBinding binding = ActivityQuoteGeneratorBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Nút Quay lại

@@ -9,20 +9,18 @@ import com.example.group12.databinding.ActivityBookReviewsBinding;
 
 public class BookReviewsActivity extends AppCompatActivity {
 
-    private ActivityBookReviewsBinding binding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityBookReviewsBinding.inflate(getLayoutInflater());
+        ActivityBookReviewsBinding binding = ActivityBookReviewsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Nút Quay lại
         binding.btnBack.setOnClickListener(v -> finish());
 
-        // Nút Viết đánh giá -> Chuyển sang ReplyReviewActivity
+        // Nút Viết đánh giá / Phản hồi -> Chuyển sang ReviewRepliesActivity
         binding.btnWriteReview.setOnClickListener(v -> {
-            Intent intent = new Intent(BookReviewsActivity.this, ReplyReviewActivity.class);
+            Intent intent = new Intent(BookReviewsActivity.this, ReviewRepliesActivity.class);
             startActivity(intent);
         });
     }

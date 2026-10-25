@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF"
     android:fillViewport="true"
+    tools:ignore="HardcodedText,ContentDescription,SmallSp,UseCompoundDrawables,DisableBaselineAlignment,WebViewLayout"
     tools:context=".MainActivity">
 
     <LinearLayout

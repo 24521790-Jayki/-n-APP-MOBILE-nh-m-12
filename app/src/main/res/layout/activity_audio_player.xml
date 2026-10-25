@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FAF8F5"
+    tools:ignore="HardcodedText,ContentDescription,SmallSp,UseCompoundDrawables,DisableBaselineAlignment"
     tools:context=".AudioPlayerActivity">
 
     <!-- 1. TOP BAR CỐ ĐỊNH Ở ĐỈNH -->

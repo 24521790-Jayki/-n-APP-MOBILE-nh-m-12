@@ -24,11 +24,7 @@
 
         <!-- Auth Activities -->
         <activity android:name=".LoginActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".LoginEmailErrorActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".LoginFailedActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".LoginShowPasswordActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".SignUpActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".SignUpErrorActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ForgotPasswordActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ForgotPasswordSentActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
 

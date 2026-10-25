@@ -9,12 +9,10 @@ import com.example.group12.databinding.ActivityAdvancedSearchBinding;
 
 public class AdvancedSearchActivity extends AppCompatActivity {
 
-    private ActivityAdvancedSearchBinding binding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityAdvancedSearchBinding.inflate(getLayoutInflater());
+        ActivityAdvancedSearchBinding binding = ActivityAdvancedSearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         // Nút Quay lại

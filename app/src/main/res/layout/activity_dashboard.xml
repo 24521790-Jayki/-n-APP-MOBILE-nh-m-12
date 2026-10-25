@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F8FAFC"
+    tools:ignore="HardcodedText,ContentDescription,SmallSp,UseCompoundDrawables,DisableBaselineAlignment"
     tools:context=".MainActivity">
 
     <androidx.core.widget.NestedScrollView
@@ -186,6 +187,7 @@
 
                         <!-- Sách 1 -->
                         <LinearLayout
+                            android:id="@+id/cardRec1"
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="12dp"
@@ -236,6 +238,7 @@
 
                         <!-- Sách 2 -->
                         <LinearLayout
+                            android:id="@+id/cardRec2"
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="12dp"
@@ -286,6 +289,7 @@
 
                         <!-- Sách 3 -->
                         <LinearLayout
+                            android:id="@+id/cardRec3"
                             android:layout_width="100dp"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">

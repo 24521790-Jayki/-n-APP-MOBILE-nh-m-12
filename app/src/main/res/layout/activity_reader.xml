@@ -2,9 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/readerRootContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F8FAFC"
+    tools:ignore="HardcodedText,ContentDescription,SmallSp,UseCompoundDrawables,DisableBaselineAlignment"
     tools:context=".MainActivity">
 
     <!-- 1. TẦNG 1: TOP HEADER CỐ ĐỊNH Ở ĐỈNH -->
@@ -233,6 +235,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
+                android:visibility="gone"
                 app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="14dp"
                 app:cardElevation="6dp"
@@ -244,13 +247,15 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="8dp"
-                    android:weightSum="3">
+                    android:weightSum="4">
 
                     <!-- Nút 1: Tra từ / Dịch thuật -->
                     <LinearLayout
+                        android:id="@+id/btnTranslate"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
                         android:gravity="center"
                         android:orientation="vertical">
 
@@ -264,16 +269,18 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="Tra từ / Dịch thuật"
+                            android:text="Tra từ / Dịch"
                             android:textColor="#2563EB"
                             android:textSize="10sp" />
                     </LinearLayout>
 
                     <!-- Nút 2: Tạo ảnh Quote -->
                     <LinearLayout
+                        android:id="@+id/btnQuote"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
                         android:gravity="center"
                         android:orientation="vertical">
 
@@ -287,16 +294,44 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="Tạo ảnh Quote"
+                            android:text="Tạo Quote"
                             android:textColor="#2563EB"
                             android:textSize="10sp" />
                     </LinearLayout>
 
-                    <!-- Nút 3: Đánh dấu -->
+                    <!-- Nút 3: Hỏi đáp AI -->
                     <LinearLayout
+                        android:id="@+id/btnAiChat"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:contentDescription="AI Chat"
+                            android:src="@drawable/ic_sparkles"
+                            app:tint="#2563EB" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Hỏi đáp AI"
+                            android:textColor="#2563EB"
+                            android:textSize="10sp" />
+                    </LinearLayout>
+
+                    <!-- Nút 4: Đánh dấu -->
+                    <LinearLayout
+                        android:id="@+id/btnBookmark"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="?attr/selectableItemBackground"
                         android:gravity="center"
                         android:orientation="vertical">
 
@@ -345,6 +380,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
+                android:visibility="gone"
                 app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="8dp"
@@ -394,6 +430,7 @@
 
                         <!-- Option 1: Light -->
                         <LinearLayout
+                            android:id="@+id/themeLight"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="4dp"
@@ -402,6 +439,7 @@
                             android:orientation="vertical">
 
                             <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/cardLight"
                                 android:layout_width="match_parent"
                                 android:layout_height="64dp"
                                 app:cardBackgroundColor="#FFFFFF"
@@ -410,14 +448,38 @@
                                 app:strokeColor="#E2E8F0"
                                 app:strokeWidth="1dp">
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:text="Aa"
-                                    android:textColor="#111827"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold" />
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:padding="6dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerInParent="true"
+                                        android:text="Aa"
+                                        android:textColor="#111827"
+                                        android:textSize="14sp"
+                                        android:textStyle="bold" />
+
+                                    <FrameLayout
+                                        android:id="@+id/checkLight"
+                                        android:layout_width="16dp"
+                                        android:layout_height="16dp"
+                                        android:layout_alignParentEnd="true"
+                                        android:layout_alignParentTop="true"
+                                        android:visibility="gone"
+                                        android:background="@drawable/bg_home_indicator"
+                                        android:backgroundTint="#2563EB">
+
+                                        <ImageView
+                                            android:layout_width="10dp"
+                                            android:layout_height="10dp"
+                                            android:layout_gravity="center"
+                                            android:contentDescription="Check"
+                                            android:src="@drawable/ic_check_small" />
+                                    </FrameLayout>
+                                </RelativeLayout>
                             </com.google.android.material.card.MaterialCardView>
 
                             <TextView
@@ -431,6 +493,7 @@
 
                         <!-- Option 2: Dark -->
                         <LinearLayout
+                            android:id="@+id/themeDark"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="3dp"
@@ -439,21 +502,47 @@
                             android:orientation="vertical">
 
                             <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/cardDark"
                                 android:layout_width="match_parent"
                                 android:layout_height="64dp"
                                 app:cardBackgroundColor="#1F2937"
                                 app:cardCornerRadius="12dp"
                                 app:cardElevation="0dp"
+                                app:strokeColor="#E2E8F0"
                                 app:strokeWidth="0dp">
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:text="Aa"
-                                    android:textColor="#FFFFFF"
-                                    android:textSize="14sp"
-                                    android:textStyle="bold" />
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:padding="6dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_centerInParent="true"
+                                        android:text="Aa"
+                                        android:textColor="#FFFFFF"
+                                        android:textSize="14sp"
+                                        android:textStyle="bold" />
+
+                                    <FrameLayout
+                                        android:id="@+id/checkDark"
+                                        android:layout_width="16dp"
+                                        android:layout_height="16dp"
+                                        android:layout_alignParentEnd="true"
+                                        android:layout_alignParentTop="true"
+                                        android:visibility="gone"
+                                        android:background="@drawable/bg_home_indicator"
+                                        android:backgroundTint="#2563EB">
+
+                                        <ImageView
+                                            android:layout_width="10dp"
+                                            android:layout_height="10dp"
+                                            android:layout_gravity="center"
+                                            android:contentDescription="Check"
+                                            android:src="@drawable/ic_check_small" />
+                                    </FrameLayout>
+                                </RelativeLayout>
                             </com.google.android.material.card.MaterialCardView>
 
                             <TextView
@@ -467,6 +556,7 @@
 
                         <!-- Option 3: Eye-Care Sepia (Active) -->
                         <LinearLayout
+                            android:id="@+id/themeSepia"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="3dp"
@@ -475,6 +565,7 @@
                             android:orientation="vertical">
 
                             <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/cardSepia"
                                 android:layout_width="match_parent"
                                 android:layout_height="64dp"
                                 app:cardBackgroundColor="#FDF6E2"
@@ -498,6 +589,7 @@
                                         android:textStyle="bold" />
 
                                     <FrameLayout
+                                        android:id="@+id/checkSepia"
                                         android:layout_width="16dp"
                                         android:layout_height="16dp"
                                         android:layout_alignParentEnd="true"
@@ -527,6 +619,7 @@
 
                         <!-- Option 4: System Default -->
                         <LinearLayout
+                            android:id="@+id/themeSystem"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
@@ -535,6 +628,7 @@
                             android:orientation="vertical">
 
                             <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/cardSystem"
                                 android:layout_width="match_parent"
                                 android:layout_height="64dp"
                                 app:cardCornerRadius="12dp"
@@ -542,24 +636,48 @@
                                 app:strokeColor="#E2E8F0"
                                 app:strokeWidth="1dp">
 
-                                <LinearLayout
+                                <RelativeLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:orientation="horizontal"
-                                    android:weightSum="2">
+                                    android:padding="6dp">
 
-                                    <View
-                                        android:layout_width="0dp"
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
                                         android:layout_height="match_parent"
-                                        android:layout_weight="1"
-                                        android:background="#FFFFFF" />
+                                        android:orientation="horizontal"
+                                        android:weightSum="2">
 
-                                    <View
-                                        android:layout_width="0dp"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="1"
-                                        android:background="#1F2937" />
-                                </LinearLayout>
+                                        <View
+                                            android:layout_width="0dp"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="1"
+                                            android:background="#FFFFFF" />
+
+                                        <View
+                                            android:layout_width="0dp"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="1"
+                                            android:background="#1F2937" />
+                                    </LinearLayout>
+
+                                    <FrameLayout
+                                        android:id="@+id/checkSystem"
+                                        android:layout_width="16dp"
+                                        android:layout_height="16dp"
+                                        android:layout_alignParentEnd="true"
+                                        android:layout_alignParentTop="true"
+                                        android:visibility="gone"
+                                        android:background="@drawable/bg_home_indicator"
+                                        android:backgroundTint="#2563EB">
+
+                                        <ImageView
+                                            android:layout_width="10dp"
+                                            android:layout_height="10dp"
+                                            android:layout_gravity="center"
+                                            android:contentDescription="Check"
+                                            android:src="@drawable/ic_check_small" />
+                                    </FrameLayout>
+                                </RelativeLayout>
                             </com.google.android.material.card.MaterialCardView>
 
                             <TextView
