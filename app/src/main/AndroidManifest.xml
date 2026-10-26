@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GROUP12">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -28,15 +29,37 @@
         <activity android:name=".ForgotPasswordActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ForgotPasswordSentActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
 
-        <!-- Main App Activities -->
+        <!-- Core Main Activities -->
         <activity android:name=".DashboardActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".LibraryActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".ProfileActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+
+        <!-- Book Reading & Audio Activities -->
+        <activity android:name=".BookDetailActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".ReaderActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".AudioPlayerActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".OfflineLibraryActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".UploadBookActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+
+        <!-- Search Activities -->
+        <activity android:name=".SearchActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".AdvancedSearchActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+
+        <!-- AI Assistant Tools -->
+        <activity android:name=".AiChatActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".AiDictionaryActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".QuoteGeneratorActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+
+        <!-- Stats, Reviews & Community -->
+        <activity android:name=".StreakActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".BookReviewsActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".ReviewRepliesActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".ReportActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+
+        <!-- Modal Dialog Activities -->
         <activity android:name=".LibrarySettingsActivity" android:exported="false" android:theme="@style/Theme.GROUP12.Dialog" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".LibrarySortActivity" android:exported="false" android:theme="@style/Theme.GROUP12.Dialog" android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".OfflineLibraryActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".AudioPlayerActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".ProfileActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".UploadBookActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+
     </application>
 
 </manifest>
