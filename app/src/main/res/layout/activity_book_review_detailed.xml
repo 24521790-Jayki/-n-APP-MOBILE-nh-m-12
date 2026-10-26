@@ -1,0 +1,803 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFBEE"
+    tools:context=".MainActivity">
+
+    <!-- 1. TOP BAR CỐ ĐỊNH Ở ĐỈNH -->
+    <RelativeLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="#FFFFFBEE"
+        android:elevation="2dp"
+        android:paddingStart="16dp"
+        android:paddingTop="32dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="12dp">
+
+        <ImageButton
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:padding="8dp"
+            app:srcCompat="@drawable/ic_arrow_back"
+            app:tint="#D17800" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/btnBack"
+            android:text="Đánh giá từ độc giả"
+            android:textColor="#111827"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/btnSearchReview"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:contentDescription="Search"
+            android:src="@drawable/ic_search"
+            app:tint="#D17800" />
+    </RelativeLayout>
+
+    <!-- 2. BOTTOM BAR CỐ ĐỊNH Ở ĐÁY (Nút Viết đánh giá) -->
+    <LinearLayout
+        android:id="@+id/bottom_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#FFFFFBEE"
+        android:elevation="8dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="24dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnWriteReview"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Viết đánh giá của bạn"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:backgroundTint="#D17800"
+            app:cornerRadius="26dp"
+            app:elevation="0dp"
+            app:icon="@drawable/ic_edit"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp"
+            app:iconTint="#FFFFFF"
+            app:strokeWidth="0dp" />
+
+        <View
+            android:layout_width="134dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:background="#111827" />
+    </LinearLayout>
+
+    <!-- 3. NỘI DUNG CUỘN CHÍNH -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_actions"
+        android:layout_below="@id/topBar"
+        android:clipToPadding="false"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="24dp">
+
+            <!-- THẺ TỔNG QUAN ĐÁNH GIÁ (CARD LỚN) -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="#FFFDF2CE"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Hàng 1: Sách & Tác giả -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="40dp"
+                            android:layout_height="56dp"
+                            app:cardCornerRadius="6dp"
+                            app:cardElevation="2dp"
+                            app:strokeWidth="0dp">
+
+                            <FrameLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="#0F172A">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center"
+                                    android:text="TV"
+                                    android:textColor="#FFFFFF"
+                                    android:textSize="9sp"
+                                    android:textStyle="bold" />
+                            </FrameLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:maxLines="1"
+                                android:text="Thư viện nửa đêm"
+                                android:textColor="#111827"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:maxLines="1"
+                                android:text="Matt Haig"
+                                android:textColor="#6B7280"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Hàng 2: Điểm số & Biểu đồ thanh ngang tỷ lệ sao -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
+
+                        <!-- Điểm trái -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="bottom"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="4.9"
+                                    android:textColor="#111827"
+                                    android:textSize="32sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="2dp"
+                                    android:layout_marginBottom="4dp"
+                                    android:text="/ 5.0"
+                                    android:textColor="#6B7280"
+                                    android:textSize="12sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="14dp"
+                                    android:layout_height="14dp"
+                                    android:contentDescription="Star"
+                                    android:src="@drawable/ic_star"
+                                    app:tint="#F59E0B" />
+
+                                <ImageView
+                                    android:layout_width="14dp"
+                                    android:layout_height="14dp"
+                                    android:layout_marginStart="2dp"
+                                    android:contentDescription="Star"
+                                    android:src="@drawable/ic_star"
+                                    app:tint="#F59E0B" />
+
+                                <ImageView
+                                    android:layout_width="14dp"
+                                    android:layout_height="14dp"
+                                    android:layout_marginStart="2dp"
+                                    android:contentDescription="Star"
+                                    android:src="@drawable/ic_star"
+                                    app:tint="#F59E0B" />
+
+                                <ImageView
+                                    android:layout_width="14dp"
+                                    android:layout_height="14dp"
+                                    android:layout_marginStart="2dp"
+                                    android:contentDescription="Star"
+                                    android:src="@drawable/ic_star"
+                                    app:tint="#F59E0B" />
+
+                                <ImageView
+                                    android:layout_width="14dp"
+                                    android:layout_height="14dp"
+                                    android:layout_marginStart="2dp"
+                                    android:contentDescription="Star"
+                                    android:src="@drawable/ic_star"
+                                    app:tint="#F59E0B" />
+                            </LinearLayout>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="4dp"
+                                android:text="128 đánh giá"
+                                android:textColor="#6B7280"
+                                android:textSize="11sp" />
+                        </LinearLayout>
+
+                        <!-- Biểu đồ phải (Thanh tỷ lệ 5 đến 1 sao) -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <!-- Hàng 5 sao -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="3dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="20dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="5 ★"
+                                    android:textColor="#4B5563"
+                                    android:textSize="10sp" />
+
+                                <ProgressBar
+                                    style="?android:attr/progressBarStyleHorizontal"
+                                    android:layout_width="0dp"
+                                    android:layout_height="6dp"
+                                    android:layout_marginHorizontal="6dp"
+                                    android:layout_weight="1"
+                                    android:progress="92"
+                                    android:progressDrawable="@drawable/bg_rating_progress" />
+
+                                <TextView
+                                    android:layout_width="28dp"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:text="92%"
+                                    android:textColor="#4B5563"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+                            <!-- Hàng 4 sao -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="3dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="20dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="4 ★"
+                                    android:textColor="#4B5563"
+                                    android:textSize="10sp" />
+
+                                <ProgressBar
+                                    style="?android:attr/progressBarStyleHorizontal"
+                                    android:layout_width="0dp"
+                                    android:layout_height="6dp"
+                                    android:layout_marginHorizontal="6dp"
+                                    android:layout_weight="1"
+                                    android:progress="6"
+                                    android:progressDrawable="@drawable/bg_rating_progress" />
+
+                                <TextView
+                                    android:layout_width="28dp"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:text="6%"
+                                    android:textColor="#4B5563"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+                            <!-- Hàng 3 sao -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="3dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="20dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="3 ★"
+                                    android:textColor="#4B5563"
+                                    android:textSize="10sp" />
+
+                                <ProgressBar
+                                    style="?android:attr/progressBarStyleHorizontal"
+                                    android:layout_width="0dp"
+                                    android:layout_height="6dp"
+                                    android:layout_marginHorizontal="6dp"
+                                    android:layout_weight="1"
+                                    android:progress="1"
+                                    android:progressDrawable="@drawable/bg_rating_progress" />
+
+                                <TextView
+                                    android:layout_width="28dp"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:text="1%"
+                                    android:textColor="#4B5563"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+                            <!-- Hàng 2 sao -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="3dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="20dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="2 ★"
+                                    android:textColor="#4B5563"
+                                    android:textSize="10sp" />
+
+                                <ProgressBar
+                                    style="?android:attr/progressBarStyleHorizontal"
+                                    android:layout_width="0dp"
+                                    android:layout_height="6dp"
+                                    android:layout_marginHorizontal="6dp"
+                                    android:layout_weight="1"
+                                    android:progress="1"
+                                    android:progressDrawable="@drawable/bg_rating_progress" />
+
+                                <TextView
+                                    android:layout_width="28dp"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:text="1%"
+                                    android:textColor="#4B5563"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+                            <!-- Hàng 1 sao -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:layout_width="20dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="1 ★"
+                                    android:textColor="#4B5563"
+                                    android:textSize="10sp" />
+
+                                <ProgressBar
+                                    style="?android:attr/progressBarStyleHorizontal"
+                                    android:layout_width="0dp"
+                                    android:layout_height="6dp"
+                                    android:layout_marginHorizontal="6dp"
+                                    android:layout_weight="1"
+                                    android:progress="0"
+                                    android:progressDrawable="@drawable/bg_rating_progress" />
+
+                                <TextView
+                                    android:layout_width="28dp"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="end"
+                                    android:text="0%"
+                                    android:textColor="#4B5563"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Hàng 3: Bạn đọc ấn tượng với -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="BẠN ĐỌC ẤN TƯỢNG VỚI"
+                        android:textColor="#7A6836"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:background="@drawable/bg_tag_pill"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="6dp"
+                                android:text="Cốt truyện hay (120)"
+                                android:textColor="#B45309"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:background="@drawable/bg_tag_pill"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="6dp"
+                                android:text="Cảm động (85)"
+                                android:textColor="#B45309"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_tag_pill"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="6dp"
+                                android:text="Dễ đọc (40)"
+                                android:textColor="#B45309"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- TIÊU ĐỀ & CHIPS LỌC BÌNH LUẬN -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:text="Bạn đọc nói gì?"
+                    android:textColor="#111827"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:text="128 bài đánh giá"
+                    android:textColor="#6B7280"
+                    android:textSize="11sp" />
+            </RelativeLayout>
+
+            <!-- Thanh lọc Chips ngang (Có bình luận chi tiết ACTIVE, Mới nhất & Đánh giá cao INACTIVE) -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Chip 1: Mới nhất (Inactive) -->
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:layout_marginEnd="6dp"
+                        android:checked="false"
+                        android:text="Mới nhất"
+                        android:textColor="#4B5563"
+                        android:textSize="11sp"
+                        app:chipBackgroundColor="#FFFFFF"
+                        app:chipCornerRadius="16dp"
+                        app:chipStrokeColor="#E5E7EB"
+                        app:chipStrokeWidth="1dp" />
+
+                    <!-- Chip 2: Đánh giá cao (Inactive) -->
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:layout_marginEnd="6dp"
+                        android:checked="false"
+                        android:text="Đánh giá cao"
+                        android:textColor="#4B5563"
+                        android:textSize="11sp"
+                        app:chipBackgroundColor="#FFFFFF"
+                        app:chipCornerRadius="16dp"
+                        app:chipStrokeColor="#E5E7EB"
+                        app:chipStrokeWidth="1dp" />
+
+                    <!-- Chip 3: Có bình luận chi tiết (Active) -->
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:checked="true"
+                        android:text="Có bình luận chi tiết"
+                        android:textColor="#D97706"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        app:chipBackgroundColor="#FEF3C7"
+                        app:chipCornerRadius="16dp"
+                        app:chipStrokeWidth="0dp" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- ================= DANH SÁCH REVIEW (Review 1 rất dài phân tích sâu) ================= -->
+
+            <!-- Review Item 1: Chuyên gia Mọt Sách -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="1dp"
+                app:strokeColor="#F1F5F9"
+                app:strokeWidth="1dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="14dp">
+
+                    <!-- Avatar -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardAvatar1"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        app:cardBackgroundColor="#FEF3C7"
+                        app:cardCornerRadius="19dp"
+                        app:cardElevation="0dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="MC"
+                            android:textColor="#B45309"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Tên & Xác thực -->
+                    <LinearLayout
+                        android:id="@+id/llName1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@id/cardAvatar1"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Chuyên gia Mọt Sách"
+                            android:textColor="#111827"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_marginStart="4dp"
+                            android:contentDescription="Verified"
+                            android:src="@drawable/ic_verified"
+                            app:tint="#D17800" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:text="Đã xác thực"
+                            android:textColor="#D17800"
+                            android:textSize="9sp" />
+                    </LinearLayout>
+
+                    <!-- Sao đánh giá (5 sao) -->
+                    <LinearLayout
+                        android:id="@+id/llStars1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/llName1"
+                        android:layout_alignStart="@id/llName1"
+                        android:layout_marginTop="2dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:contentDescription="Star"
+                            android:src="@drawable/ic_star"
+                            app:tint="#F59E0B" />
+
+                        <ImageView
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:layout_marginStart="2dp"
+                            android:contentDescription="Star"
+                            android:src="@drawable/ic_star"
+                            app:tint="#F59E0B" />
+
+                        <ImageView
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:layout_marginStart="2dp"
+                            android:contentDescription="Star"
+                            android:src="@drawable/ic_star"
+                            app:tint="#F59E0B" />
+
+                        <ImageView
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:layout_marginStart="2dp"
+                            android:contentDescription="Star"
+                            android:src="@drawable/ic_star"
+                            app:tint="#F59E0B" />
+
+                        <ImageView
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:layout_marginStart="2dp"
+                            android:contentDescription="Star"
+                            android:src="@drawable/ic_star"
+                            app:tint="#F59E0B" />
+                    </LinearLayout>
+
+                    <!-- Ngày tháng -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:text="15/10/2026"
+                        android:textColor="#9CA3AF"
+                        android:textSize="10sp" />
+
+                    <!-- Badge "Đã đọc hết cuốn" -->
+                    <TextView
+                        android:id="@+id/tvBadge1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/cardAvatar1"
+                        android:layout_marginTop="10dp"
+                        android:background="#F1F5F9"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="3dp"
+                        android:text="Đã đọc hết cuốn"
+                        android:textColor="#475569"
+                        android:textSize="10sp" />
+
+                    <!-- Nội dung bình luận siêu dài phân tích sâu -->
+                    <TextView
+                        android:id="@+id/tvComment1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tvBadge1"
+                        android:layout_marginTop="8dp"
+                        android:lineSpacingExtra="4dp"
+                        android:text="Một cuốn sách mang tính triết học sâu sắc. Hành trình của Nora không chỉ là việc thử nghiệm các cuộc đời khác nhau, mà là quá trình chấp nhận bản thân. Tác giả đã lồng ghép khéo léo lý thuyết về đa vũ trụ lượng tử vào một câu chuyện chữa lành đầy cảm xúc. Mỗi cú rẽ trong thư viện là một bài học về sự hối tiếc, giúp độc giả nhận ra rằng cuộc sống hoàn hảo không đến từ việc chọn đúng mọi ngã rẽ, mà đến từ việc trân trọng thực tại chúng ta đang nắm giữ."
+                        android:textColor="#333333"
+                        android:textSize="13sp" />
+
+                    <!-- TextView "Xem thêm" -->
+                    <TextView
+                        android:id="@+id/tvReadMore1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tvComment1"
+                        android:layout_marginTop="4dp"
+                        android:text="Xem thêm"
+                        android:textColor="#D97706"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <!-- Nút Hữu ích & Trả lời -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tvReadMore1"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:paddingHorizontal="12dp"
+                            android:text="👍 Hữu ích · 156"
+                            android:textAllCaps="false"
+                            android:textColor="#B45309"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="#FEF3C7"
+                            app:cornerRadius="15dp"
+                            app:elevation="0dp"
+                            app:strokeWidth="0dp" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="💬 Trả lời · 24"
+                            android:textColor="#6B7280"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</RelativeLayout>
