@@ -4,11 +4,14 @@ import com.example.group12.api.SessionManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -113,18 +116,22 @@ private ActivityLibraryBinding binding;
             startActivity(intent);
         });
 
-        binding.btnScrollTop.setOnClickListener(v -> binding.scrollViewLibrary.smoothScrollTo(0, 0));
+        binding.btnScrollTop.setOnClickListener(v -> binding.recyclerBooks.smoothScrollToPosition(0));
 
         // Lắng nghe sự kiện cuộn để ẩn/hiện nút Upload và nút ScrollTop
-        binding.scrollViewLibrary.setOnScrollChangeListener((androidx.core.widget.NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            if (scrollY > oldScrollY + 8) {
-                // Cuộn xuống -> Ẩn nút
-                binding.btnUploadBook.setVisibility(android.view.View.GONE);
-                binding.btnScrollTop.setVisibility(android.view.View.GONE);
-            } else if (scrollY < oldScrollY - 8) {
-                // Cuộn lên -> Hiện nút
-                binding.btnUploadBook.setVisibility(android.view.View.VISIBLE);
-                binding.btnScrollTop.setVisibility(android.view.View.VISIBLE);
+        binding.recyclerBooks.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 8) {
+                    // Cuộn xuống -> Ẩn nút
+                    binding.btnUploadBook.setVisibility(View.GONE);
+                    binding.btnScrollTop.setVisibility(View.GONE);
+                } else if (dy < -8) {
+                    // Cuộn lên -> Hiện nút
+                    binding.btnUploadBook.setVisibility(View.VISIBLE);
+                    binding.btnScrollTop.setVisibility(View.VISIBLE);
+                }
             }
         });
 
