@@ -5,129 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F8FAFC"
-    tools:context=".DashboardActivity">
+    tools:ignore="HardcodedText,ContentDescription,SmallSp,UseCompoundDrawables,DisableBaselineAlignment"
+    tools:context=".MainActivity">
 
-    <!-- 1. BOTTOM NAVIGATION BAR CỐ ĐỊNH Ở ĐÁY -->
-    <LinearLayout
-        android:id="@+id/bottomNavContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="#FFFFFF"
-        android:elevation="8dp"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <!-- Tab 1: Trang chủ (Active) -->
-            <LinearLayout
-                android:id="@+id/navHome"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_home_indicator"
-                    android:backgroundTint="#DBEAFE"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingStart="12dp"
-                    android:paddingTop="6dp"
-                    android:paddingEnd="12dp"
-                    android:paddingBottom="6dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:contentDescription="Home"
-                        android:src="@drawable/ic_home"
-                        app:tint="#2563EB" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="Trang chủ"
-                        android:textColor="#2563EB"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Tab 2: Tủ sách -->
-            <LinearLayout
-                android:id="@+id/navLibrary"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:contentDescription="Library"
-                    android:src="@drawable/ic_library"
-                    app:tint="#64748B" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:text="Tủ sách"
-                    android:textColor="#64748B"
-                    android:textSize="11sp" />
-            </LinearLayout>
-
-            <!-- Tab 3: Cá nhân -->
-            <LinearLayout
-                android:id="@+id/navProfile"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:contentDescription="Profile"
-                    android:src="@drawable/ic_profile"
-                    app:tint="#64748B" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="6dp"
-                    android:text="Cá nhân"
-                    android:textColor="#64748B"
-                    android:textSize="11sp" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Home Indicator -->
-        <View
-            android:layout_width="120dp"
-            android:layout_height="3dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
-            android:background="#111827" />
-
-    </LinearLayout>
-
-    <!-- 2. VÙNG NỘI DUNG CHÍNH CUỘN Ở TRÊN -->
+    <!-- 1. VÙNG NỘI DUNG CHÍNH CUỘN Ở TRÊN -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -217,8 +98,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:contentDescription="Search Icon"
-                            android:src="@drawable/ic_search"
-                            app:tint="#64748B" />
+                            android:src="@drawable/ic_search" />
 
                         <EditText
                             android:id="@+id/edtSearch"
@@ -332,6 +212,7 @@
 
                             <!-- Sách 1 -->
                             <LinearLayout
+                                android:id="@+id/cardRec1"
                                 android:layout_width="100dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="12dp"
@@ -382,6 +263,7 @@
 
                             <!-- Sách 2 -->
                             <LinearLayout
+                                android:id="@+id/cardRec2"
                                 android:layout_width="100dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="12dp"
@@ -432,6 +314,7 @@
 
                             <!-- Sách 3 -->
                             <LinearLayout
+                                android:id="@+id/cardRec3"
                                 android:layout_width="100dp"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical">
@@ -794,4 +677,120 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
+    <!-- 2. BOTTOM NAVIGATION BAR CỐ ĐỊNH Ở ĐÁY -->
+    <LinearLayout
+        android:id="@+id/bottomNavContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#FFFFFF"
+        android:elevation="12dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Tab 1: Trang chủ (Active) -->
+            <LinearLayout
+                android:id="@+id/navHome"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_home_indicator"
+                    android:backgroundTint="#DBEAFE"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingTop="6dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="6dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:contentDescription="Home"
+                        android:src="@drawable/ic_home"
+                        app:tint="#2563EB" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:text="Trang chủ"
+                        android:textColor="#2563EB"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Tab 2: Tủ sách -->
+            <LinearLayout
+                android:id="@+id/navLibrary"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="Library"
+                    android:src="@drawable/ic_library"
+                    app:tint="#64748B" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="Tủ sách"
+                    android:textColor="#64748B"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <!-- Tab 3: Cá nhân -->
+            <LinearLayout
+                android:id="@+id/navProfile"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="Profile"
+                    android:src="@drawable/ic_profile"
+                    app:tint="#64748B" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="Cá nhân"
+                    android:textColor="#64748B"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Home Indicator -->
+        <View
+            android:layout_width="120dp"
+            android:layout_height="3dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="6dp"
+            android:background="#111827" />
+
+    </LinearLayout>
 </RelativeLayout>

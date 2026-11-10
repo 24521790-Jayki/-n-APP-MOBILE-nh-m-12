@@ -6,8 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.example.group12.adapter.BookAdapter;
 import com.example.group12.api.ApiClient;
@@ -24,15 +28,22 @@ import retrofit2.Response;
 
 public class LibraryActivity extends AppCompatActivity {
 
-    private ActivityLibraryBinding binding;
+private ActivityLibraryBinding binding;
     private BookAdapter bookAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
 
         binding = ActivityLibraryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         // Khoi tao danh sach sach
         setupRecyclerView();
@@ -40,7 +51,7 @@ public class LibraryActivity extends AppCompatActivity {
         // Tai danh sach sach tu Backend
         fetchBooks();
 
-        // Filter
+        // Nút Lọc (Filter) -> Cài đặt thư viện Pop-up
         binding.btnFilter.setOnClickListener(v -> {
             Intent intent = new Intent(
                     LibraryActivity.this,
@@ -102,7 +113,22 @@ public class LibraryActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Bottom navigation
+        binding.btnScrollTop.setOnClickListener(v -> binding.scrollViewLibrary.smoothScrollTo(0, 0));
+
+        // Lắng nghe sự kiện cuộn để ẩn/hiện nút Upload và nút ScrollTop
+        binding.scrollViewLibrary.setOnScrollChangeListener((androidx.core.widget.NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (scrollY > oldScrollY + 8) {
+                // Cuộn xuống -> Ẩn nút
+                binding.btnUploadBook.setVisibility(android.view.View.GONE);
+                binding.btnScrollTop.setVisibility(android.view.View.GONE);
+            } else if (scrollY < oldScrollY - 8) {
+                // Cuộn lên -> Hiện nút
+                binding.btnUploadBook.setVisibility(android.view.View.VISIBLE);
+                binding.btnScrollTop.setVisibility(android.view.View.VISIBLE);
+            }
+        });
+
+        // Thanh điều hướng dưới cùng (Bottom navigation)
         binding.navHome.setOnClickListener(v -> {
             Intent intent = new Intent(
                     LibraryActivity.this,
