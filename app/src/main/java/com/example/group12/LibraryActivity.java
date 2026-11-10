@@ -3,19 +3,28 @@ package com.example.group12;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.example.group12.databinding.ActivityLibraryBinding;
 
 public class LibraryActivity extends AppCompatActivity {
 
-    private ActivityLibraryBinding binding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityLibraryBinding.inflate(getLayoutInflater());
+        EdgeToEdge.enable(this);
+        ActivityLibraryBinding binding = ActivityLibraryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         // Nút Lọc (Filter) -> Cài đặt thư viện Pop-up
         binding.btnFilter.setOnClickListener(v -> {
@@ -51,6 +60,22 @@ public class LibraryActivity extends AppCompatActivity {
         binding.btnChipCommunity.setOnClickListener(v -> {
             Intent intent = new Intent(LibraryActivity.this, UploadBookActivity.class);
             startActivity(intent);
+        });
+
+        // Nút Cuộn lên đầu (^)
+        binding.btnScrollTop.setOnClickListener(v -> binding.scrollViewLibrary.smoothScrollTo(0, 0));
+
+        // Lắng nghe sự kiện cuộn để ẩn/hiện nút Upload và nút ScrollTop
+        binding.scrollViewLibrary.setOnScrollChangeListener((androidx.core.widget.NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (scrollY > oldScrollY + 8) {
+                // Cuộn xuống -> Ẩn nút
+                binding.btnUploadBook.setVisibility(android.view.View.GONE);
+                binding.btnScrollTop.setVisibility(android.view.View.GONE);
+            } else if (scrollY < oldScrollY - 8) {
+                // Cuộn lên -> Hiện nút
+                binding.btnUploadBook.setVisibility(android.view.View.VISIBLE);
+                binding.btnScrollTop.setVisibility(android.view.View.VISIBLE);
+            }
         });
 
         // Thanh điều hướng dưới cùng

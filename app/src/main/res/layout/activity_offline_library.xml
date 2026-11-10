@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F8FAFC"
+    tools:ignore="HardcodedText,ContentDescription,SmallSp,UseCompoundDrawables,DisableBaselineAlignment"
     tools:context=".MainActivity">
 
     <!-- 1. TOP HEADER CỐ ĐỊNH -->
@@ -119,6 +120,7 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/tvStorageInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
@@ -130,10 +132,11 @@
                         android:id="@+id/progressStorage"
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="6dp"
+                        android:layout_height="8dp"
                         android:layout_marginTop="6dp"
-                        android:progress="30"
-                        android:progressDrawable="@drawable/bg_home_indicator"
+                        android:max="100"
+                        android:progress="4"
+                        android:progressBackgroundTint="#A7F3D0"
                         android:progressTint="#059669" />
 
                     <com.google.android.material.button.MaterialButton
@@ -208,8 +211,9 @@
 
             <!-- - ITEM 3, 4, 5: 3 THẺ SÁCH OFFLINE -->
 
-            <!-- THẺ SÁCH 1: Thư viện nửa đêm -->
+            <!-- THẺ SÁCH 1: Thư viện nửa đêm (Sách chữ & Audio) -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardBookOffline1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -219,17 +223,17 @@
                 app:strokeColor="#E2E8F0"
                 app:strokeWidth="1dp">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="12dp">
 
+                    <!-- Bìa sách -->
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/imgCover1"
                         android:layout_width="56dp"
-                        android:layout_height="76dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
+                        android:layout_height="80dp"
                         app:cardCornerRadius="8dp"
                         app:cardElevation="2dp"
                         app:strokeWidth="0dp">
@@ -251,36 +255,13 @@
                         </FrameLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <ImageButton
-                        android:id="@+id/btnMore1"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentTop="true"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="More"
-                        android:padding="4dp"
-                        app:srcCompat="@drawable/ic_more_vert"
-                        app:tint="#9CA3AF" />
-
-                    <ImageView
-                        android:id="@+id/icFormat1"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentBottom="true"
-                        android:contentDescription="Format"
-                        android:src="@drawable/ic_book_open"
-                        app:tint="#6B7280" />
-
+                    <!-- Thông tin sách -->
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="12dp"
                         android:layout_marginEnd="8dp"
-                        android:layout_toEndOf="@id/imgCover1"
-                        android:layout_toStartOf="@id/btnMore1"
+                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <TextView
@@ -289,31 +270,31 @@
                             android:maxLines="1"
                             android:text="Thư viện nửa đêm"
                             android:textColor="#111827"
-                            android:textSize="13sp"
+                            android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="1dp"
+                            android:layout_marginTop="2dp"
                             android:maxLines="1"
                             android:text="Matt Haig"
                             android:textColor="#6B7280"
-                            android:textSize="11sp" />
+                            android:textSize="12sp" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="1dp"
+                            android:layout_marginTop="2dp"
                             android:maxLines="1"
                             android:text="Đã đọc chương 3 / 24 · 15 MB"
                             android:textColor="#9CA3AF"
-                            android:textSize="10sp" />
+                            android:textSize="11sp" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
+                            android:layout_marginTop="3dp"
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
@@ -327,7 +308,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="3dp"
+                                android:layout_marginStart="4dp"
                                 android:text="Đã sẵn sàng offline"
                                 android:textColor="#059669"
                                 android:textSize="10sp"
@@ -337,22 +318,51 @@
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnRead1"
                             android:layout_width="wrap_content"
-                            android:layout_height="28dp"
-                            android:layout_marginTop="4dp"
+                            android:layout_height="32dp"
+                            android:layout_marginTop="6dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
                             android:text="📖  Đọc ngay"
                             android:textAllCaps="false"
                             android:textColor="#065F46"
-                            android:textSize="10sp"
+                            android:textSize="11sp"
                             android:textStyle="bold"
                             app:backgroundTint="#ECFDF5"
-                            app:cornerRadius="14dp"
+                            app:cornerRadius="16dp"
                             app:elevation="0dp" />
                     </LinearLayout>
-                </RelativeLayout>
+
+                    <!-- Nút Tùy chọn & Định dạng -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_horizontal|top"
+                        android:orientation="vertical">
+
+                        <ImageButton
+                            android:id="@+id/btnMore1"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="More"
+                            android:padding="4dp"
+                            app:srcCompat="@drawable/ic_more_vert"
+                            app:tint="#9CA3AF" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_marginTop="12dp"
+                            android:contentDescription="Format"
+                            android:src="@drawable/ic_book_open"
+                            app:tint="#6B7280" />
+                    </LinearLayout>
+                </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- THẺ SÁCH 2: Đi tìm lẽ sống -->
+            <!-- THẺ SÁCH 2: Đi tìm lẽ sống (Sách chữ) -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardBookOffline2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -362,17 +372,17 @@
                 app:strokeColor="#E2E8F0"
                 app:strokeWidth="1dp">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="12dp">
 
+                    <!-- Bìa sách -->
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/imgCover2"
                         android:layout_width="56dp"
-                        android:layout_height="76dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
+                        android:layout_height="80dp"
                         app:cardCornerRadius="8dp"
                         app:cardElevation="2dp"
                         app:strokeWidth="0dp">
@@ -394,36 +404,13 @@
                         </FrameLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <ImageButton
-                        android:id="@+id/btnMore2"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentTop="true"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="More"
-                        android:padding="4dp"
-                        app:srcCompat="@drawable/ic_more_vert"
-                        app:tint="#9CA3AF" />
-
-                    <ImageView
-                        android:id="@+id/icFormat2"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentBottom="true"
-                        android:contentDescription="Format"
-                        android:src="@drawable/ic_book_open"
-                        app:tint="#6B7280" />
-
+                    <!-- Thông tin sách -->
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="12dp"
                         android:layout_marginEnd="8dp"
-                        android:layout_toEndOf="@id/imgCover2"
-                        android:layout_toStartOf="@id/btnMore2"
+                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <TextView
@@ -432,31 +419,31 @@
                             android:maxLines="1"
                             android:text="Đi tìm lẽ sống"
                             android:textColor="#111827"
-                            android:textSize="13sp"
+                            android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="1dp"
+                            android:layout_marginTop="2dp"
                             android:maxLines="1"
                             android:text="Viktor E. Frankl"
                             android:textColor="#6B7280"
-                            android:textSize="11sp" />
+                            android:textSize="12sp" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="1dp"
+                            android:layout_marginTop="2dp"
                             android:maxLines="1"
-                            android:text="Đã đọc chương 2 / 12 · 15 MB"
+                            android:text="Đã đọc chương 2 / 12 · 12 MB"
                             android:textColor="#9CA3AF"
-                            android:textSize="10sp" />
+                            android:textSize="11sp" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
+                            android:layout_marginTop="3dp"
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
@@ -470,7 +457,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="3dp"
+                                android:layout_marginStart="4dp"
                                 android:text="Đã sẵn sàng offline"
                                 android:textColor="#059669"
                                 android:textSize="10sp"
@@ -480,22 +467,51 @@
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnRead2"
                             android:layout_width="wrap_content"
-                            android:layout_height="28dp"
-                            android:layout_marginTop="4dp"
+                            android:layout_height="32dp"
+                            android:layout_marginTop="6dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
                             android:text="📖  Đọc ngay"
                             android:textAllCaps="false"
                             android:textColor="#065F46"
-                            android:textSize="10sp"
+                            android:textSize="11sp"
                             android:textStyle="bold"
                             app:backgroundTint="#ECFDF5"
-                            app:cornerRadius="14dp"
+                            app:cornerRadius="16dp"
                             app:elevation="0dp" />
                     </LinearLayout>
-                </RelativeLayout>
+
+                    <!-- Nút Tùy chọn & Định dạng -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_horizontal|top"
+                        android:orientation="vertical">
+
+                        <ImageButton
+                            android:id="@+id/btnMore2"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="More"
+                            android:padding="4dp"
+                            app:srcCompat="@drawable/ic_more_vert"
+                            app:tint="#9CA3AF" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_marginTop="12dp"
+                            android:contentDescription="Format"
+                            android:src="@drawable/ic_book_open"
+                            app:tint="#6B7280" />
+                    </LinearLayout>
+                </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- THẺ SÁCH 3: Nhà giả kim (Audio) -->
+            <!-- THẺ SÁCH 3: Nhà giả kim (Sách nói / Audio) -->
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardBookOffline3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -505,17 +521,17 @@
                 app:strokeColor="#E2E8F0"
                 app:strokeWidth="1dp">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="12dp">
 
+                    <!-- Bìa sách -->
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/imgCover3"
                         android:layout_width="56dp"
-                        android:layout_height="76dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerVertical="true"
+                        android:layout_height="80dp"
                         app:cardCornerRadius="8dp"
                         app:cardElevation="2dp"
                         app:strokeWidth="0dp">
@@ -537,36 +553,13 @@
                         </FrameLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <ImageButton
-                        android:id="@+id/btnMore3"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentTop="true"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:contentDescription="More"
-                        android:padding="4dp"
-                        app:srcCompat="@drawable/ic_more_vert"
-                        app:tint="#9CA3AF" />
-
-                    <ImageView
-                        android:id="@+id/icFormat3"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentBottom="true"
-                        android:contentDescription="Audio Format"
-                        android:src="@drawable/ic_audio_badge"
-                        app:tint="#6B7280" />
-
+                    <!-- Thông tin sách -->
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="12dp"
                         android:layout_marginEnd="8dp"
-                        android:layout_toEndOf="@id/imgCover3"
-                        android:layout_toStartOf="@id/btnMore3"
+                        android:layout_weight="1"
                         android:orientation="vertical">
 
                         <TextView
@@ -575,31 +568,31 @@
                             android:maxLines="1"
                             android:text="Nhà giả kim"
                             android:textColor="#111827"
-                            android:textSize="13sp"
+                            android:textSize="14sp"
                             android:textStyle="bold" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="1dp"
+                            android:layout_marginTop="2dp"
                             android:maxLines="1"
                             android:text="Paulo Coelho"
                             android:textColor="#6B7280"
-                            android:textSize="11sp" />
+                            android:textSize="12sp" />
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="1dp"
+                            android:layout_marginTop="2dp"
                             android:maxLines="1"
-                            android:text="Đã nghe chương 5 / 18 · 15 MB"
+                            android:text="Đã nghe chương 5 / 18 · 25 MB"
                             android:textColor="#9CA3AF"
-                            android:textSize="10sp" />
+                            android:textSize="11sp" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
+                            android:layout_marginTop="3dp"
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
@@ -613,7 +606,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginStart="3dp"
+                                android:layout_marginStart="4dp"
                                 android:text="Đã sẵn sàng offline"
                                 android:textColor="#059669"
                                 android:textSize="10sp"
@@ -623,21 +616,49 @@
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/btnRead3"
                             android:layout_width="wrap_content"
-                            android:layout_height="28dp"
-                            android:layout_marginTop="4dp"
-                            android:text="📖  Đọc ngay"
+                            android:layout_height="32dp"
+                            android:layout_marginTop="6dp"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp"
+                            android:text="🎧  Nghe ngay"
                             android:textAllCaps="false"
                             android:textColor="#065F46"
-                            android:textSize="10sp"
+                            android:textSize="11sp"
                             android:textStyle="bold"
                             app:backgroundTint="#ECFDF5"
-                            app:cornerRadius="14dp"
+                            app:cornerRadius="16dp"
                             app:elevation="0dp" />
                     </LinearLayout>
-                </RelativeLayout>
+
+                    <!-- Nút Tùy chọn & Định dạng -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_horizontal|top"
+                        android:orientation="vertical">
+
+                        <ImageButton
+                            android:id="@+id/btnMore3"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="More"
+                            android:padding="4dp"
+                            app:srcCompat="@drawable/ic_more_vert"
+                            app:tint="#9CA3AF" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:layout_marginTop="12dp"
+                            android:contentDescription="Audio Format"
+                            android:src="@drawable/ic_audio_badge"
+                            app:tint="#6B7280" />
+                    </LinearLayout>
+                </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- - ITEM 6: Banner thông báo dưới cùng -->
+            <!-- Banner thông báo dưới cùng -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -652,24 +673,22 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="10dp">
+                    android:padding="12dp">
 
                     <ImageView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:contentDescription="Wifi Off"
                         android:src="@drawable/ic_wifi_off"
                         app:tint="#059669" />
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_weight="1"
+                        android:layout_marginStart="10dp"
                         android:text="Đọc và nghe toàn bộ sách không cần kết nối mạng"
                         android:textColor="#065F46"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
+                        android:textSize="12sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

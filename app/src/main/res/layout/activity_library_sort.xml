@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/overlaySortModal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#660F172A"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    tools:ignore="HardcodedText,ContentDescription,SmallSp,UseCompoundDrawables,DisableBaselineAlignment">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="320dp"
@@ -82,8 +84,8 @@
                 android:layout_marginBottom="12dp"
                 android:background="#F1F5F9" />
 
-            <!-- RadioGroup -->
-            <RadioGroup
+            <!-- RadioGroup / Containers -->
+            <LinearLayout
                 android:id="@+id/rgSortOptions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -92,6 +94,7 @@
 
                 <!-- Item 1: Mới nhất (Active) -->
                 <LinearLayout
+                    android:id="@+id/layoutNewest"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_home_indicator"
@@ -117,53 +120,113 @@
                 </LinearLayout>
 
                 <!-- Item 2: Cũ nhất -->
-                <RadioButton
-                    android:id="@+id/rbOldest"
+                <LinearLayout
+                    android:id="@+id/layoutOldest"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:checked="false"
-                    android:paddingVertical="10dp"
-                    android:text="Cũ nhất"
-                    android:textColor="#1F2937"
-                    android:textSize="14sp" />
+                    android:background="@drawable/bg_home_indicator"
+                    android:backgroundTint="@android:color/transparent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="10dp">
+
+                    <RadioButton
+                        android:id="@+id/rbOldest"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="false"
+                        android:buttonTint="#2563EB"
+                        android:text="Cũ nhất"
+                        android:textColor="#1F2937"
+                        android:textSize="14sp" />
+                </LinearLayout>
 
                 <!-- Item 3: Tên sách (A-Z) -->
-                <RadioButton
-                    android:id="@+id/rbTitleAZ"
+                <LinearLayout
+                    android:id="@+id/layoutTitleAZ"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:checked="false"
-                    android:paddingVertical="10dp"
-                    android:text="Tên sách (A–Z)"
-                    android:textColor="#1F2937"
-                    android:textSize="14sp" />
+                    android:background="@drawable/bg_home_indicator"
+                    android:backgroundTint="@android:color/transparent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="10dp">
+
+                    <RadioButton
+                        android:id="@+id/rbTitleAZ"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="false"
+                        android:buttonTint="#2563EB"
+                        android:text="Tên sách (A–Z)"
+                        android:textColor="#1F2937"
+                        android:textSize="14sp" />
+                </LinearLayout>
 
                 <!-- Item 4: Tên tác giả (A-Z) -->
-                <RadioButton
-                    android:id="@+id/rbAuthorAZ"
+                <LinearLayout
+                    android:id="@+id/layoutAuthorAZ"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:checked="false"
-                    android:paddingVertical="10dp"
-                    android:text="Tên tác giả (A–Z)"
-                    android:textColor="#1F2937"
-                    android:textSize="14sp" />
+                    android:background="@drawable/bg_home_indicator"
+                    android:backgroundTint="@android:color/transparent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="10dp">
+
+                    <RadioButton
+                        android:id="@+id/rbAuthorAZ"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="false"
+                        android:buttonTint="#2563EB"
+                        android:text="Tên tác giả (A–Z)"
+                        android:textColor="#1F2937"
+                        android:textSize="14sp" />
+                </LinearLayout>
 
                 <!-- Item 5: Đọc gần đây -->
-                <RadioButton
-                    android:id="@+id/rbRecentRead"
+                <LinearLayout
+                    android:id="@+id/layoutRecentRead"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:checked="false"
-                    android:paddingVertical="10dp"
-                    android:text="Đọc gần đây"
-                    android:textColor="#1F2937"
-                    android:textSize="14sp" />
-            </RadioGroup>
+                    android:background="@drawable/bg_home_indicator"
+                    android:backgroundTint="@android:color/transparent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="10dp">
+
+                    <RadioButton
+                        android:id="@+id/rbRecentRead"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="false"
+                        android:buttonTint="#2563EB"
+                        android:text="Đọc gần đây"
+                        android:textColor="#1F2937"
+                        android:textSize="14sp" />
+                </LinearLayout>
+            </LinearLayout>
 
             <!-- Nút Áp dụng -->
             <com.google.android.material.button.MaterialButton
