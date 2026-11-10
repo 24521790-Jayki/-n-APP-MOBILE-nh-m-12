@@ -66,12 +66,15 @@
             android:orientation="horizontal">
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btnAudio"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 app:cardBackgroundColor="#F1F5F9"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:strokeWidth="0dp">
+                app:strokeWidth="0dp"
+                android:clickable="true"
+                android:focusable="true">
                 <ImageView
                     android:layout_width="14dp"
                     android:layout_height="14dp"
@@ -82,13 +85,16 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btnAa"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
                 app:cardBackgroundColor="#EFF6FF"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:strokeWidth="0dp">
+                app:strokeWidth="0dp"
+                android:clickable="true"
+                android:focusable="true">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
