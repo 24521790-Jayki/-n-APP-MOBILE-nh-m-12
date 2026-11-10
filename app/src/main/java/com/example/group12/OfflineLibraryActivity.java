@@ -27,7 +27,7 @@ public class OfflineLibraryActivity extends AppCompatActivity {
         long totalMB = 19250;
         int percent = (int) ((usedMB * 100) / totalMB);
         binding.progressStorage.setProgress(percent);
-        binding.tvStorageInfo.setText("Đã dùng 850 MB / Trống 18.4 GB (" + percent + "%)");
+        binding.tvStorageInfo.setText(String.format(java.util.Locale.getDefault(), "Đã dùng 850 MB / Trống 18.4 GB (%d%%)", percent));
 
         // Gán sự kiện cho các chip lọc
         binding.chipAll.setOnClickListener(v -> {
@@ -78,22 +78,24 @@ public class OfflineLibraryActivity extends AppCompatActivity {
 
         popup.setOnMenuItemClickListener(item -> {
             String title = item.getTitle() != null ? item.getTitle().toString() : "";
-            if ("Xem chi tiết sách".equals(title)) {
-                Intent intent = new Intent(OfflineLibraryActivity.this, BookDetailActivity.class);
-                startActivity(intent);
-                return true;
-            } else if ("Báo cáo vi phạm / lỗi".equals(title)) {
-                Intent intent = new Intent(OfflineLibraryActivity.this, ReportActivity.class);
-                startActivity(intent);
-                return true;
-            } else if ("Xóa khỏi bộ nhớ offline".equals(title)) {
-                if (cardView != null) {
-                    cardView.setVisibility(View.GONE);
-                }
-                Toast.makeText(this, "Đã xóa sách khỏi bộ nhớ offline!", Toast.LENGTH_SHORT).show();
-                return true;
+            switch (title) {
+                case "Xem chi tiết sách":
+                    Intent intent = new Intent(OfflineLibraryActivity.this, BookDetailActivity.class);
+                    startActivity(intent);
+                    return true;
+                case "Báo cáo vi phạm / lỗi":
+                    Intent intentReport = new Intent(OfflineLibraryActivity.this, ReportActivity.class);
+                    startActivity(intentReport);
+                    return true;
+                case "Xóa khỏi bộ nhớ offline":
+                    if (cardView != null) {
+                        cardView.setVisibility(View.GONE);
+                    }
+                    Toast.makeText(this, "Đã xóa sách khỏi bộ nhớ offline!", Toast.LENGTH_SHORT).show();
+                    return true;
+                default:
+                    return false;
             }
-            return false;
         });
         popup.show();
     }

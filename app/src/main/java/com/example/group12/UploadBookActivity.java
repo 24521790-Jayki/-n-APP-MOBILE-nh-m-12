@@ -9,12 +9,10 @@ import com.example.group12.databinding.ActivityUploadBookBinding;
 
 public class UploadBookActivity extends AppCompatActivity {
 
-    private ActivityUploadBookBinding binding;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityUploadBookBinding.inflate(getLayoutInflater());
+        ActivityUploadBookBinding binding = ActivityUploadBookBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         binding.btnBack.setOnClickListener(v -> finish());

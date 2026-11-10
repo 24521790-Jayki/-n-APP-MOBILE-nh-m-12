@@ -214,13 +214,27 @@
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp">
 
-                        <!-- Sách 1 -->
-                        <LinearLayout
-                            android:id="@+id/cardRec1"
-                            android:layout_width="100dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="12dp"
-                            android:orientation="vertical">
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:contentDescription="Search Icon"
+                            android:src="@drawable/ic_search"
+                            app:tint="#6B7280" />
+
+                        <EditText
+                            android:id="@+id/edtSearch"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="10dp"
+                            android:background="@null"
+                            android:hint="Tìm sách, tác giả, file cá nhân..."
+                            android:inputType="text"
+                            android:textColor="#111827"
+                            android:textColorHint="#9CA3AF"
+                            android:textSize="13sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
 
             <!-- 2. Khối "🔥 GỢI Ý DÀNH CHO BẠN" (AI Recommendation Card) -->
             <com.google.android.material.card.MaterialCardView
@@ -312,13 +326,13 @@
                         android:scrollbars="none">
 
                         <LinearLayout
-                            android:id="@+id/cardRec2"
-                            android:layout_width="100dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
                             <!-- Sách 1 -->
                             <LinearLayout
+                                android:id="@+id/cardRec1"
                                 android:layout_width="100dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="12dp"
@@ -369,17 +383,18 @@
 
                             <!-- Sách 2 -->
                             <LinearLayout
+                                android:id="@+id/cardRec2"
                                 android:layout_width="100dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="12dp"
                                 android:orientation="vertical">
 
-                        <!-- Sách 3 -->
-                        <LinearLayout
-                            android:id="@+id/cardRec3"
-                            android:layout_width="100dp"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                                <com.google.android.material.card.MaterialCardView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="140dp"
+                                    app:cardCornerRadius="10dp"
+                                    app:cardElevation="2dp"
+                                    app:strokeWidth="0dp">
 
                                     <FrameLayout
                                         android:layout_width="match_parent"
@@ -419,6 +434,7 @@
 
                             <!-- Sách 3 -->
                             <LinearLayout
+                                android:id="@+id/cardRec3"
                                 android:layout_width="100dp"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical">

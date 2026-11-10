@@ -22,9 +22,14 @@ public class LoginActivity extends AppCompatActivity {
         ActivityLoginBinding binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.contentLayout, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            v.setPadding(
+                v.getPaddingLeft(),
+                systemBars.top + (int) (16 * getResources().getDisplayMetrics().density),
+                v.getPaddingRight(),
+                systemBars.bottom + (int) (24 * getResources().getDisplayMetrics().density)
+            );
             return insets;
         });
 

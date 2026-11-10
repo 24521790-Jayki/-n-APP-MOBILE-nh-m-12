@@ -15,6 +15,8 @@ import com.example.group12.databinding.ActivityLibrarySortBinding;
 
 public class LibrarySortActivity extends AppCompatActivity {
 
+    private int selectedSortIndex = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,9 +24,24 @@ public class LibrarySortActivity extends AppCompatActivity {
         ActivityLibrarySortBinding binding = ActivityLibrarySortBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        selectedSortIndex = getSharedPreferences("LibraryPrefs", MODE_PRIVATE).getInt("sort_index", 0);
+
         binding.btnCloseSort.setOnClickListener(v -> finish());
         binding.btnApplySort.setOnClickListener(v -> {
-            Toast.makeText(this, "Đã áp dụng sắp xếp thư viện", Toast.LENGTH_SHORT).show();
+            String sortText = "";
+            switch (selectedSortIndex) {
+                case 0: sortText = "Mới nhất"; break;
+                case 1: sortText = "Cũ nhất"; break;
+                case 2: sortText = "Tên sách (A–Z)"; break;
+                case 3: sortText = "Tên tác giả (A–Z)"; break;
+                case 4: sortText = "Đọc gần đây"; break;
+            }
+            getSharedPreferences("LibraryPrefs", MODE_PRIVATE)
+                    .edit()
+                    .putInt("sort_index", selectedSortIndex)
+                    .putString("sort_text", sortText)
+                    .apply();
+            Toast.makeText(this, "Đã áp dụng sắp xếp: " + sortText, Toast.LENGTH_SHORT).show();
             finish();
         });
 
@@ -49,10 +66,15 @@ public class LibrarySortActivity extends AppCompatActivity {
         setupSortClick(binding.layoutTitleAZ, binding.rbTitleAZ, 2, rbs, layouts);
         setupSortClick(binding.layoutAuthorAZ, binding.rbAuthorAZ, 3, rbs, layouts);
         setupSortClick(binding.layoutRecentRead, binding.rbRecentRead, 4, rbs, layouts);
+
+        selectSortOption(selectedSortIndex, rbs, layouts);
     }
 
     private void setupSortClick(View layout, RadioButton rb, int index, RadioButton[] rbs, View[] layouts) {
-        View.OnClickListener listener = v -> selectSortOption(index, rbs, layouts);
+        View.OnClickListener listener = v -> {
+            selectedSortIndex = index;
+            selectSortOption(index, rbs, layouts);
+        };
         layout.setOnClickListener(listener);
         rb.setOnClickListener(listener);
     }

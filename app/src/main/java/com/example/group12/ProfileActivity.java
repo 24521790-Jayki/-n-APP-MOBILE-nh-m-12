@@ -2,8 +2,6 @@ package com.example.group12;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -50,8 +48,7 @@ public class ProfileActivity extends AppCompatActivity {
         // Cài đặt chế độ đọc -> Mở BottomSheetDialog dialog_reading_settings
         binding.cardSettings.setOnClickListener(v -> {
             BottomSheetDialog sheetDialog = new BottomSheetDialog(ProfileActivity.this);
-            View view = LayoutInflater.from(ProfileActivity.this).inflate(R.layout.dialog_reading_settings, null);
-            sheetDialog.setContentView(view);
+            sheetDialog.setContentView(R.layout.dialog_reading_settings);
             sheetDialog.show();
         });
 

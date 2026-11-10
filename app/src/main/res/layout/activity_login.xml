@@ -5,11 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
+    android:clipToPadding="false"
     android:fillViewport="true"
     tools:ignore="HardcodedText,ContentDescription,SmallSp,UseCompoundDrawables,DisableBaselineAlignment,WebViewLayout"
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:id="@+id/contentLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -190,7 +192,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="130dp"
                 android:orientation="vertical"
                 android:padding="6dp">
 

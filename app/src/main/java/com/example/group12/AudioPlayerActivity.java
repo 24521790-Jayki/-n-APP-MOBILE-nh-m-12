@@ -1,8 +1,6 @@
 package com.example.group12;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,8 +21,7 @@ public class AudioPlayerActivity extends AppCompatActivity {
         // Nút Playlist / Danh sách chương -> Hiển thị BottomSheetDialog danh sách chương
         binding.btnPlaylist.setOnClickListener(v -> {
             BottomSheetDialog sheetDialog = new BottomSheetDialog(AudioPlayerActivity.this);
-            View view = LayoutInflater.from(AudioPlayerActivity.this).inflate(R.layout.dialog_chapters, null);
-            sheetDialog.setContentView(view);
+            sheetDialog.setContentView(R.layout.dialog_chapters);
             sheetDialog.show();
         });
     }

@@ -13,11 +13,13 @@ import com.example.group12.databinding.ActivityLibraryBinding;
 
 public class LibraryActivity extends AppCompatActivity {
 
+    private ActivityLibraryBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        ActivityLibraryBinding binding = ActivityLibraryBinding.inflate(getLayoutInflater());
+        binding = ActivityLibraryBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
@@ -96,5 +98,14 @@ public class LibraryActivity extends AppCompatActivity {
             overridePendingTransition(0, 0);
             finish();
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (binding != null) {
+            String sortText = getSharedPreferences("LibraryPrefs", MODE_PRIVATE).getString("sort_text", "Mới nhất");
+            binding.tvSortIndicator.setText(sortText);
+        }
     }
 }

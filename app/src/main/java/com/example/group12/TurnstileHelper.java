@@ -29,6 +29,7 @@ public class TurnstileHelper {
 
         webView.addJavascriptInterface(new Object() {
             @JavascriptInterface
+            @SuppressWarnings("unused")
             public void onVerified(String token) {
                 if (listener != null) {
                     webView.post(() -> listener.onVerified(token));
@@ -36,6 +37,7 @@ public class TurnstileHelper {
             }
 
             @JavascriptInterface
+            @SuppressWarnings("unused")
             public void onExpired() {
                 if (listener != null) {
                     webView.post(listener::onExpired);
