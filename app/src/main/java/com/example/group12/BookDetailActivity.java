@@ -16,6 +16,17 @@ public class BookDetailActivity extends AppCompatActivity {
         ActivityBookDetailBinding binding = ActivityBookDetailBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Nhận dữ liệu Tên sách & Tác giả từ Intent
+        String title = getIntent().getStringExtra("book_title");
+        String author = getIntent().getStringExtra("book_author");
+
+        if (title != null && !title.isEmpty()) {
+            binding.tvBookTitle.setText(title);
+        }
+        if (author != null && !author.isEmpty()) {
+            binding.tvBookAuthor.setText(author);
+        }
+
         // Nút Quay lại
         binding.btnBack.setOnClickListener(v -> finish());
 
@@ -27,6 +38,25 @@ public class BookDetailActivity extends AppCompatActivity {
         // Nút Đọc sách ngay -> Chuyển sang ReaderActivity
         binding.btnReadNow.setOnClickListener(v -> {
             Intent intent = new Intent(BookDetailActivity.this, ReaderActivity.class);
+            startActivity(intent);
+        });
+
+        // Click các chương sách -> Chuyển sang ReaderActivity
+        binding.layoutChapter1.setOnClickListener(v -> {
+            Intent intent = new Intent(BookDetailActivity.this, ReaderActivity.class);
+            intent.putExtra("chapter_title", "Chương 1: 11 giờ 22 phút đêm");
+            startActivity(intent);
+        });
+
+        binding.layoutChapter2.setOnClickListener(v -> {
+            Intent intent = new Intent(BookDetailActivity.this, ReaderActivity.class);
+            intent.putExtra("chapter_title", "Chương 2: Sách sự sống");
+            startActivity(intent);
+        });
+
+        binding.layoutChapter3.setOnClickListener(v -> {
+            Intent intent = new Intent(BookDetailActivity.this, ReaderActivity.class);
+            intent.putExtra("chapter_title", "Chương 3: Bãi đỗ xe của thư viện");
             startActivity(intent);
         });
 

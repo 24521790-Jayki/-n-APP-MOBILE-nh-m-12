@@ -46,6 +46,11 @@
         <!-- Search Activities -->
         <activity android:name=".SearchActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".AdvancedSearchActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".AdvancedSearchResultsActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".SearchResultsActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".AudioSearchResultsActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".EbookSearchResultsActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".AuthorSearchResultsActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
 
         <!-- AI Assistant Tools -->
         <activity android:name=".AiChatActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />

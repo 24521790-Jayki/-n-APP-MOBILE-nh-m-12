@@ -163,6 +163,7 @@
 
             <!-- Khối 2: Tên sách & Tác giả -->
             <TextView
+                android:id="@+id/tvBookTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -173,6 +174,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tvBookAuthor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
@@ -272,6 +274,112 @@
                         android:text="Giữa sự sống và cái chết có một thư viện, và trong thư viện ấy, các kệ sách cứ kéo dài vô tận. Mỗi cuốn sách cho bạn cơ hội thử một cuộc đời khác mà bạn đã sống. Giữa những lựa chọn và nuối tiếc, Nora Seed bước vào nơi ranh giới giữa thực tại và tiềm thức để tìm ra ý nghĩa thực sự của cuộc sống."
                         android:textColor="#4B5563"
                         android:textSize="13sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Khối 5: Danh sách chương sách -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#F1F5F9"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        android:text="Danh sách chương"
+                        android:textColor="#111827"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <!-- Chapter 1 -->
+                    <LinearLayout
+                        android:id="@+id/layoutChapter1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Chương 1: 11 giờ 22 phút đêm"
+                            android:textColor="#374151"
+                            android:textSize="13sp" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:contentDescription="Next"
+                            android:src="@drawable/ic_chevron_right"
+                            app:tint="#9CA3AF" />
+                    </LinearLayout>
+
+                    <!-- Chapter 2 -->
+                    <LinearLayout
+                        android:id="@+id/layoutChapter2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Chương 2: Sách sự sống"
+                            android:textColor="#374151"
+                            android:textSize="13sp" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:contentDescription="Next"
+                            android:src="@drawable/ic_chevron_right"
+                            app:tint="#9CA3AF" />
+                    </LinearLayout>
+
+                    <!-- Chapter 3 -->
+                    <LinearLayout
+                        android:id="@+id/layoutChapter3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Chương 3: Bãi đỗ xe của thư viện"
+                            android:textColor="#374151"
+                            android:textSize="13sp" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:contentDescription="Next"
+                            android:src="@drawable/ic_chevron_right"
+                            app:tint="#9CA3AF" />
+                    </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
