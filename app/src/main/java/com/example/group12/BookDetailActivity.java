@@ -10,6 +10,8 @@ import com.example.group12.databinding.ActivityBookDetailBinding;
 
 public class BookDetailActivity extends AppCompatActivity {
 
+    private boolean isFavorite = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,10 +32,18 @@ public class BookDetailActivity extends AppCompatActivity {
         // Nút Quay lại
         binding.btnBack.setOnClickListener(v -> finish());
 
-        // Nút Yêu thích
-        binding.btnFavorite.setOnClickListener(v -> 
-            Toast.makeText(this, "Đã thêm vào danh sách yêu thích!", Toast.LENGTH_SHORT).show()
-        );
+        // Nút Yêu thích (Tim)
+        binding.btnFavorite.setOnClickListener(v -> {
+            if (isFavorite) {
+                binding.btnFavorite.setImageResource(R.drawable.ic_favorite_border);
+                Toast.makeText(this, "Đã bỏ khỏi danh sách yêu thích", Toast.LENGTH_SHORT).show();
+                isFavorite = false;
+            } else {
+                binding.btnFavorite.setImageResource(R.drawable.ic_favorite);
+                Toast.makeText(this, "Đã thêm vào danh sách yêu thích!", Toast.LENGTH_SHORT).show();
+                isFavorite = true;
+            }
+        });
 
         // Nút Đọc sách ngay -> Chuyển sang ReaderActivity
         binding.btnReadNow.setOnClickListener(v -> {

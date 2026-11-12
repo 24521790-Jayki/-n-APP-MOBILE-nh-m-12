@@ -93,7 +93,7 @@ private ActivityLibraryBinding binding;
         binding.btnChipAudio.setOnClickListener(v -> {
             Intent intent = new Intent(
                     LibraryActivity.this,
-                    AudioPlayerActivity.class
+                    AudioLibraryActivity.class
             );
             startActivity(intent);
         });
@@ -111,7 +111,7 @@ private ActivityLibraryBinding binding;
         binding.btnChipCommunity.setOnClickListener(v -> {
             Intent intent = new Intent(
                     LibraryActivity.this,
-                    UploadBookActivity.class
+                    CommunityLibraryActivity.class
             );
             startActivity(intent);
         });

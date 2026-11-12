@@ -35,11 +35,14 @@
         <activity android:name=".DashboardActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".LibraryActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ProfileActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".MyUploadedBooksActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
 
         <!-- Book Reading & Audio Activities -->
         <activity android:name=".BookDetailActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".ReaderActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".AudioPlayerActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".AudioLibraryActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".CommunityLibraryActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".OfflineLibraryActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".UploadBookActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
 
