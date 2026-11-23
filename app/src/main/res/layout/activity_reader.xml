@@ -42,17 +42,19 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/txtChapterNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chương 3"
+                android:text="Chương 1"
                 android:textColor="#111827"
                 android:textSize="13sp"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/txtBookTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Những ngày chậm rãi"
+                android:text="Arifureta"
                 android:textColor="#6B7280"
                 android:textSize="11sp" />
         </LinearLayout>
@@ -193,32 +195,21 @@
             android:paddingBottom="32dp">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/txtBookName"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="MÙA THU - 03"
-                android:textColor="#9CA3AF"
-                android:textSize="10sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:layout_marginBottom="24dp"
                 android:fontFamily="serif"
-                android:text="Thư viện nửa đêm"
+                android:text="Arifureta"
                 android:textColor="#111827"
                 android:textSize="26sp"
                 android:textStyle="bold" />
 
-            <!-- Đoạn văn 1 -->
-            <TextView
+            <WebView
+                android:id="@+id/webViewChapter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:lineSpacingExtra="6sp"
-                android:text="Buổi chiều, gió trở về qua ngõ nhỏ, mang theo hương lá khô và hơi đất sau cơn mưa. Tôi ngồi bên cửa sổ, nhìn nắng chậm rãi trôi trên bậc..."
-                android:textColor="#374151"
-                android:textSize="14sp" />
+                android:background="@android:color/transparent" />
 
             <!-- POPUP TOOLBAR CHỌN VĂN BẢN (Floating Selection Card) -->
             <com.google.android.material.card.MaterialCardView
@@ -342,28 +333,6 @@
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
-            <!-- Đoạn văn 2 (Bôi đen / Highlight background xanh nhạt #DBEAFE) -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:background="#DBEAFE"
-                android:lineSpacingExtra="6sp"
-                android:padding="6dp"
-                android:text="Có những bình yên chỉ tìm thấy khi ta thôi vội vã."
-                android:textColor="#1E3A8A"
-                android:textSize="14sp" />
-
-            <!-- Đoạn văn 3 -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:lineSpacingExtra="6sp"
-                android:text="Tôi khép cuốn sổ, lắng nghe tiếng gió đi qua hàng cây trước nhà. Ngày còn dài, nhưng lòng đã thôi..."
-                android:textColor="#374151"
-                android:textSize="14sp" />
 
             <!-- BẢNG TÙY CHỈNH GIAO DIỆN ĐỌC (Theme Settings Bottom Sheet / Dialog Card) -->
             <com.google.android.material.card.MaterialCardView

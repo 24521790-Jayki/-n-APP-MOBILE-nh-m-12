@@ -1,4 +1,3 @@
-
 package com.example.group12.api;
 
 public class Book {

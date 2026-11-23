@@ -2,6 +2,9 @@ package com.example.group12;
 
 import com.example.group12.api.SessionManager;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -48,10 +51,13 @@ private ActivityLibraryBinding binding;
             return insets;
         });
 
-        // Khoi tao danh sach sach
+    // Khoi tao danh sach sach
         setupRecyclerView();
 
-        // Tai danh sach sach tu Backend
+    // Khoi tao chuc nang tim kiem
+        setupSearch();
+
+    // Tai danh sach sach tu Backend
         fetchBooks();
 
         // Nút Lọc (Filter) -> Cài đặt thư viện Pop-up
@@ -161,7 +167,52 @@ private ActivityLibraryBinding binding;
         });
     }
 
+    // Cau hinh chuc nang tim kiem sach
+    private void setupSearch() {
+        binding.etSearchBook.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(
+                    CharSequence s,
+                    int start,
+                    int count,
+                    int after
+            ) {
+                // Khong can xu ly
+            }
+
+            @Override
+            public void onTextChanged(
+                    CharSequence s,
+                    int start,
+                    int before,
+                    int count
+            ) {
+                // Loc sach theo tu khoa
+                bookAdapter.filterBooks(s.toString());
+
+                // Cap nhat so luong sach dang hien thi
+                updateBookCount();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // Khong can xu ly
+            }
+        });
+    }
+
+    // Cap nhat so luong sach dang hien thi
+    private void updateBookCount() {
+        int totalBooks = bookAdapter.getItemCount();
+
+        binding.txtBookCount.setText(
+                totalBooks + " cuốn sách"
+        );
+    }
+
     // Cau hinh RecyclerView hien thi 2 cot
+
     private void setupRecyclerView() {
         bookAdapter = new BookAdapter();
 
@@ -170,7 +221,27 @@ private ActivityLibraryBinding binding;
         );
 
         binding.recyclerBooks.setAdapter(bookAdapter);
+
+        // Chi Admin moi duoc mo sach de chinh sua
+        SessionManager sessionManager = new SessionManager(this);
+
+        if ("admin".equalsIgnoreCase(sessionManager.getRole())) {
+
+            // Khi nhấn vào sách: mở màn hình đọc sách
+            bookAdapter.setOnBookClickListener(book -> {
+                Intent intent = new Intent(
+                        LibraryActivity.this,
+                        ReaderActivity.class
+                );
+
+                // Truyền ID sách sang ReaderActivity
+                intent.putExtra("bookId", book.getBookID());
+
+                startActivity(intent);
+            });
+        }
     }
+
 
     // Goi API lay danh sach sach
     private void fetchBooks() {
@@ -210,11 +281,7 @@ private ActivityLibraryBinding binding;
 
                             bookAdapter.setBooks(books);
 
-                            int totalBooks = books == null ? 0 : books.size();
-
-                            binding.txtBookCount.setText(
-                                    totalBooks + " cuốn sách"
-                            );
+                            updateBookCount();
 
                         } else {
                             Toast.makeText(

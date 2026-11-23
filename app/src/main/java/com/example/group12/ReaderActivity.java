@@ -6,6 +6,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
+import com.example.group12.api.ApiClient;
+import com.example.group12.model.BookChaptersResponse;
+import com.example.group12.model.ChapterContentResponse;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.group12.databinding.ActivityReaderBinding;
@@ -15,11 +26,28 @@ public class ReaderActivity extends AppCompatActivity {
     private ActivityReaderBinding binding;
     private final String selectedText = "Có những bình yên chỉ tìm thấy khi ta thôi vội vã.";
 
+    // Thông tin chương đang đọc
+    private int currentBookId = -1;
+    private int currentChapterNumber = 1;
+    private int totalChapters = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityReaderBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Nhận bookId được truyền từ LibraryActivity
+        int bookId = getIntent().getIntExtra("bookId", -1);
+
+        if (bookId != -1) {
+            currentBookId = bookId;
+            loadBookContent(bookId);
+        } else {
+            Toast.makeText(this,
+                    "Không tìm thấy thông tin sách!",
+                    Toast.LENGTH_SHORT).show();
+        }
 
         // Khởi tạo giao diện đọc mặc định (Bảo vệ mắt - Sepia)
         applyTheme("sepia");
@@ -78,14 +106,15 @@ public class ReaderActivity extends AppCompatActivity {
             Toast.makeText(this, "Đã đánh dấu đoạn văn bản!", Toast.LENGTH_SHORT).show()
         );
 
-        // Chuyển trang
-        binding.btnPrevPage.setOnClickListener(v -> 
-            Toast.makeText(this, "Trang trước", Toast.LENGTH_SHORT).show()
-        );
+        // Chuyển chương trước
+        binding.btnPrevPage.setOnClickListener(v -> {
+            changeChapter(-1);
+        });
 
-        binding.btnNextPage.setOnClickListener(v -> 
-            Toast.makeText(this, "Trang tiếp theo", Toast.LENGTH_SHORT).show()
-        );
+// Chuyển chương tiếp theo
+        binding.btnNextPage.setOnClickListener(v -> {
+            changeChapter(1);
+        });
 
         // Chuyển chế độ đọc / theme
         binding.themeLight.setOnClickListener(v -> {
@@ -160,5 +189,155 @@ public class ReaderActivity extends AppCompatActivity {
                 binding.checkSystem.setVisibility(View.VISIBLE);
                 break;
         }
+    }
+
+    private void loadBookContent(int bookId) {
+
+        ApiClient.getApiService().getBookChapters(bookId)
+                .enqueue(new Callback<BookChaptersResponse>() {
+                    @Override
+                    public void onResponse(
+                            Call<BookChaptersResponse> call,
+                            Response<BookChaptersResponse> response) {
+
+                        if (response.isSuccessful()
+                                && response.body() != null
+                                && response.body().isSuccess()) {
+
+                            BookChaptersResponse.Data data =
+                                    response.body().getData();
+
+                            if (data == null || data.getChapters() == null
+                                    || data.getChapters().isEmpty()) {
+                                Toast.makeText(ReaderActivity.this,
+                                        "Sách chưa có chương nào!",
+                                        Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+
+                            String bookTitle = data.getBook().getTitle();
+
+                            // Hiển thị tên sách
+                            binding.txtBookName.setText(bookTitle);
+                            binding.txtBookTitle.setText(bookTitle);
+
+                            // Lưu tổng số chương
+                            totalChapters = data.getTotalChapters();
+
+                            // Lấy chương đầu tiên
+                            currentChapterNumber = data.getChapters()
+                                    .get(0).getChapterNumber();
+
+                            loadChapterContent(bookId, currentChapterNumber);
+
+                        } else {
+                            Toast.makeText(ReaderActivity.this,
+                                    "Không thể tải danh sách chương!",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(
+                            Call<BookChaptersResponse> call,
+                            Throwable t) {
+
+                        Toast.makeText(ReaderActivity.this,
+                                "Lỗi kết nối: " + t.getMessage(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    private void loadChapterContent(int bookId, int chapterNumber) {
+
+        ApiClient.getApiService()
+                .getChapterContent(bookId, chapterNumber)
+                .enqueue(new Callback<ChapterContentResponse>() {
+
+                    @Override
+                    public void onResponse(
+                            Call<ChapterContentResponse> call,
+                            Response<ChapterContentResponse> response) {
+
+                        if (response.isSuccessful()
+                                && response.body() != null
+                                && response.body().isSuccess()) {
+
+                            ChapterContentResponse.Data data =
+                                    response.body().getData();
+
+                            if (data == null) return;
+
+                            // Cập nhật chương hiện tại
+                            currentChapterNumber = data.getChapterNumber();
+
+                            binding.txtChapterNumber.setText(
+                                    "Chương " + currentChapterNumber
+                            );
+
+                            String html =
+                                    "<html><head><meta charset='UTF-8'>" +
+                                            "<meta name='viewport' content='width=device-width, initial-scale=1'>" +
+                                            "<style>" +
+                                            "body { font-family: serif; font-size: 18px; " +
+                                            "line-height: 1.8; color: #374151; " +
+                                            "white-space: pre-wrap; margin: 0; }" +
+                                            "</style></head><body>" +
+                                            data.getContent() +
+                                            "</body></html>";
+
+                            binding.webViewChapter.setWebViewClient(
+                                    new WebViewClient()
+                            );
+
+                            binding.webViewChapter.loadDataWithBaseURL(
+                                    null,
+                                    html,
+                                    "text/html",
+                                    "UTF-8",
+                                    null
+                            );
+
+                        } else {
+                            Toast.makeText(ReaderActivity.this,
+                                    "Không thể tải nội dung chương!",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(
+                            Call<ChapterContentResponse> call,
+                            Throwable t) {
+
+                        Toast.makeText(ReaderActivity.this,
+                                "Lỗi tải nội dung: " + t.getMessage(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    private void changeChapter(int direction) {
+
+        int nextChapter = currentChapterNumber + direction;
+
+        // Kiểm tra giới hạn chương
+        if (nextChapter < 1) {
+            Toast.makeText(this,
+                    "Đây là chương đầu tiên!",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (nextChapter > totalChapters) {
+            Toast.makeText(this,
+                    "Đây là chương cuối cùng!",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Tải nội dung chương mới
+        loadChapterContent(currentBookId, nextChapter);
     }
 }

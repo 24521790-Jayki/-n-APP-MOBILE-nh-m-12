@@ -7,19 +7,33 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
     private static final String BASE_URL =
-            "http://10.0.3.2:3000/api/";
+            "http://103.195.239.204/api/";
 
     private static Retrofit retrofit;
+    private static ApiService apiService;
 
     public static Retrofit getClient() {
 
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(
+                            GsonConverterFactory.create()
+                    )
                     .build();
         }
 
         return retrofit;
     }
+
+    public static ApiService getApiService() {
+
+        if (apiService == null) {
+            apiService = getClient()
+                    .create(ApiService.class);
+        }
+
+        return apiService;
+    }
 }
+
