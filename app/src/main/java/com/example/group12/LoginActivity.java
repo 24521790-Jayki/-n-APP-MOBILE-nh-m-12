@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.util.Patterns;
 import android.widget.Toast;
 
@@ -191,6 +192,8 @@ private ActivityLoginBinding binding;
                 if (response.isSuccessful() && response.body() != null) {
 
                     LoginResponse result = response.body();
+
+                    Log.d("TEST_API", "Đăng nhập thành công! Token: " + result.getToken());
 
                     if (result.getToken() != null && result.getUser() != null) {
 

@@ -58,7 +58,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Sách đã tải lên
         binding.cardUploadedBooks.setOnClickListener(v -> {
-            Intent intent = new Intent(ProfileActivity.this, UploadBookActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, MyUploadedBooksActivity.class);
             startActivity(intent);
         });
 

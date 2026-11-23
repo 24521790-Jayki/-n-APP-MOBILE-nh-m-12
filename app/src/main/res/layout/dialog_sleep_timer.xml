@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:ignore="HardcodedText,SmallSp" xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hẹn giờ tắt Sách nói"
+        android:textColor="#111827"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Chọn thời gian dừng phát âm thanh tự động"
+        android:textColor="#6B7280"
+        android:textSize="13sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
+        android:background="#E5E7EB" />
+
+    <!-- Option 1: Không hẹn giờ -->
+    <TextView
+        android:id="@+id/timerOff"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:paddingVertical="12dp"
+        android:text="Tắt hẹn giờ"
+        android:textColor="#2563EB"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F3F4F6" />
+
+    <!-- Option 2: 15 phút -->
+    <TextView
+        android:id="@+id/timer15"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:paddingVertical="12dp"
+        android:text="Sau 15 phút"
+        android:textColor="#1F2937"
+        android:textSize="14sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F3F4F6" />
+
+    <!-- Option 3: 30 phút -->
+    <TextView
+        android:id="@+id/timer30"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:paddingVertical="12dp"
+        android:text="Sau 30 phút"
+        android:textColor="#1F2937"
+        android:textSize="14sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F3F4F6" />
+
+    <!-- Option 4: 45 phút -->
+    <TextView
+        android:id="@+id/timer45"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:paddingVertical="12dp"
+        android:text="Sau 45 phút"
+        android:textColor="#1F2937"
+        android:textSize="14sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F3F4F6" />
+
+    <!-- Option 5: 60 phút -->
+    <TextView
+        android:id="@+id/timer60"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:paddingVertical="12dp"
+        android:text="Sau 60 phút"
+        android:textColor="#1F2937"
+        android:textSize="14sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#F3F4F6" />
+
+    <!-- Option 6: Hết chương hiện tại -->
+    <TextView
+        android:id="@+id/timerEndChapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:paddingVertical="12dp"
+        android:text="Hết chương hiện tại"
+        android:textColor="#1F2937"
+        android:textSize="14sp" />
+
+</LinearLayout>
