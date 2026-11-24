@@ -50,6 +50,14 @@ private ActivityLoginBinding binding;
 
         sessionManager = new SessionManager(this);
 
+        // Điền sẵn thông tin đăng nhập mẫu
+        if (binding.edtUsername.getText() == null || binding.edtUsername.getText().toString().isEmpty()) {
+            binding.edtUsername.setText("an@example.com");
+        }
+        if (binding.edtPassword.getText() == null || binding.edtPassword.getText().toString().isEmpty()) {
+            binding.edtPassword.setText("User12345");
+        }
+
         // Khởi tạo Cloudflare Turnstile Captcha
         TurnstileHelper.setupTurnstile(
                 binding.wvTurnstile,

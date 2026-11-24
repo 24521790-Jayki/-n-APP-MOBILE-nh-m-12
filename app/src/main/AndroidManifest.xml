@@ -2,6 +2,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+    </queries>
 
     <application
         android:usesCleartextTraffic="true"
@@ -69,6 +78,16 @@
         <!-- Modal Dialog Activities -->
         <activity android:name=".LibrarySettingsActivity" android:exported="false" android:theme="@style/Theme.GROUP12.Dialog" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".LibrarySortActivity" android:exported="false" android:theme="@style/Theme.GROUP12.Dialog" android:windowSoftInputMode="adjustResize" />
+
+        <!-- TTS Media Session Service -->
+        <service
+            android:name=".service.TtsMediaSessionService"
+            android:exported="true"
+            android:foregroundServiceType="mediaPlayback">
+            <intent-filter>
+                <action android:name="androidx.media3.session.MediaSessionService" />
+            </intent-filter>
+        </service>
 
     </application>
 

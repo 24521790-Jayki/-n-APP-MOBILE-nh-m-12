@@ -8,190 +8,6 @@
     tools:ignore="HardcodedText,ContentDescription,SmallSp,UseCompoundDrawables,DisableBaselineAlignment"
     tools:context=".MainActivity">
 
-    <!-- TẦNG 1 - TOP HEADER CỐ ĐỊNH Ở ĐỈNH -->
-    <LinearLayout
-        android:id="@+id/topHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:background="#F8FAFC"
-        android:elevation="2dp"
-        android:orientation="vertical"
-        android:paddingStart="16dp"
-        android:paddingTop="32dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="8dp">
-
-        <!-- Hàng 1: Tiêu đề & Nút công cụ -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Thư viện sách"
-                android:textColor="#111827"
-                android:textSize="22sp"
-                android:textStyle="bold" />
-
-            <ImageButton
-                android:id="@+id/btnFilter"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/bg_home_indicator"
-                android:backgroundTint="#EFF6FF"
-                android:contentDescription="Filter"
-                android:padding="10dp"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_filter" />
-
-            <ImageButton
-                android:id="@+id/btnSort"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Sort"
-                android:padding="10dp"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/ic_sort" />
-        </LinearLayout>
-
-        <!-- Hàng 2: Filter Chips 2x2 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:orientation="vertical">
-
-            <!-- Row 1 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnChipAll"
-                    android:layout_width="0dp"
-                    android:layout_height="38dp"
-                    android:layout_marginEnd="6dp"
-                    android:layout_weight="1"
-                    android:text="Tất cả"
-                    android:textAllCaps="false"
-                    android:textColor="#FFFFFF"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    app:backgroundTint="#2563EB"
-                    app:cornerRadius="20dp"
-                    app:elevation="0dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnChipAudio"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="38dp"
-                    android:layout_marginStart="6dp"
-                    android:layout_weight="1"
-                    android:text="Sách nói (Audio)"
-                    android:textAllCaps="false"
-                    android:textColor="#64748B"
-                    android:textSize="13sp"
-                    app:cornerRadius="20dp"
-                    app:strokeColor="#E2E8F0"
-                    app:strokeWidth="1dp" />
-            </LinearLayout>
-
-            <!-- Row 2 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal"
-                android:weightSum="2">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnChipOffline"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="38dp"
-                    android:layout_marginEnd="6dp"
-                    android:layout_weight="1"
-                    android:text="Đã tải về (Offline)"
-                    android:textAllCaps="false"
-                    android:textColor="#64748B"
-                    android:textSize="13sp"
-                    app:cornerRadius="20dp"
-                    app:strokeColor="#E2E8F0"
-                    app:strokeWidth="1dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnChipCommunity"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="38dp"
-                    android:layout_marginStart="6dp"
-                    android:layout_weight="1"
-                    android:text="Sách cộng đồng đóng góp"
-                    android:textAllCaps="false"
-                    android:textColor="#64748B"
-                    android:textSize="12sp"
-                    app:cornerRadius="20dp"
-                    app:strokeColor="#E2E8F0"
-                    app:strokeWidth="1dp" />
-            </LinearLayout>
-        </LinearLayout>
-
-
-        <!-- O tim kiem sach -->
-        <EditText
-            android:id="@+id/etSearchBook"
-            android:layout_width="match_parent"
-            android:layout_height="46dp"
-            android:layout_marginTop="12dp"
-            android:backgroundTint="#CBD5E1"
-            android:drawableStart="@android:drawable/ic_menu_search"
-            android:drawablePadding="10dp"
-            android:hint="Tìm tên sách hoặc tác giả..."
-            android:inputType="text"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:singleLine="true"
-            android:textColor="#111827"
-            android:textColorHint="#94A3B8"
-            android:textSize="14sp" />
-
-        <!-- Hàng 3: Sub-header -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="24 cuốn sách"
-                android:id="@+id/txtBookCount"
-                android:textColor="#111827"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mới nhất"
-                android:textColor="#6B7280"
-                android:textSize="12sp" />
-        </LinearLayout>
-    </LinearLayout>
-
     <!-- TẦNG 2 - BOTTOM NAVIGATION BAR CỐ ĐỊNH Ở ĐÁY -->
     <LinearLayout
         android:id="@+id/bottomNavContainer"
@@ -242,34 +58,21 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <LinearLayout
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="Library"
+                    android:src="@drawable/ic_library"
+                    app:tint="#2563EB" />
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_home_indicator"
-                    android:backgroundTint="#EFF6FF"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingStart="12dp"
-                    android:paddingTop="6dp"
-                    android:paddingEnd="12dp"
-                    android:paddingBottom="6dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:contentDescription="Library"
-                        android:src="@drawable/ic_library"
-                        app:tint="#2563EB" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:text="Tủ sách"
-                        android:textColor="#2563EB"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                    android:layout_marginStart="6dp"
+                    android:text="Tủ sách"
+                    android:textColor="#2563EB"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <!-- Item 3: Cá nhân -->
@@ -285,7 +88,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:contentDescription="Profile"
-                    android:src="@drawable/ic_profile"
+                    android:src="@drawable/ic_person"
                     app:tint="#64748B" />
 
                 <TextView
@@ -307,62 +110,247 @@
             android:background="#111827" />
     </LinearLayout>
 
-
-    <!-- TẦNG 4 - DANH SÁCH SÁCH ĐỘNG TỪ BACKEND -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerBooks"
+    <!-- TẦNG NỘI DUNG VỚI COORDINATOR LAYOUT: TỰ ĐỘNG ẨN HEADER KHI CUỘN -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/topHeader"
-        android:layout_above="@id/bottomNavContainer"
-        android:clipToPadding="false"
-        android:paddingStart="10dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="10dp"
-        android:paddingBottom="70dp"
-        android:scrollbars="vertical" />
+        android:layout_above="@id/bottomNavContainer">
 
+        <!-- APPBAR LAYOUT: CHỨA HEADER TỰ ẨN KHI VUỐT -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#F8FAFC"
+            app:elevation="0dp">
 
-    <!-- NÚT CUỘN LÊN ĐẦU (^) Ở GÓC DƯỚI BÊN TRÁI -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnScrollTop"
-        android:layout_width="44dp"
-        android:layout_height="44dp"
-        android:layout_above="@id/bottomNavContainer"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="12dp"
-        android:elevation="32dp"
-        android:translationZ="32dp"
-        android:insetTop="0dp"
-        android:insetBottom="0dp"
-        android:padding="0dp"
-        app:backgroundTint="#2563EB"
-        app:cornerRadius="22dp"
-        app:elevation="32dp"
-        app:icon="@drawable/ic_arrow_up"
-        app:iconGravity="textStart"
-        app:iconPadding="0dp"
-        app:iconTint="#FFFFFF" />
+            <LinearLayout
+                android:id="@+id/topHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#F8FAFC"
+                android:orientation="vertical"
+                android:paddingStart="16dp"
+                android:paddingTop="20dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="6dp"
+                app:layout_scrollFlags="scroll|enterAlways|snap">
 
-    <!-- TẦNG 3 - NÚT "ĐĂNG TẢI SÁCH (+)" NỔI CỐ ĐỊNH TRÊN CÙNG -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnUploadBook"
-        android:layout_width="wrap_content"
-        android:layout_height="44dp"
-        android:layout_above="@id/bottomNavContainer"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="12dp"
-        android:elevation="32dp"
-        android:translationZ="32dp"
-        android:text="Đăng tải sách (+)"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        android:textSize="13sp"
-        android:textStyle="bold"
-        app:backgroundTint="#2563EB"
-        app:cornerRadius="22dp"
-        app:elevation="32dp" />
+                <!-- Hàng 1: Tiêu đề & Nút công cụ -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Thư viện sách"
+                        android:textColor="#111827"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <ImageButton
+                        android:id="@+id/btnFilter"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:background="@drawable/bg_home_indicator"
+                        android:backgroundTint="#EFF6FF"
+                        android:contentDescription="Filter"
+                        android:padding="9dp"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_filter" />
+
+                    <ImageButton
+                        android:id="@+id/btnSort"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:layout_marginStart="8dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Sort"
+                        android:padding="9dp"
+                        android:scaleType="centerInside"
+                        app:srcCompat="@drawable/ic_sort" />
+                </LinearLayout>
+
+                <!-- Hàng 2: Filter Chips dạng cuộn ngang nhỏ gọn tiết kiệm chiều cao -->
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:scrollbars="none">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnChipAll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:layout_marginEnd="6dp"
+                            android:minHeight="36dp"
+                            android:paddingHorizontal="14dp"
+                            android:text="Tất cả"
+                            android:textAllCaps="false"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="#2563EB"
+                            app:cornerRadius="18dp"
+                            app:elevation="0dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnChipAudio"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:layout_marginEnd="6dp"
+                            android:minHeight="36dp"
+                            android:paddingHorizontal="14dp"
+                            android:text="Sách nói (Audio)"
+                            android:textAllCaps="false"
+                            android:textColor="#64748B"
+                            android:textSize="12sp"
+                            app:cornerRadius="18dp"
+                            app:strokeColor="#CBD5E1"
+                            app:strokeWidth="1dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnChipOffline"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:layout_marginEnd="6dp"
+                            android:minHeight="36dp"
+                            android:paddingHorizontal="14dp"
+                            android:text="Đã tải về (Offline)"
+                            android:textAllCaps="false"
+                            android:textColor="#64748B"
+                            android:textSize="12sp"
+                            app:cornerRadius="18dp"
+                            app:strokeColor="#CBD5E1"
+                            app:strokeWidth="1dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnChipCommunity"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:minHeight="36dp"
+                            android:paddingHorizontal="14dp"
+                            android:text="Sách cộng đồng"
+                            android:textAllCaps="false"
+                            android:textColor="#64748B"
+                            android:textSize="12sp"
+                            app:cornerRadius="18dp"
+                            app:strokeColor="#CBD5E1"
+                            app:strokeWidth="1dp" />
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+                <!-- Ô tìm kiếm sách -->
+                <EditText
+                    android:id="@+id/etSearchBook"
+                    android:layout_width="match_parent"
+                    android:layout_height="42dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_home_indicator"
+                    android:backgroundTint="#EFF6FF"
+                    android:drawableStart="@android:drawable/ic_menu_search"
+                    android:drawablePadding="10dp"
+                    android:hint="Tìm tên sách hoặc tác giả..."
+                    android:inputType="text"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:singleLine="true"
+                    android:textColor="#111827"
+                    android:textColorHint="#94A3B8"
+                    android:textSize="13sp" />
+
+                <!-- Hàng 3: Sub-header -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txtBookCount"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="24 cuốn sách"
+                        android:textColor="#111827"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtCurrentSort"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mới nhất"
+                        android:textColor="#6B7280"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- DANH SÁCH SÁCH: TỰ ĐỘNG MỞ RỘNG KHI HEADER CUỘN ẨN -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerBooks"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingStart="8dp"
+            android:paddingTop="6dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="70dp"
+            android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <!-- NÚT CUỘN LÊN ĐẦU (^) Ở GÓC DƯỚI BÊN TRÁI -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnScrollTop"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_gravity="bottom|start"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="16dp"
+            android:elevation="16dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:padding="0dp"
+            app:backgroundTint="#2563EB"
+            app:cornerRadius="22dp"
+            app:elevation="8dp"
+            app:icon="@drawable/ic_arrow_up"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconTint="#FFFFFF" />
+
+        <!-- NÚT "ĐĂNG TẢI SÁCH (+)" NỔI Ở GÓC DƯỚI BÊN PHẢI -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnUploadBook"
+            android:layout_width="wrap_content"
+            android:layout_height="44dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:elevation="16dp"
+            android:text="Đăng tải sách (+)"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            app:backgroundTint="#2563EB"
+            app:cornerRadius="22dp"
+            app:elevation="8dp" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </RelativeLayout>

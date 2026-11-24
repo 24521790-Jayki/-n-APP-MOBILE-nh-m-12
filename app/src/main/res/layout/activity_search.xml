@@ -54,21 +54,27 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp">
+                    android:paddingStart="12dp"
+                    android:paddingEnd="10dp">
 
                     <ImageView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
+                        android:id="@+id/btnSearchIcon"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
                         android:contentDescription="Search Icon"
+                        android:focusable="true"
+                        android:padding="3dp"
                         android:src="@drawable/ic_search"
-                        app:tint="#9CA3AF" />
+                        app:tint="#2563EB" />
 
                     <EditText
                         android:id="@+id/edtSearchKey"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="8dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
                         android:autofillHints="name"
                         android:background="@null"
                         android:hint="Nhập từ khóa..."
@@ -77,8 +83,38 @@
                         android:textColor="#111827"
                         android:textColorHint="#9CA3AF"
                         android:textSize="14sp" />
+
+                    <ImageView
+                        android:id="@+id/btnClearSearch"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        android:contentDescription="Clear Text"
+                        android:focusable="true"
+                        android:padding="4dp"
+                        android:src="@drawable/ic_close"
+                        android:visibility="gone"
+                        app:tint="#9CA3AF" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSubmitSearch"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                android:layout_marginStart="8dp"
+                android:minWidth="60dp"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:text="Tìm"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                app:backgroundTint="#2563EB"
+                app:cornerRadius="21dp"
+                app:elevation="0dp" />
         </LinearLayout>
 
         <!-- Hàng 2: Bộ lọc (Tìm theo) -->
@@ -211,96 +247,107 @@
             android:padding="16dp">
 
             <!-- Section 1: Lịch sử tìm kiếm -->
-            <RelativeLayout
+            <LinearLayout
+                android:id="@+id/layoutHistorySection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp">
+                android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:text="Lịch sử tìm kiếm"
-                    android:textColor="#111827"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:layout_marginBottom="8dp">
 
-                <TextView
-                    android:id="@+id/btnClearHistory"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:text="Lịch sử tìm kiếm"
+                        android:textColor="#111827"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/btnClearHistory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="?attr/selectableItemBackground"
+                        android:padding="4dp"
+                        android:text="Xóa"
+                        android:textColor="#9CA3AF"
+                        android:textSize="12sp" />
+                </RelativeLayout>
+
+                <!-- Item Lịch sử 1 -->
+                <LinearLayout
+                    android:id="@+id/itemHistory1"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
                     android:background="?attr/selectableItemBackground"
-                    android:padding="4dp"
-                    android:text="Xóa"
-                    android:textColor="#9CA3AF"
-                    android:textSize="12sp" />
-            </RelativeLayout>
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-            <!-- Item Lịch sử 1 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:contentDescription="History Clock"
+                        android:src="@drawable/ic_clock"
+                        app:tint="#9CA3AF" />
 
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:contentDescription="History Clock"
-                    android:src="@drawable/ic_clock"
-                    app:tint="#9CA3AF" />
+                    <TextView
+                        android:id="@+id/tvHistory1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:text="Thư viện nửa đêm"
+                        android:textColor="#374151"
+                        android:textSize="13sp" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_weight="1"
-                    android:text="Thư viện nửa đêm"
-                    android:textColor="#374151"
-                    android:textSize="13sp" />
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:contentDescription="Fill Search"
+                        android:src="@drawable/ic_arrow_north_east"
+                        app:tint="#9CA3AF" />
+                </LinearLayout>
 
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:contentDescription="Fill Search"
-                    android:src="@drawable/ic_arrow_north_east"
-                    app:tint="#9CA3AF" />
-            </LinearLayout>
+                <!-- Item Lịch sử 2 -->
+                <LinearLayout
+                    android:id="@+id/itemHistory2"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-            <!-- Item Lịch sử 2 -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:background="?attr/selectableItemBackground"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:contentDescription="History Clock"
+                        android:src="@drawable/ic_clock"
+                        app:tint="#9CA3AF" />
 
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:contentDescription="History Clock"
-                    android:src="@drawable/ic_clock"
-                    app:tint="#9CA3AF" />
+                    <TextView
+                        android:id="@+id/tvHistory2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:text="Sách tâm lý học"
+                        android:textColor="#374151"
+                        android:textSize="13sp" />
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_weight="1"
-                    android:text="Sách tâm lý học"
-                    android:textColor="#374151"
-                    android:textSize="13sp" />
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:contentDescription="Fill Search"
-                    android:src="@drawable/ic_arrow_north_east"
-                    app:tint="#9CA3AF" />
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:contentDescription="Fill Search"
+                        android:src="@drawable/ic_arrow_north_east"
+                        app:tint="#9CA3AF" />
+                </LinearLayout>
             </LinearLayout>
 
             <!-- Section 2: Tìm kiếm phổ biến (Trending) -->
@@ -320,6 +367,7 @@
                 app:singleLine="false">
 
                 <com.google.android.material.chip.Chip
+                    android:id="@+id/chipTrending1"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
                     android:layout_marginEnd="6dp"
@@ -333,6 +381,7 @@
                     app:chipStrokeWidth="0dp" />
 
                 <com.google.android.material.chip.Chip
+                    android:id="@+id/chipTrending2"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
                     android:layout_marginEnd="6dp"
@@ -346,6 +395,7 @@
                     app:chipStrokeWidth="0dp" />
 
                 <com.google.android.material.chip.Chip
+                    android:id="@+id/chipTrending3"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
                     android:layout_marginEnd="6dp"
@@ -359,6 +409,7 @@
                     app:chipStrokeWidth="0dp" />
 
                 <com.google.android.material.chip.Chip
+                    android:id="@+id/chipTrending4"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
                     android:layout_marginEnd="6dp"
@@ -372,6 +423,7 @@
                     app:chipStrokeWidth="0dp" />
 
                 <com.google.android.material.chip.Chip
+                    android:id="@+id/chipTrending5"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
                     android:layout_marginEnd="6dp"

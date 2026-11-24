@@ -19,9 +19,10 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://github.com/psiegman/mvn-repo/raw/master/releases") }
+        maven { url = uri("https://jitpack.io") }
     }
 }
 
 rootProject.name = "GROUP 12"
 include(":app")
- 

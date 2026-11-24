@@ -201,6 +201,7 @@
                     android:textStyle="bold" />
 
                 <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupSort"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:chipSpacing="8dp"
@@ -208,20 +209,27 @@
                     app:singleSelection="true">
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipSortRelevant"
                         android:layout_width="wrap_content"
                         android:layout_height="36dp"
                         android:checked="true"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:text="Liên quan nhất"
                         android:textColor="#2563EB"
                         android:textSize="12sp"
+                        android:textStyle="bold"
                         app:chipBackgroundColor="#DBEAFE"
                         app:chipCornerRadius="18dp"
                         app:chipIconEnabled="false"
                         app:chipStrokeWidth="0dp" />
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipSortUpdated"
                         android:layout_width="wrap_content"
                         android:layout_height="36dp"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:text="Mới cập nhật"
                         android:textColor="#4B5563"
                         android:textSize="12sp"
@@ -232,8 +240,11 @@
                         app:chipStrokeWidth="1dp" />
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipSortRating"
                         android:layout_width="wrap_content"
                         android:layout_height="36dp"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:text="Đánh giá cao"
                         android:textColor="#4B5563"
                         android:textSize="12sp"
@@ -244,8 +255,11 @@
                         app:chipStrokeWidth="1dp" />
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipSortViews"
                         android:layout_width="wrap_content"
                         android:layout_height="36dp"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:text="Lượt xem nhiều"
                         android:textColor="#4B5563"
                         android:textSize="12sp"
@@ -274,6 +288,7 @@
                     android:textStyle="bold" />
 
                 <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupStatus"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:chipSpacing="8dp"
@@ -281,20 +296,27 @@
                     app:singleSelection="true">
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipStatusAll"
                         android:layout_width="wrap_content"
                         android:layout_height="36dp"
                         android:checked="true"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:text="Tất cả"
                         android:textColor="#2563EB"
                         android:textSize="12sp"
+                        android:textStyle="bold"
                         app:chipBackgroundColor="#DBEAFE"
                         app:chipCornerRadius="18dp"
                         app:chipIconEnabled="false"
                         app:chipStrokeWidth="0dp" />
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipStatusCompleted"
                         android:layout_width="wrap_content"
                         android:layout_height="36dp"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:text="Đã hoàn thành"
                         android:textColor="#4B5563"
                         android:textSize="12sp"
@@ -305,8 +327,11 @@
                         app:chipStrokeWidth="1dp" />
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipStatusOngoing"
                         android:layout_width="wrap_content"
                         android:layout_height="36dp"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:text="Đang ra"
                         android:textColor="#4B5563"
                         android:textSize="12sp"
@@ -341,6 +366,7 @@
                     android:weightSum="3">
 
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRating4"
                         style="@style/Widget.Material3.Button.OutlinedButton"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
@@ -357,6 +383,7 @@
                         app:strokeWidth="1dp" />
 
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRating3"
                         style="@style/Widget.Material3.Button.OutlinedButton"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
@@ -373,6 +400,7 @@
                         app:strokeWidth="1dp" />
 
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRatingAll"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
                         android:layout_marginStart="4dp"

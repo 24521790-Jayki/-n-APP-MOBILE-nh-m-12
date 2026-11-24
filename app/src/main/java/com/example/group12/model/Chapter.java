@@ -1,26 +1,34 @@
-
 package com.example.group12.model;
 
-public class Chapter {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-    private int chapterNumber;
+// Mo hinh du lieu cho mot chuong sach
+public class Chapter implements Serializable {
+    private int chapterIndex;
     private String title;
-    private int contentLength;
-    private String content;
+    private List<Paragraph> paragraphs;
 
-    public int getChapterNumber() {
-        return chapterNumber;
+    public Chapter() {
+        this.paragraphs = new ArrayList<>();
     }
 
-    public String getTitle() {
-        return title;
+    public Chapter(int chapterIndex, String title, List<Paragraph> paragraphs) {
+        this.chapterIndex = chapterIndex;
+        this.title = title;
+        this.paragraphs = paragraphs != null ? paragraphs : new ArrayList<>();
     }
 
-    public int getContentLength() {
-        return contentLength;
-    }
+    public int getChapterIndex() { return chapterIndex; }
+    public void setChapterIndex(int chapterIndex) { this.chapterIndex = chapterIndex; }
 
-    public String getContent() {
-        return content;
-    }
+    public int getChapterNumber() { return chapterIndex + 1; }
+    public void setChapterNumber(int chapterNumber) { this.chapterIndex = chapterNumber - 1; }
+
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+
+    public List<Paragraph> getParagraphs() { return paragraphs; }
+    public void setParagraphs(List<Paragraph> paragraphs) { this.paragraphs = paragraphs; }
 }

@@ -137,10 +137,11 @@
                 app:tint="#2563EB" />
 
             <TextView
+                android:id="@+id/txtPageProgress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="Trang 45/180 - 25%"
+                android:text="Doan 1/1 - 0%"
                 android:textColor="#111827"
                 android:textSize="11sp"
                 android:textStyle="bold" />
@@ -209,7 +210,14 @@
                 android:id="@+id/webViewChapter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:background="@android:color/transparent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewParagraphs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" />
 
             <!-- POPUP TOOLBAR CHỌN VĂN BẢN (Floating Selection Card) -->
             <com.google.android.material.card.MaterialCardView

@@ -231,6 +231,7 @@
                                         android:background="@drawable/bg_book_cover_midnight">
 
                                         <TextView
+                                            android:id="@+id/tvRec1Cover"
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
                                             android:gravity="center"
@@ -243,6 +244,7 @@
                                 </com.google.android.material.card.MaterialCardView>
 
                                 <TextView
+                                    android:id="@+id/tvRec1Title"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="6dp"
@@ -253,6 +255,7 @@
                                     android:textStyle="bold" />
 
                                 <TextView
+                                    android:id="@+id/tvRec1Author"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
@@ -282,6 +285,7 @@
                                         android:background="@drawable/bg_book_cover_sunset">
 
                                         <TextView
+                                            android:id="@+id/tvRec2Cover"
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
                                             android:gravity="center"
@@ -294,6 +298,7 @@
                                 </com.google.android.material.card.MaterialCardView>
 
                                 <TextView
+                                    android:id="@+id/tvRec2Title"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="6dp"
@@ -304,6 +309,7 @@
                                     android:textStyle="bold" />
 
                                 <TextView
+                                    android:id="@+id/tvRec2Author"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
@@ -332,6 +338,7 @@
                                         android:background="@drawable/bg_book_cover_gold">
 
                                         <TextView
+                                            android:id="@+id/tvRec3Cover"
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
                                             android:gravity="center"
@@ -344,6 +351,7 @@
                                 </com.google.android.material.card.MaterialCardView>
 
                                 <TextView
+                                    android:id="@+id/tvRec3Title"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="6dp"
@@ -354,6 +362,7 @@
                                     android:textStyle="bold" />
 
                                 <TextView
+                                    android:id="@+id/tvRec3Author"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
