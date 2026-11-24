@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@android:color/white">
+
+    <!-- Thanh keo -->
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:background="#CCCCCC" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cai dat giong doc"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#1F2937"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Toc do doc -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Toc do doc"
+        android:textSize="14sp"
+        android:textColor="#6B7280" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:id="@+id/txtSpeedValue"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="1.0x"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#2563EB" />
+
+        <SeekBar
+            android:id="@+id/seekBarSpeed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:max="15"
+            android:progress="5" />
+    </LinearLayout>
+
+    <!-- Chon giong doc -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Giong doc tieng Viet"
+        android:textSize="14sp"
+        android:textColor="#6B7280" />
+
+    <Spinner
+        android:id="@+id/spinnerVoice"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Chon Engine TTS -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Engine doc"
+        android:textSize="14sp"
+        android:textColor="#6B7280" />
+
+    <Spinner
+        android:id="@+id/spinnerEngine"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Nut mo cai dat TTS he thong -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnOpenTtsSettings"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Mo cai dat giong noi he thong"
+        android:textAllCaps="false"
+        style="@style/Widget.Material3.Button.OutlinedButton" />
+</LinearLayout>
