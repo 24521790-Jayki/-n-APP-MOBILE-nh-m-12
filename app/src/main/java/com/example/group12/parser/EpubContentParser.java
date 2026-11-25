@@ -13,18 +13,16 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-// Lop loi phan tich file epub - Single Source of Truth
+// Lop phan tich file epub - Single Source of Truth
 // Chuyen doi file .epub thanh BookContent -> List<Chapter> -> List<Paragraph> -> List<Sentence>
 public class EpubContentParser {
 
@@ -114,7 +112,6 @@ public class EpubContentParser {
     private static List<String> parseSpine(ZipFile zipFile) {
         List<String> hrefs = new ArrayList<>();
         try {
-            // Tim content.opf qua container.xml
             ZipEntry containerEntry = zipFile.getEntry("META-INF/container.xml");
             if (containerEntry == null) return hrefs;
 
@@ -176,13 +173,11 @@ public class EpubContentParser {
             Document opfDoc = Jsoup.parse(ois, "UTF-8", "");
             ois.close();
 
-            // Lay title
             Element titleEl = opfDoc.selectFirst("dc\\:title, title");
             if (titleEl != null) {
                 content.setTitle(titleEl.text());
             }
 
-            // Lay author
             Element authorEl = opfDoc.selectFirst("dc\\:creator, creator");
             if (authorEl != null) {
                 content.setAuthor(authorEl.text());
@@ -194,51 +189,82 @@ public class EpubContentParser {
 
     // Trich xuat tieu de chuong
     private static String extractChapterTitle(Document doc, int chapterIdx) {
-        // Uu tien the <title>
         Element titleEl = doc.selectFirst("title");
         if (titleEl != null && !titleEl.text().trim().isEmpty()) {
             return titleEl.text().trim();
         }
-        // Thu the <h1>, <h2>, <h3>
         for (String tag : new String[]{"h1", "h2", "h3"}) {
             Element h = doc.selectFirst(tag);
             if (h != null && !h.text().trim().isEmpty()) {
                 return h.text().trim();
             }
         }
-        return "Chuong " + (chapterIdx + 1);
+        return "Chương " + (chapterIdx + 1);
     }
 
     // Parse cac doan van (paragraph) tu body cua file XHTML
     private static List<Paragraph> parseParagraphs(Document doc, int chapterIdx) {
         List<Paragraph> paragraphs = new ArrayList<>();
 
-        // Bien doi cac the <br> thanh ky tu xuong dong
+        // Bien doi cac the <br> va <p> thanh xuong dong
         doc.select("br").after("\n");
+        doc.select("p, h1, h2, h3, h4, h5, h6, li, blockquote").after("\n");
 
-        Elements pElements = doc.select("p, h1, h2, h3, h4, h5, h6");
+        Elements pElements = doc.select("p, h1, h2, h3, h4, h5, h6, li, blockquote");
         if (pElements.isEmpty()) {
-            pElements = doc.select("body > div, body");
+            pElements = doc.select("body > div, div, body");
         }
 
         int paraIdx = 0;
         for (Element pEl : pElements) {
-            // Bo qua cac container div chua the p con de tranh bi gop text lien tuc
-            if (!pEl.select("p").isEmpty()) {
+            if (!pEl.select("p, h1, h2, h3, h4, h5, h6").isEmpty()) {
                 continue;
             }
 
             String text = pEl.text().trim();
             if (text.isEmpty()) continue;
 
-            String paragraphId = "chap_" + chapterIdx + "_para_" + paraIdx;
+            String[] lines = text.split("\\r?\\n+");
+            for (String line : lines) {
+                String trimmedLine = line.trim();
+                if (trimmedLine.isEmpty()) continue;
 
-            List<Sentence> sentences = splitSentences(text, chapterIdx, paraIdx);
+                String paragraphId = "chap_" + chapterIdx + "_para_" + paraIdx;
+                List<Sentence> sentences = splitSentences(trimmedLine, chapterIdx, paraIdx);
 
-            Paragraph para = new Paragraph(paragraphId, paraIdx, text, sentences);
-            paragraphs.add(para);
-            paraIdx++;
+                Paragraph para = new Paragraph(paragraphId, paraIdx, trimmedLine, sentences);
+                paragraphs.add(para);
+                paraIdx++;
+            }
         }
+
+        // Fallback neu file epub khong dung the <p> ma bo tat ca vao 1 div/body
+        if (paragraphs.size() <= 1) {
+            String fullText = doc.body() != null ? doc.body().text().trim() : doc.text().trim();
+            if (!fullText.isEmpty()) {
+                String[] sentencesRaw = fullText.split("(?<=[.!?…])\\s+|\\r?\\n+");
+                if (sentencesRaw.length > 1) {
+                    paragraphs.clear();
+                    paraIdx = 0;
+                    StringBuilder currentParaText = new StringBuilder();
+                    for (int i = 0; i < sentencesRaw.length; i++) {
+                        String sStr = sentencesRaw[i].trim();
+                        if (sStr.isEmpty()) continue;
+
+                        currentParaText.append(sStr).append(" ");
+                        if ((i + 1) % 3 == 0 || i == sentencesRaw.length - 1) {
+                            String paraTextStr = currentParaText.toString().trim();
+                            String paragraphId = "chap_" + chapterIdx + "_para_" + paraIdx;
+                            List<Sentence> sentences = splitSentences(paraTextStr, chapterIdx, paraIdx);
+                            paragraphs.add(new Paragraph(paragraphId, paraIdx, paraTextStr, sentences));
+                            paraIdx++;
+                            currentParaText.setLength(0);
+                        }
+                    }
+                }
+            }
+        }
+
         return paragraphs;
     }
 

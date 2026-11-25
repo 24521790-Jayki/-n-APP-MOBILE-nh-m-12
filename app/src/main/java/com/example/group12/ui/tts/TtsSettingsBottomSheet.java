@@ -41,6 +41,9 @@ public class TtsSettingsBottomSheet extends BottomSheetDialogFragment {
     private List<Voice> currentViVoices = new ArrayList<>();
     private List<TextToSpeech.EngineInfo> availableEngines = new ArrayList<>();
 
+    private boolean isInitialEngineSelection = true;
+    private boolean isInitialVoiceSelection = true;
+
     public void setTts(TextToSpeech tts) {
         this.tts = tts;
     }
@@ -123,15 +126,21 @@ public class TtsSettingsBottomSheet extends BottomSheetDialogFragment {
             // Cap nhat danh sach giong noi ban dau
             updateVoicesForCurrentEngine(spinnerVoice);
 
-            // Bat su kien chon Engine -> Cap nhat lai Giong doc theo Engine va notify listener
+            // Bat su kien chon Engine -> Ignored initially to prevent resetting reading position!
             spinnerEngine.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+                    if (isInitialEngineSelection) {
+                        isInitialEngineSelection = false;
+                        return;
+                    }
+
                     if (position >= 0 && position < availableEngines.size()) {
                         TextToSpeech.EngineInfo selectedEngine = availableEngines.get(position);
                         if (listener != null) {
                             listener.onEngineChanged(selectedEngine.name);
                         }
+                        isInitialVoiceSelection = true;
                         updateVoicesForCurrentEngine(spinnerVoice);
                     }
                 }
@@ -140,10 +149,15 @@ public class TtsSettingsBottomSheet extends BottomSheetDialogFragment {
                 public void onNothingSelected(AdapterView<?> parent) {}
             });
 
-            // Bat su kien chon Giong doc
+            // Bat su kien chon Giong doc -> Ignored initially to prevent resetting voice!
             spinnerVoice.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+                    if (isInitialVoiceSelection) {
+                        isInitialVoiceSelection = false;
+                        return;
+                    }
+
                     if (position >= 0 && position < currentViVoices.size()) {
                         Voice selectedVoice = currentViVoices.get(position);
                         if (listener != null) {
@@ -169,10 +183,21 @@ public class TtsSettingsBottomSheet extends BottomSheetDialogFragment {
 
         currentViVoices = TtsEngineHelper.getVietnameseVoices(tts);
         List<String> voiceDisplayNames = new ArrayList<>();
+        int selectedVoiceIdx = 0;
+
+        Voice activeVoice = null;
+        try {
+            activeVoice = tts.getVoice();
+        } catch (Exception ignored) {}
 
         for (int i = 0; i < currentViVoices.size(); i++) {
             Voice v = currentViVoices.get(i);
             String name = v.getName();
+
+            if (activeVoice != null && activeVoice.getName().equals(name)) {
+                selectedVoiceIdx = i;
+            }
+
             if (name.contains("vi-vn") || name.contains("vietnam")) {
                 voiceDisplayNames.add("Giong tieng Viet #" + (i + 1) + " (" + (v.isNetworkConnectionRequired() ? "Online" : "Offline") + ")");
             } else {
@@ -190,5 +215,6 @@ public class TtsSettingsBottomSheet extends BottomSheetDialogFragment {
                 voiceDisplayNames);
         voiceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerVoice.setAdapter(voiceAdapter);
+        spinnerVoice.setSelection(selectedVoiceIdx);
     }
 }

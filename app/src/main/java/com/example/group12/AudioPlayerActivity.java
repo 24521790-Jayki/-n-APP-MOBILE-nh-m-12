@@ -37,6 +37,8 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -55,6 +57,9 @@ public class AudioPlayerActivity extends AppCompatActivity
     private int totalChapters = 0;
     private BookContent bookContent;
     private boolean isFavorite = false;
+
+    // Multi-threading parsing executor
+    private final ExecutorService parseExecutor = Executors.newSingleThreadExecutor();
 
     // Sleep Timer
     private final Handler timerHandler = new Handler(Looper.getMainLooper());
@@ -99,21 +104,26 @@ public class AudioPlayerActivity extends AppCompatActivity
 
     private void loadBookData() {
         if (repository.isEpubDownloaded(currentBookId)) {
-            bookContent = repository.parseEpub(currentBookId);
-            if (bookContent != null && bookContent.getChapters() != null && !bookContent.getChapters().isEmpty()) {
-                totalChapters = bookContent.getTotalChapters();
-                binding.tvAudioBookTitle.setText(bookContent.getTitle());
-                binding.tvAudioBookAuthor.setText(bookContent.getAuthor());
+            parseExecutor.execute(() -> {
+                BookContent content = repository.parseEpub(currentBookId);
+                runOnUiThread(() -> {
+                    bookContent = content;
+                    if (bookContent != null && bookContent.getChapters() != null && !bookContent.getChapters().isEmpty()) {
+                        totalChapters = bookContent.getTotalChapters();
+                        binding.tvAudioBookTitle.setText(bookContent.getTitle());
+                        binding.tvAudioBookAuthor.setText(bookContent.getAuthor());
 
-                TtsMediaSessionService ttsService = TtsMediaSessionService.getInstance();
-                if (ttsService != null) {
-                    ttsService.setBookContent(bookContent);
-                }
+                        TtsMediaSessionService ttsService = TtsMediaSessionService.getInstance();
+                        if (ttsService != null) {
+                            ttsService.setBookContent(bookContent);
+                        }
 
-                updateChapterUi(currentChapterIndex);
-            } else {
-                fetchChaptersFromApi();
-            }
+                        updateChapterUi(currentChapterIndex);
+                    } else {
+                        fetchChaptersFromApi();
+                    }
+                });
+            });
         } else {
             fetchChaptersFromApi();
         }
@@ -143,7 +153,7 @@ public class AudioPlayerActivity extends AppCompatActivity
 
             @Override
             public void onFailure(Call<BookChaptersResponse> call, Throwable t) {
-                Toast.makeText(AudioPlayerActivity.this, "Loi tai danh sach chuong: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AudioPlayerActivity.this, "Lỗi tải danh sách chương: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -162,7 +172,7 @@ public class AudioPlayerActivity extends AppCompatActivity
             for (int i = 0; i < data.getChapters().size(); i++) {
                 Chapter chap = new Chapter();
                 chap.setChapterIndex(i);
-                chap.setTitle("Chuong " + (i + 1));
+                chap.setTitle("Chương " + (i + 1));
                 chapters.add(chap);
             }
         }
@@ -175,20 +185,24 @@ public class AudioPlayerActivity extends AppCompatActivity
             public void onResponse(Call<ChapterContentResponse> call, Response<ChapterContentResponse> response) {
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess() && response.body().getData() != null) {
                     ChapterContentResponse.Data data = response.body().getData();
-                    updateBookContentWithChapterData(data);
 
-                    TtsMediaSessionService ttsService = TtsMediaSessionService.getInstance();
-                    if (ttsService != null && bookContent != null) {
-                        ttsService.setBookContent(bookContent);
-                        ttsService.seekTo(currentChapterIndex, 0, 0);
-                        ttsService.startReading();
-                    }
+                    parseExecutor.execute(() -> {
+                        updateBookContentWithChapterData(data);
+                        runOnUiThread(() -> {
+                            TtsMediaSessionService ttsService = TtsMediaSessionService.getInstance();
+                            if (ttsService != null && bookContent != null) {
+                                ttsService.setBookContent(bookContent);
+                                ttsService.seekTo(currentChapterIndex, 0, 0);
+                                ttsService.startReading();
+                            }
+                        });
+                    });
                 }
             }
 
             @Override
             public void onFailure(Call<ChapterContentResponse> call, Throwable t) {
-                Log.e(TAG, "Loi tai noi dung audio chuong tu API: " + t.getMessage());
+                Log.e(TAG, "Lỗi tải nội dung audio chương từ API: " + t.getMessage());
             }
         });
     }
@@ -211,12 +225,12 @@ public class AudioPlayerActivity extends AppCompatActivity
         while (chapters.size() <= targetIdx) {
             Chapter newChap = new Chapter();
             newChap.setChapterIndex(chapters.size());
-            newChap.setTitle("Chuong " + (chapters.size() + 1));
+            newChap.setTitle("Chương " + (chapters.size() + 1));
             chapters.add(newChap);
         }
 
         Chapter targetChap = chapters.get(targetIdx);
-        targetChap.setTitle(data.getTitle() != null && !data.getTitle().isEmpty() ? data.getTitle() : "Chuong " + data.getChapterNumber());
+        targetChap.setTitle(data.getTitle() != null && !data.getTitle().isEmpty() ? data.getTitle() : "Chương " + data.getChapterNumber());
 
         List<Paragraph> paragraphs = new ArrayList<>();
         if (data.getContent() != null && !data.getContent().isEmpty()) {
@@ -273,60 +287,57 @@ public class AudioPlayerActivity extends AppCompatActivity
 
         if (paragraphs.isEmpty()) {
             List<Sentence> sentences = new ArrayList<>();
-            sentences.add(new Sentence(0, "Khong co noi dung chuong", 0, 20));
-            paragraphs.add(new Paragraph("chap_" + targetIdx + "_para_0", 0, "Khong co noi dung chuong", sentences));
+            sentences.add(new Sentence(0, "Không có nội dung chương", 0, 20));
+            paragraphs.add(new Paragraph("chap_" + targetIdx + "_para_0", 0, "Không có nội dung chương", sentences));
         }
 
         targetChap.setParagraphs(paragraphs);
     }
 
     private void setupListeners() {
-        // 1. Nut Quay lai
+        // 1. Nút Quay lại
         binding.btnBack.setOnClickListener(v -> finish());
 
-        // 2. Nut Yeu thich
+        // 2. Nút Yêu thích (Fix hiển thị icon yêu thích)
         binding.btnFavorite.setOnClickListener(v -> {
             isFavorite = !isFavorite;
             if (isFavorite) {
-                binding.btnFavorite.setImageResource(R.drawable.ic_favorite_border);
+                binding.btnFavorite.setImageResource(R.drawable.ic_favorite);
                 binding.btnFavorite.setImageTintList(ColorStateList.valueOf(Color.parseColor("#EF4444")));
-                Toast.makeText(this, "Da them vao danh sach yeu thich!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Đã thêm vào danh sách yêu thích!", Toast.LENGTH_SHORT).show();
             } else {
                 binding.btnFavorite.setImageResource(R.drawable.ic_favorite_border);
                 binding.btnFavorite.setImageTintList(ColorStateList.valueOf(Color.parseColor("#7C3AED")));
-                Toast.makeText(this, "Da xoa khoi danh sach yeu thich!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Đã xóa khỏi danh sách yêu thích!", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // 3. Nut Doi giong doc / Engine TTS
+        // 3. Nút Đổi giọng đọc / Engine TTS
         binding.btnVoiceSettings.setOnClickListener(v -> openTtsSettingsBottomSheet());
 
-        // 4. Nut Play/Pause
+        // 4. Nút Play/Pause
         binding.btnPlayPause.setOnClickListener(v -> togglePlayPause());
 
-        // 5. Nut Rewind 15s / Para truoc
-        binding.btnRewind15.setOnClickListener(v -> seekRelative(-1));
-
-        // 6. Nut Forward 15s / Para sau
-        binding.btnForward15.setOnClickListener(v -> seekRelative(1));
-
-        // 7. Nut Chuong truoc (Previous Chapter)
+        // 5. Nút Chương trước (Previous Chapter)
         binding.btnPrevious.setOnClickListener(v -> changeChapter(-1));
 
-        // 8. Nut Chuong tiep theo (Next Chapter)
+        // 6. Nút Chương tiếp theo (Next Chapter)
         binding.btnNext.setOnClickListener(v -> changeChapter(1));
 
-        // 9. Toc do 1.0x & 1.25x
+        // 7. Chọn tốc độ đọc (1x, 1.25x, 1.5x, 1.75x, 2x)
         binding.btnSpeed10.setOnClickListener(v -> setSpeed(1.0f));
         binding.btnSpeed125.setOnClickListener(v -> setSpeed(1.25f));
+        binding.btnSpeed150.setOnClickListener(v -> setSpeed(1.5f));
+        binding.btnSpeed175.setOnClickListener(v -> setSpeed(1.75f));
+        binding.btnSpeed20.setOnClickListener(v -> setSpeed(2.0f));
 
-        // 10. Nut Hen gio tat (Timer)
+        // 8. Nút Hẹn giờ tắt (Timer)
         binding.btnTimer.setOnClickListener(v -> showTimerMenu());
 
-        // 11. Nut Danh sach chuong (Playlist)
+        // 9. Nút Danh sách chương (Playlist)
         binding.btnPlaylist.setOnClickListener(v -> showChapterDialog());
 
-        // 12. Nut Chuyen sang doc sach chu
+        // 10. Nút Chuyển sang đọc sách chữ
         binding.btnSwitchToText.setOnClickListener(v -> {
             Intent intent = new Intent(AudioPlayerActivity.this, ReaderActivity.class);
             intent.putExtra("bookId", currentBookId);
@@ -341,6 +352,7 @@ public class AudioPlayerActivity extends AppCompatActivity
         TtsSettingsBottomSheet bottomSheet = new TtsSettingsBottomSheet();
         if (ttsService != null) {
             bottomSheet.setTts(ttsService.getTtsInstance());
+            bottomSheet.setCurrentSpeed(ttsService.getCurrentSpeed());
         }
         bottomSheet.setListener(this);
         bottomSheet.show(getSupportFragmentManager(), "TtsSettings");
@@ -352,6 +364,7 @@ public class AudioPlayerActivity extends AppCompatActivity
         if (ttsService != null) {
             ttsService.setSpeed(speed);
         }
+        updateSpeedUi(speed);
     }
 
     @Override
@@ -359,6 +372,14 @@ public class AudioPlayerActivity extends AppCompatActivity
         TtsMediaSessionService ttsService = TtsMediaSessionService.getInstance();
         if (ttsService != null) {
             ttsService.setVoice(voice);
+        }
+        if (voice != null) {
+            String voiceName = voice.getName();
+            if (voiceName.contains("vi-vn") || voiceName.contains("vietnam")) {
+                binding.tvVoiceName.setText("Giọng đọc: AI Tiếng Việt");
+            } else {
+                binding.tvVoiceName.setText("Giọng đọc: " + voiceName);
+            }
         }
     }
 
@@ -368,7 +389,7 @@ public class AudioPlayerActivity extends AppCompatActivity
         if (ttsService != null) {
             ttsService.setEngine(enginePackage);
         }
-        Toast.makeText(this, "Da chuyen Engine TTS: " + enginePackage, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Đã chuyển Engine TTS: " + enginePackage, Toast.LENGTH_SHORT).show();
     }
 
     private void setupTtsObservers() {
@@ -381,7 +402,7 @@ public class AudioPlayerActivity extends AppCompatActivity
                         totalParas = paras.size();
                     }
                 }
-                binding.tvAudioStatus.setText("🔊 Dang phat Doan " + (pos.paragraphIndex + 1) + " / " + totalParas);
+                binding.tvAudioStatus.setText("🔊 Đang phát Đoạn " + (pos.paragraphIndex + 1) + " / " + totalParas);
             }
         });
 
@@ -390,7 +411,7 @@ public class AudioPlayerActivity extends AppCompatActivity
                 binding.btnPlayPause.setImageResource(R.drawable.ic_pause);
             } else {
                 binding.btnPlayPause.setImageResource(R.drawable.ic_play);
-                binding.tvAudioStatus.setText("⏸ Tam dung phat giong doc AI");
+                binding.tvAudioStatus.setText("⏸ Tạm dừng phát giọng đọc AI");
             }
         });
     }
@@ -407,8 +428,8 @@ public class AudioPlayerActivity extends AppCompatActivity
             if (ttsService.isCurrentlyPlaying()) {
                 ttsService.pauseReading();
                 binding.btnPlayPause.setImageResource(R.drawable.ic_play);
-                binding.tvAudioStatus.setText("⏸ Tam dung phat giong doc AI");
-                Toast.makeText(this, "Da tam dung phat audio", Toast.LENGTH_SHORT).show();
+                binding.tvAudioStatus.setText("⏸ Tạm dừng phát giọng đọc AI");
+                Toast.makeText(this, "Đã tạm dừng phát audio", Toast.LENGTH_SHORT).show();
             } else {
                 if (bookContent != null) {
                     ttsService.setBookContent(bookContent);
@@ -416,35 +437,12 @@ public class AudioPlayerActivity extends AppCompatActivity
                     ttsService.startReading();
                     binding.btnPlayPause.setImageResource(R.drawable.ic_pause);
                 } else {
-                    Toast.makeText(this, "Dang tai noi dung chuong audio...", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Đang tải nội dung chương audio...", Toast.LENGTH_SHORT).show();
                     loadAndPrepareAudioFromApi(currentChapterIndex + 1);
                 }
             }
         } else {
-            Toast.makeText(this, "Dang khoi tao Media Service...", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void seekRelative(int deltaPara) {
-        TtsMediaSessionService ttsService = TtsMediaSessionService.getInstance();
-        if (ttsService == null) {
-            Intent intent = new Intent(this, TtsMediaSessionService.class);
-            startService(intent);
-            ttsService = TtsMediaSessionService.getInstance();
-        }
-
-        if (ttsService != null && bookContent != null && bookContent.getChapters() != null && currentChapterIndex < bookContent.getChapters().size()) {
-            List<Paragraph> paras = bookContent.getChapters().get(currentChapterIndex).getParagraphs();
-            int totalParas = (paras != null && !paras.isEmpty()) ? paras.size() : 1;
-            int currentPara = ttsService.getCurrentParaIdx();
-            int targetPara = Math.max(0, Math.min(totalParas - 1, currentPara + deltaPara));
-
-            ttsService.seekTo(currentChapterIndex, targetPara, 0);
-            ttsService.startReading();
-            binding.tvAudioStatus.setText("🔊 Dang phat Doan " + (targetPara + 1) + " / " + totalParas);
-        } else {
-            Toast.makeText(this, "Dang tai du lieu audio...", Toast.LENGTH_SHORT).show();
-            loadAndPrepareAudioFromApi(currentChapterIndex + 1);
+            Toast.makeText(this, "Đang khởi tạo Media Service...", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -452,12 +450,12 @@ public class AudioPlayerActivity extends AppCompatActivity
         int nextChapter = currentChapterIndex + direction;
 
         if (nextChapter < 0) {
-            Toast.makeText(this, "Day la chuong dau tien!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Đây là chương đầu tiên!", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (totalChapters > 0 && nextChapter >= totalChapters) {
-            Toast.makeText(this, "Day la chuong cuoi cung!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Đây là chương cuối cùng!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -473,25 +471,32 @@ public class AudioPlayerActivity extends AppCompatActivity
             ttsService.setSpeed(speed);
         }
 
-        if (speed == 1.0f) {
-            binding.btnSpeed10.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#7C3AED")));
-            binding.btnSpeed10.setTextColor(Color.WHITE);
-            binding.btnSpeed125.setBackgroundTintList(null);
-            binding.btnSpeed125.setTextColor(Color.parseColor("#7C3AED"));
-        } else {
-            binding.btnSpeed125.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#7C3AED")));
-            binding.btnSpeed125.setTextColor(Color.WHITE);
-            binding.btnSpeed10.setBackgroundTintList(null);
-            binding.btnSpeed10.setTextColor(Color.parseColor("#7C3AED"));
-        }
+        updateSpeedUi(speed);
+        Toast.makeText(this, "Đã đặt tốc độ " + speed + "x", Toast.LENGTH_SHORT).show();
+    }
 
-        Toast.makeText(this, "Da dat toc do " + speed + "x", Toast.LENGTH_SHORT).show();
+    private void updateSpeedUi(float speed) {
+        TextView[] speedButtons = new TextView[]{
+                binding.btnSpeed10, binding.btnSpeed125, binding.btnSpeed150, binding.btnSpeed175, binding.btnSpeed20
+        };
+        float[] speeds = new float[]{1.0f, 1.25f, 1.5f, 1.75f, 2.0f};
+
+        for (int i = 0; i < speedButtons.length; i++) {
+            if (Math.abs(speeds[i] - speed) < 0.05f) {
+                speedButtons[i].setBackgroundResource(R.drawable.bg_home_indicator);
+                speedButtons[i].setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#7C3AED")));
+                speedButtons[i].setTextColor(Color.WHITE);
+            } else {
+                speedButtons[i].setBackground(null);
+                speedButtons[i].setTextColor(Color.parseColor("#7C3AED"));
+            }
+        }
     }
 
     private void showTimerMenu() {
-        String[] options = {"Tat hen gio", "15 phut", "30 phut", "45 phut", "60 phut"};
+        String[] options = {"Tắt hẹn giờ", "15 phút", "30 phút", "45 phút", "60 phút"};
         new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("Hen gio tat")
+                .setTitle("Hẹn giờ tắt")
                 .setItems(options, (dialog, which) -> {
                     if (timerRunnable != null) {
                         timerHandler.removeCallbacks(timerRunnable);
@@ -499,7 +504,7 @@ public class AudioPlayerActivity extends AppCompatActivity
 
                     switch (which) {
                         case 0:
-                            Toast.makeText(this, "Da tat hen gio", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Đã tắt hẹn giờ", Toast.LENGTH_SHORT).show();
                             break;
                         case 1:
                             setSleepTimer(15);
@@ -525,11 +530,11 @@ public class AudioPlayerActivity extends AppCompatActivity
             if (ttsService != null) {
                 ttsService.pauseReading();
             }
-            Toast.makeText(AudioPlayerActivity.this, "Da den gio tat audio tu dong", Toast.LENGTH_LONG).show();
+            Toast.makeText(AudioPlayerActivity.this, "Đã đến giờ tắt audio tự động", Toast.LENGTH_LONG).show();
         };
 
         timerHandler.postDelayed(timerRunnable, millis);
-        Toast.makeText(this, "Da hen gio tat sau " + minutes + " phut", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Đã hẹn giờ tắt sau " + minutes + " phút", Toast.LENGTH_SHORT).show();
     }
 
     private void updateChapterUi(int chapterIdx) {
@@ -537,13 +542,13 @@ public class AudioPlayerActivity extends AppCompatActivity
 
         if (bookContent != null && bookContent.getChapters() != null && chapterIdx < bookContent.getChapters().size()) {
             Chapter chap = bookContent.getChapters().get(chapterIdx);
-            chapterTitleStr = "Chuong " + (chapterIdx + 1) + " - " + chap.getTitle();
+            chapterTitleStr = "Chương " + (chapterIdx + 1) + " - " + chap.getTitle();
         } else {
-            chapterTitleStr = "Chuong " + (chapterIdx + 1);
+            chapterTitleStr = "Chương " + (chapterIdx + 1);
         }
 
         binding.tvChapterTitle.setText(chapterTitleStr);
-        binding.tvAudioStatus.setText("🔊 Dang phat " + chapterTitleStr);
+        binding.tvAudioStatus.setText("🔊 Đang phát " + chapterTitleStr);
     }
 
     private void showChapterDialog() {
@@ -556,21 +561,21 @@ public class AudioPlayerActivity extends AppCompatActivity
         TextView txtBookSubtitle = view.findViewById(R.id.txtBookSubtitle);
 
         if (bookContent != null && bookContent.getChapters() != null && !bookContent.getChapters().isEmpty()) {
-            txtBookSubtitle.setText(bookContent.getTitle() + " • " + bookContent.getChapters().size() + " chuong");
+            txtBookSubtitle.setText(bookContent.getTitle() + " • " + bookContent.getChapters().size() + " chương");
             chapterContainer.removeAllViews();
 
             for (Chapter chapter : bookContent.getChapters()) {
                 addChapterItem(chapterContainer, chapter, sheetDialog);
             }
         } else {
-            txtBookSubtitle.setText("Dang tai danh sach chuong...");
+            txtBookSubtitle.setText("Đang tải danh sách chương...");
             ApiClient.getApiService().getBookChapters(currentBookId).enqueue(new Callback<BookChaptersResponse>() {
                 @Override
                 public void onResponse(Call<BookChaptersResponse> call, Response<BookChaptersResponse> response) {
                     if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                         BookChaptersResponse.Data data = response.body().getData();
                         if (data != null && data.getChapters() != null) {
-                            txtBookSubtitle.setText(data.getBook() != null ? data.getBook().getTitle() + " • " + data.getTotalChapters() + " chuong" : "Chuong");
+                            txtBookSubtitle.setText(data.getBook() != null ? data.getBook().getTitle() + " • " + data.getTotalChapters() + " chương" : "Chương");
                             chapterContainer.removeAllViews();
 
                             initBookContentFromApiList(data);
@@ -584,7 +589,7 @@ public class AudioPlayerActivity extends AppCompatActivity
 
                 @Override
                 public void onFailure(Call<BookChaptersResponse> call, Throwable t) {
-                    txtBookSubtitle.setText("Loi tai danh sach chuong");
+                    txtBookSubtitle.setText("Lỗi tải danh sách chương");
                 }
             });
         }
@@ -605,7 +610,7 @@ public class AudioPlayerActivity extends AppCompatActivity
 
         TextView titleView = new TextView(this);
         titleView.setLayoutParams(new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
-        titleView.setText("Chuong " + chapter.getChapterNumber() + ": " + chapter.getTitle());
+        titleView.setText("Chương " + chapter.getChapterNumber() + ": " + chapter.getTitle());
         titleView.setTextColor((chapter.getChapterNumber() - 1) == currentChapterIndex ? 0xFF7C3AED : 0xFF1F2937);
         titleView.setTextSize(14);
         titleView.setMaxLines(3);
@@ -638,5 +643,6 @@ public class AudioPlayerActivity extends AppCompatActivity
         if (timerRunnable != null) {
             timerHandler.removeCallbacks(timerRunnable);
         }
+        parseExecutor.shutdown();
     }
 }
