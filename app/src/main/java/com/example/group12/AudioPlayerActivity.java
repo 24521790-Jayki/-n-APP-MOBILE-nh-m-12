@@ -235,40 +235,41 @@ public class AudioPlayerActivity extends AppCompatActivity
         List<Paragraph> paragraphs = new ArrayList<>();
         if (data.getContent() != null && !data.getContent().isEmpty()) {
             Document doc = Jsoup.parse(data.getContent());
-            doc.select("br").after("\n");
-            Elements pElements = doc.select("p, h1, h2, h3, h4, h5, h6");
 
-            if (pElements.isEmpty()) {
-                String plainText = doc.text();
-                String[] lines = plainText.split("\\r?\\n+");
-                int paraIdx = 0;
-                for (String line : lines) {
-                    String trimmed = line.trim();
-                    if (trimmed.isEmpty()) continue;
+            for (Element br : doc.select("br")) {
+                br.replaceWith(new org.jsoup.nodes.TextNode("\n"));
+            }
+            for (Element inline : doc.select("span, i, b, em, strong, a, u")) {
+                inline.prepend(" ");
+                inline.append(" ");
+            }
 
-                    List<Sentence> sentences = new ArrayList<>();
-                    String[] rawSentences = trimmed.split("(?<=[.!?…])\\s+");
-                    int sentIdx = 0;
-                    int charStart = 0;
-                    for (String raw : rawSentences) {
-                        if (raw.trim().isEmpty()) continue;
-                        int charEnd = charStart + raw.length();
-                        sentences.add(new Sentence(sentIdx++, raw.trim(), charStart, charEnd));
-                        charStart = charEnd + 1;
-                    }
+            Elements blockElements = doc.select("p, h1, h2, h3, h4, h5, h6, li, blockquote, div");
+            if (blockElements.isEmpty()) {
+                blockElements = doc.select("body");
+            }
 
-                    paragraphs.add(new Paragraph("chap_" + targetIdx + "_para_" + paraIdx, paraIdx, trimmed, sentences));
-                    paraIdx++;
+            int paraIdx = 0;
+            for (Element el : blockElements) {
+                if (!el.select("p, h1, h2, h3, h4, h5, h6, li, blockquote").isEmpty() && el.tagName().equalsIgnoreCase("div")) {
+                    continue;
                 }
-            } else {
-                int paraIdx = 0;
-                for (Element pEl : pElements) {
-                    if (!pEl.select("p").isEmpty()) continue;
-                    String text = pEl.text().trim();
-                    if (text.isEmpty()) continue;
+
+                String html = el.html().replaceAll("(?i)&nbsp;", "\u00A0");
+                Document tempDoc = Jsoup.parse(html);
+                tempDoc.outputSettings().prettyPrint(false);
+
+                String text = tempDoc.text();
+                if (text == null || text.trim().isEmpty()) continue;
+
+                String[] lines = text.split("\\r?\\n+");
+                for (String line : lines) {
+                    String body = line.replaceAll("\\s+", " ").trim();
+                    if (body.isEmpty()) continue;
+                    String formattedLine = "    " + body;
 
                     List<Sentence> sentences = new ArrayList<>();
-                    String[] rawSentences = text.split("(?<=[.!?…])\\s+");
+                    String[] rawSentences = formattedLine.split("(?<=[.!?…])\\s+");
                     int sentIdx = 0;
                     int charStart = 0;
                     for (String raw : rawSentences) {
@@ -278,8 +279,7 @@ public class AudioPlayerActivity extends AppCompatActivity
                         charStart = charEnd + 1;
                     }
 
-                    Paragraph para = new Paragraph("chap_" + targetIdx + "_para_" + paraIdx, paraIdx, text, sentences);
-                    paragraphs.add(para);
+                    paragraphs.add(new Paragraph("chap_" + targetIdx + "_para_" + paraIdx, paraIdx, formattedLine, sentences));
                     paraIdx++;
                 }
             }

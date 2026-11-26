@@ -10,6 +10,8 @@ import com.example.group12.model.Sentence;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import java.io.File;
@@ -64,7 +66,7 @@ public class EpubContentParser {
                 String title = extractChapterTitle(doc, chapterIdx);
                 chapter.setTitle(title);
 
-                // Parse cac doan van tu body
+                // Parse cac doan van tu body (Bao toan dinh dang doan va thu le)
                 List<Paragraph> paragraphs = parseParagraphs(doc, chapterIdx);
                 chapter.setParagraphs(paragraphs);
 
@@ -205,67 +207,120 @@ public class EpubContentParser {
     // Parse cac doan van (paragraph) tu body cua file XHTML
     private static List<Paragraph> parseParagraphs(Document doc, int chapterIdx) {
         List<Paragraph> paragraphs = new ArrayList<>();
+        if (doc == null || doc.body() == null) return paragraphs;
 
-        // Bien doi cac the <br> va <p> thanh xuong dong
-        doc.select("br").after("\n");
-        doc.select("p, h1, h2, h3, h4, h5, h6, li, blockquote").after("\n");
+        Document cloneDoc = doc.clone();
 
-        Elements pElements = doc.select("p, h1, h2, h3, h4, h5, h6, li, blockquote");
-        if (pElements.isEmpty()) {
-            pElements = doc.select("body > div, div, body");
+        // 1. Thay the <br> thanh ky tu xuong dong \n
+        for (Element br : cloneDoc.select("br")) {
+            br.replaceWith(new TextNode("\n"));
+        }
+
+        // 2. Them khoang trang an toan quanh the inline de tranh dinh chu
+        for (Element inline : cloneDoc.select("span, i, b, em, strong, a, u")) {
+            inline.prepend(" ");
+            inline.append(" ");
+        }
+
+        Elements blockElements = cloneDoc.select("p, h1, h2, h3, h4, h5, h6, li, blockquote, div");
+        if (blockElements.isEmpty()) {
+            blockElements = cloneDoc.select("body");
         }
 
         int paraIdx = 0;
-        for (Element pEl : pElements) {
-            if (!pEl.select("p, h1, h2, h3, h4, h5, h6").isEmpty()) {
+        for (Element el : blockElements) {
+            if (el.tagName().equalsIgnoreCase("div") && !el.select("p, h1, h2, h3, h4, h5, h6, li, blockquote").isEmpty()) {
                 continue;
             }
 
-            String text = pEl.text().trim();
-            if (text.isEmpty()) continue;
+            String tagName = el.tagName().toLowerCase();
+            String type = "body";
+            if (tagName.startsWith("h")) {
+                type = "heading";
+            } else if (tagName.equals("blockquote") || el.attr("style").contains("text-align: center") || el.attr("align").equalsIgnoreCase("center")) {
+                type = "center";
+            }
+
+            String html = el.html().replaceAll("(?i)&nbsp;", "\u00A0");
+            Document tempDoc = Jsoup.parse(html);
+            tempDoc.outputSettings().prettyPrint(false);
+
+            String text = tempDoc.text();
+            if (text == null || text.trim().isEmpty()) continue;
 
             String[] lines = text.split("\\r?\\n+");
             for (String line : lines) {
-                String trimmedLine = line.trim();
-                if (trimmedLine.isEmpty()) continue;
+                String cleanText = line.replaceAll("[ \\t\\u00A0]+", " ").trim();
+                if (cleanText.isEmpty()) continue;
 
+                String formattedText = type.equals("body") ? "    " + cleanText : cleanText;
                 String paragraphId = "chap_" + chapterIdx + "_para_" + paraIdx;
-                List<Sentence> sentences = splitSentences(trimmedLine, chapterIdx, paraIdx);
+                List<Sentence> sentences = splitSentences(formattedText, chapterIdx, paraIdx);
 
-                Paragraph para = new Paragraph(paragraphId, paraIdx, trimmedLine, sentences);
+                Paragraph para = new Paragraph(paragraphId, paraIdx, formattedText, type, sentences);
                 paragraphs.add(para);
                 paraIdx++;
             }
         }
 
-        // Fallback neu file epub khong dung the <p> ma bo tat ca vao 1 div/body
-        if (paragraphs.size() <= 1) {
-            String fullText = doc.body() != null ? doc.body().text().trim() : doc.text().trim();
-            if (!fullText.isEmpty()) {
-                String[] sentencesRaw = fullText.split("(?<=[.!?…])\\s+|\\r?\\n+");
-                if (sentencesRaw.length > 1) {
-                    paragraphs.clear();
-                    paraIdx = 0;
-                    StringBuilder currentParaText = new StringBuilder();
-                    for (int i = 0; i < sentencesRaw.length; i++) {
-                        String sStr = sentencesRaw[i].trim();
-                        if (sStr.isEmpty()) continue;
+        // Fallback neu van chua co doan van nao hoac chi co 1 doan van do file epub bi loi the
+        if (paragraphs.isEmpty()) {
+            String fullText = getWholeTextFromElement(cloneDoc.body());
+            if (!fullText.trim().isEmpty()) {
+                String[] lines = fullText.split("\\r?\\n+");
+                for (String line : lines) {
+                    String cleanText = line.replaceAll("[ \\t\\u00A0]+", " ").trim();
+                    if (cleanText.isEmpty()) continue;
 
-                        currentParaText.append(sStr).append(" ");
-                        if ((i + 1) % 3 == 0 || i == sentencesRaw.length - 1) {
-                            String paraTextStr = currentParaText.toString().trim();
-                            String paragraphId = "chap_" + chapterIdx + "_para_" + paraIdx;
-                            List<Sentence> sentences = splitSentences(paraTextStr, chapterIdx, paraIdx);
-                            paragraphs.add(new Paragraph(paragraphId, paraIdx, paraTextStr, sentences));
-                            paraIdx++;
-                            currentParaText.setLength(0);
-                        }
-                    }
+                    String formattedText = "    " + cleanText;
+                    String paragraphId = "chap_" + chapterIdx + "_para_" + paraIdx;
+                    List<Sentence> sentences = splitSentences(formattedText, chapterIdx, paraIdx);
+
+                    Paragraph para = new Paragraph(paragraphId, paraIdx, formattedText, "body", sentences);
+                    paragraphs.add(para);
+                    paraIdx++;
                 }
             }
         }
 
         return paragraphs;
+    }
+
+    private static String getWholeTextFromElement(Node node) {
+        StringBuilder sb = new StringBuilder();
+        appendNodeText(node, sb);
+        return sb.toString();
+    }
+
+    private static void appendNodeText(Node node, StringBuilder sb) {
+        if (node instanceof TextNode) {
+            String text = ((TextNode) node).getWholeText();
+            sb.append(text);
+        } else if (node instanceof Element) {
+            Element element = (Element) node;
+            String tagName = element.tagName().toLowerCase();
+
+            if (tagName.equals("br")) {
+                sb.append("\n");
+                return;
+            }
+
+            boolean isBlock = element.isBlock() || tagName.equals("p") || tagName.equals("div")
+                    || tagName.startsWith("h") || tagName.equals("li") || tagName.equals("blockquote")
+                    || tagName.equals("tr");
+
+            if (isBlock && sb.length() > 0 && sb.charAt(sb.length() - 1) != '\n') {
+                sb.append("\n");
+            }
+
+            for (Node child : element.childNodes()) {
+                appendNodeText(child, sb);
+            }
+
+            if (isBlock && sb.length() > 0 && sb.charAt(sb.length() - 1) != '\n') {
+                sb.append("\n");
+            }
+        }
     }
 
     // Tach van ban thanh cac cau rieng le

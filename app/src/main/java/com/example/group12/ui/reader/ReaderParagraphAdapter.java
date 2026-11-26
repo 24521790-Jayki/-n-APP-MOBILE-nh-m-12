@@ -1,9 +1,12 @@
 package com.example.group12.ui.reader;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +23,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Adapter hien thi danh sach cac doan van (Paragraph) trong RecyclerView
-// Ho tro highlight cau dang duoc TTS doc
+// Ho tro highlight cau dang duoc TTS doc va tu dong thay doi Mau chu theo Theme (Light, Dark, Sepia)
 public class ReaderParagraphAdapter
         extends RecyclerView.Adapter<ReaderParagraphAdapter.ParagraphViewHolder> {
 
     private List<Paragraph> paragraphs = new ArrayList<>();
     private int highlightParaIdx = -1;
     private int highlightSentIdx = -1;
+
+    private int textColor = Color.parseColor("#1F2937");
+    private int highlightBgColor = Color.parseColor("#FDE68A");
 
     // Listener khi nguoi dung nhan vao doan van
     private OnParagraphClickListener clickListener;
@@ -37,6 +43,13 @@ public class ReaderParagraphAdapter
 
     public void setOnParagraphClickListener(OnParagraphClickListener listener) {
         this.clickListener = listener;
+    }
+
+    // Cap nhat theme mau chu & mau highlight
+    public void setTheme(int textColor, int highlightBgColor) {
+        this.textColor = textColor;
+        this.highlightBgColor = highlightBgColor;
+        notifyDataSetChanged();
     }
 
     // Cap nhat danh sach doan van
@@ -60,6 +73,10 @@ public class ReaderParagraphAdapter
         }
     }
 
+    private int dpToPx(View view, int dp) {
+        return (int) (dp * view.getContext().getResources().getDisplayMetrics().density);
+    }
+
     @NonNull
     @Override
     public ParagraphViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -72,6 +89,26 @@ public class ReaderParagraphAdapter
     public void onBindViewHolder(@NonNull ParagraphViewHolder holder, int position) {
         Paragraph para = paragraphs.get(position);
 
+        holder.txtParagraph.setTextColor(textColor);
+
+        String type = para.getParagraphType();
+        if ("heading".equals(type)) {
+            holder.txtParagraph.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+            holder.txtParagraph.setTypeface(null, Typeface.BOLD);
+            holder.txtParagraph.setGravity(Gravity.CENTER);
+            holder.txtParagraph.setPadding(dpToPx(holder.itemView, 16), dpToPx(holder.itemView, 16), dpToPx(holder.itemView, 16), dpToPx(holder.itemView, 16));
+        } else if ("center".equals(type)) {
+            holder.txtParagraph.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+            holder.txtParagraph.setTypeface(null, Typeface.ITALIC);
+            holder.txtParagraph.setGravity(Gravity.CENTER);
+            holder.txtParagraph.setPadding(dpToPx(holder.itemView, 20), dpToPx(holder.itemView, 8), dpToPx(holder.itemView, 20), dpToPx(holder.itemView, 8));
+        } else {
+            holder.txtParagraph.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+            holder.txtParagraph.setTypeface(null, Typeface.NORMAL);
+            holder.txtParagraph.setGravity(Gravity.START | Gravity.TOP);
+            holder.txtParagraph.setPadding(dpToPx(holder.itemView, 20), dpToPx(holder.itemView, 6), dpToPx(holder.itemView, 20), dpToPx(holder.itemView, 10));
+        }
+
         if (position == highlightParaIdx && highlightSentIdx >= 0) {
             // Highlight cau dang doc
             SpannableString spannable = new SpannableString(para.getFullText());
@@ -83,7 +120,7 @@ public class ReaderParagraphAdapter
                 int end = Math.min(para.getFullText().length(), sent.getCharEnd());
 
                 spannable.setSpan(
-                        new BackgroundColorSpan(Color.parseColor("#FDE68A")),
+                        new BackgroundColorSpan(highlightBgColor),
                         start, end,
                         Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }

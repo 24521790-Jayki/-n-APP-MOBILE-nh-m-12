@@ -56,6 +56,7 @@ public class ReaderActivity extends AppCompatActivity
     // Trang thai hien thi Header & Footer va SeekBar
     private boolean isHeaderFooterVisible = true;
     private boolean isUserScrollingSeekBar = false;
+    private String currentThemeKey = "sepia";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +78,7 @@ public class ReaderActivity extends AppCompatActivity
             currentBookId = savedInstanceState.getInt("saved_book_id", -1);
             currentChapterIndex = savedInstanceState.getInt("saved_chapter_idx", 0);
             totalChapters = savedInstanceState.getInt("saved_total_chapters", 0);
+            currentThemeKey = savedInstanceState.getString("saved_theme_key", "sepia");
         } else if (bookId != -1) {
             currentBookId = bookId;
             currentChapterIndex = Math.max(0, targetChapter - 1);
@@ -95,8 +97,8 @@ public class ReaderActivity extends AppCompatActivity
         // Quan sat LiveData vi tri doc va trang thai phat tu TTS Service
         setupTtsObservers();
 
-        // Khoi tao giao diện doc mac dinh (Sepia)
-        applyTheme("sepia");
+        // Khoi tao giao diện doc mac dinh
+        applyTheme(currentThemeKey);
 
         // An cac cua so noi mac dinh
         binding.cardFloatingToolbar.setVisibility(View.GONE);
@@ -206,6 +208,8 @@ public class ReaderActivity extends AppCompatActivity
         binding.seekBarProgress.setMax(100);
         binding.seekBarProgress.setProgress(0);
         updateProgressText(0, totalParas);
+
+        applyTheme(currentThemeKey);
 
         // Cuon len dau trang khi sang chuong moi
         binding.nestedScrollView.post(() -> binding.nestedScrollView.scrollTo(0, 0));
@@ -331,11 +335,51 @@ public class ReaderActivity extends AppCompatActivity
 
         // Nut Aa - Mo bang cai dat giao dien
         binding.btnAa.setOnClickListener(v -> {
-            int vis = binding.cardThemeSettings.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE;
-            binding.cardThemeSettings.setVisibility(vis);
+            showHeaderAndFooter();
+            if (binding.cardThemeSettings.getVisibility() == View.VISIBLE) {
+                binding.cardThemeSettings.setVisibility(View.GONE);
+            } else {
+                binding.cardThemeSettings.setVisibility(View.VISIBLE);
+                binding.cardThemeSettings.bringToFront();
+            }
         });
 
+        binding.cardThemeSettings.setOnClickListener(v -> {});
+        binding.cardFloatingToolbar.setOnClickListener(v -> {});
+
         binding.btnCloseSettings.setOnClickListener(v -> binding.cardThemeSettings.setVisibility(View.GONE));
+
+        View.OnClickListener lightListener = v -> {
+            applyTheme("light");
+            binding.cardThemeSettings.setVisibility(View.GONE);
+            Toast.makeText(this, "Chuyển sang giao diện Sáng", Toast.LENGTH_SHORT).show();
+        };
+        binding.themeLight.setOnClickListener(lightListener);
+        binding.cardLight.setOnClickListener(lightListener);
+
+        View.OnClickListener darkListener = v -> {
+            applyTheme("dark");
+            binding.cardThemeSettings.setVisibility(View.GONE);
+            Toast.makeText(this, "Chuyển sang giao diện Tối (Nền đen)", Toast.LENGTH_SHORT).show();
+        };
+        binding.themeDark.setOnClickListener(darkListener);
+        binding.cardDark.setOnClickListener(darkListener);
+
+        View.OnClickListener sepiaListener = v -> {
+            applyTheme("sepia");
+            binding.cardThemeSettings.setVisibility(View.GONE);
+            Toast.makeText(this, "Chuyển sang giao diện Vàng Dịu (Bảo vệ mắt)", Toast.LENGTH_SHORT).show();
+        };
+        binding.themeSepia.setOnClickListener(sepiaListener);
+        binding.cardSepia.setOnClickListener(sepiaListener);
+
+        View.OnClickListener systemListener = v -> {
+            applyTheme("system");
+            binding.cardThemeSettings.setVisibility(View.GONE);
+            Toast.makeText(this, "Chuyển sang giao diện Mặc định Hệ thống", Toast.LENGTH_SHORT).show();
+        };
+        binding.themeSystem.setOnClickListener(systemListener);
+        binding.cardSystem.setOnClickListener(systemListener);
 
         binding.btnTranslate.setOnClickListener(v -> {
             Intent intent = new Intent(this, AiDictionaryActivity.class);
@@ -361,26 +405,6 @@ public class ReaderActivity extends AppCompatActivity
 
         binding.btnPrevPage.setOnClickListener(v -> changeChapter(-1));
         binding.btnNextPage.setOnClickListener(v -> changeChapter(1));
-
-        binding.themeLight.setOnClickListener(v -> {
-            applyTheme("light");
-            binding.cardThemeSettings.setVisibility(View.GONE);
-        });
-
-        binding.themeDark.setOnClickListener(v -> {
-            applyTheme("dark");
-            binding.cardThemeSettings.setVisibility(View.GONE);
-        });
-
-        binding.themeSepia.setOnClickListener(v -> {
-            applyTheme("sepia");
-            binding.cardThemeSettings.setVisibility(View.GONE);
-        });
-
-        binding.themeSystem.setOnClickListener(v -> {
-            applyTheme("system");
-            binding.cardThemeSettings.setVisibility(View.GONE);
-        });
     }
 
     private void updateProgressFromScroll() {
@@ -547,6 +571,7 @@ public class ReaderActivity extends AppCompatActivity
 
     private void applyTheme(String themeKey) {
         if (binding == null) return;
+        this.currentThemeKey = themeKey;
 
         binding.cardLight.setStrokeColor(Color.parseColor("#E2E8F0"));
         binding.cardLight.setStrokeWidth(1);
@@ -564,35 +589,45 @@ public class ReaderActivity extends AppCompatActivity
         binding.cardSystem.setStrokeWidth(1);
         binding.checkSystem.setVisibility(View.GONE);
 
+        int bgColor;
+        int topBottomBarColor;
+        int primaryTextColor;
+        int subtitleTextColor;
+        int paragraphTextColor;
+        int highlightBgColor;
+
         switch (themeKey) {
             case "light":
-                binding.readerRootContainer.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                binding.topBar.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                binding.bottomBar.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                binding.txtChapterNumber.setTextColor(Color.parseColor("#111827"));
-                binding.txtPageProgress.setTextColor(Color.parseColor("#111827"));
+                bgColor = Color.parseColor("#FFFFFF");
+                topBottomBarColor = Color.parseColor("#FFFFFF");
+                primaryTextColor = Color.parseColor("#111827");
+                subtitleTextColor = Color.parseColor("#6B7280");
+                paragraphTextColor = Color.parseColor("#1F2937");
+                highlightBgColor = Color.parseColor("#FDE68A");
 
                 binding.cardLight.setStrokeColor(Color.parseColor("#2563EB"));
                 binding.cardLight.setStrokeWidth(6);
                 binding.checkLight.setVisibility(View.VISIBLE);
                 break;
             case "dark":
-                binding.readerRootContainer.setBackgroundColor(Color.parseColor("#1F2937"));
-                binding.topBar.setBackgroundColor(Color.parseColor("#111827"));
-                binding.bottomBar.setBackgroundColor(Color.parseColor("#111827"));
-                binding.txtChapterNumber.setTextColor(Color.parseColor("#F9FAFB"));
-                binding.txtPageProgress.setTextColor(Color.parseColor("#F9FAFB"));
+                bgColor = Color.parseColor("#1F2937");
+                topBottomBarColor = Color.parseColor("#111827");
+                primaryTextColor = Color.parseColor("#F9FAFB");
+                subtitleTextColor = Color.parseColor("#9CA3AF");
+                paragraphTextColor = Color.parseColor("#E5E7EB");
+                highlightBgColor = Color.parseColor("#B45309");
 
                 binding.cardDark.setStrokeColor(Color.parseColor("#2563EB"));
                 binding.cardDark.setStrokeWidth(6);
                 binding.checkDark.setVisibility(View.VISIBLE);
                 break;
             case "sepia":
-                binding.readerRootContainer.setBackgroundColor(Color.parseColor("#FDF6E2"));
-                binding.topBar.setBackgroundColor(Color.parseColor("#F7EED2"));
-                binding.bottomBar.setBackgroundColor(Color.parseColor("#F7EED2"));
-                binding.txtChapterNumber.setTextColor(Color.parseColor("#78350F"));
-                binding.txtPageProgress.setTextColor(Color.parseColor("#78350F"));
+                bgColor = Color.parseColor("#FDF6E2");
+                topBottomBarColor = Color.parseColor("#F7EED2");
+                primaryTextColor = Color.parseColor("#78350F");
+                subtitleTextColor = Color.parseColor("#92400E");
+                paragraphTextColor = Color.parseColor("#291D09");
+                highlightBgColor = Color.parseColor("#FDE68A");
 
                 binding.cardSepia.setStrokeColor(Color.parseColor("#2563EB"));
                 binding.cardSepia.setStrokeWidth(6);
@@ -600,16 +635,30 @@ public class ReaderActivity extends AppCompatActivity
                 break;
             case "system":
             default:
-                binding.readerRootContainer.setBackgroundColor(Color.parseColor("#F8FAFC"));
-                binding.topBar.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                binding.bottomBar.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                binding.txtChapterNumber.setTextColor(Color.parseColor("#111827"));
-                binding.txtPageProgress.setTextColor(Color.parseColor("#111827"));
+                bgColor = Color.parseColor("#F8FAFC");
+                topBottomBarColor = Color.parseColor("#FFFFFF");
+                primaryTextColor = Color.parseColor("#111827");
+                subtitleTextColor = Color.parseColor("#6B7280");
+                paragraphTextColor = Color.parseColor("#1F2937");
+                highlightBgColor = Color.parseColor("#FDE68A");
 
                 binding.cardSystem.setStrokeColor(Color.parseColor("#2563EB"));
                 binding.cardSystem.setStrokeWidth(6);
                 binding.checkSystem.setVisibility(View.VISIBLE);
                 break;
+        }
+
+        binding.readerRootContainer.setBackgroundColor(bgColor);
+        binding.topBar.setBackgroundColor(topBottomBarColor);
+        binding.bottomBar.setBackgroundColor(topBottomBarColor);
+
+        binding.txtBookName.setTextColor(primaryTextColor);
+        binding.txtChapterNumber.setTextColor(primaryTextColor);
+        binding.txtBookTitle.setTextColor(subtitleTextColor);
+        binding.txtPageProgress.setTextColor(primaryTextColor);
+
+        if (paragraphAdapter != null) {
+            paragraphAdapter.setTheme(paragraphTextColor, highlightBgColor);
         }
     }
 
@@ -677,29 +726,17 @@ public class ReaderActivity extends AppCompatActivity
         List<Paragraph> paragraphs = new ArrayList<>();
         if (data.getContent() != null && !data.getContent().isEmpty()) {
             Document doc = Jsoup.parse(data.getContent());
-            doc.select("br").after("\n");
-            doc.select("p, h1, h2, h3, h4, h5, h6, li, blockquote").after("\n");
-            Elements pElements = doc.select("p, h1, h2, h3, h4, h5, h6, li, blockquote");
+            String rawText = getWholeTextFromElementHelper(doc.body() != null ? doc.body() : doc);
 
-            if (pElements.isEmpty()) {
-                pElements = doc.select("body > div, div, body");
-            }
-
+            String[] lines = rawText.split("\\r?\\n+");
             int paraIdx = 0;
-            for (Element pEl : pElements) {
-                if (!pEl.select("p, h1, h2, h3, h4, h5, h6").isEmpty()) continue;
-                String text = pEl.text().trim();
-                if (text.isEmpty()) continue;
+            for (String rawLine : lines) {
+                String formattedLine = formatParagraphLineHelper(rawLine);
+                if (formattedLine.isEmpty()) continue;
 
-                String[] lines = text.split("\\r?\\n+");
-                for (String line : lines) {
-                    String trimmed = line.trim();
-                    if (trimmed.isEmpty()) continue;
-
-                    List<Sentence> sentences = splitSentencesHelper(trimmed);
-                    paragraphs.add(new Paragraph("chap_" + currentChapterIndex + "_para_" + paraIdx, paraIdx, trimmed, sentences));
-                    paraIdx++;
-                }
+                List<Sentence> sentences = splitSentencesHelper(formattedLine);
+                paragraphs.add(new Paragraph("chap_" + currentChapterIndex + "_para_" + paraIdx, paraIdx, formattedLine, sentences));
+                paraIdx++;
             }
         }
 
@@ -715,6 +752,50 @@ public class ReaderActivity extends AppCompatActivity
         content.setChapters(chapters);
 
         return content;
+    }
+
+    private String formatParagraphLineHelper(String rawLine) {
+        if (rawLine == null) return "";
+        String line = Jsoup.parse(rawLine).text();
+        String body = line.replaceAll("[ \\t\\u00A0]+", " ").trim();
+        if (body.isEmpty()) return "";
+        return "    " + body;
+    }
+
+    private String getWholeTextFromElementHelper(org.jsoup.nodes.Node node) {
+        StringBuilder sb = new StringBuilder();
+        appendNodeTextHelper(node, sb);
+        return sb.toString();
+    }
+
+    private void appendNodeTextHelper(org.jsoup.nodes.Node node, StringBuilder sb) {
+        if (node instanceof org.jsoup.nodes.TextNode) {
+            String text = ((org.jsoup.nodes.TextNode) node).getWholeText();
+            sb.append(text);
+        } else if (node instanceof Element) {
+            Element element = (Element) node;
+            String tagName = element.tagName().toLowerCase();
+
+            if (tagName.equals("br")) {
+                sb.append("\n");
+                return;
+            }
+
+            boolean isBlock = element.isBlock() || tagName.equals("p") || tagName.equals("div")
+                    || tagName.startsWith("h") || tagName.equals("li") || tagName.equals("blockquote");
+
+            if (isBlock && sb.length() > 0 && sb.charAt(sb.length() - 1) != '\n') {
+                sb.append("\n");
+            }
+
+            for (org.jsoup.nodes.Node child : element.childNodes()) {
+                appendNodeTextHelper(child, sb);
+            }
+
+            if (isBlock && sb.length() > 0 && sb.charAt(sb.length() - 1) != '\n') {
+                sb.append("\n");
+            }
+        }
     }
 
     private List<Sentence> splitSentencesHelper(String text) {
@@ -737,5 +818,6 @@ public class ReaderActivity extends AppCompatActivity
         outState.putInt("saved_book_id", currentBookId);
         outState.putInt("saved_chapter_idx", currentChapterIndex);
         outState.putInt("saved_total_chapters", totalChapters);
+        outState.putString("saved_theme_key", currentThemeKey);
     }
 }

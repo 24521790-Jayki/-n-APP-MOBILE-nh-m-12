@@ -9,6 +9,7 @@ public class Paragraph implements Serializable {
     private String paragraphId; // VD: "chap_1_para_3"
     private int paragraphIndex;
     private String fullText;
+    private String paragraphType = "body"; // "heading", "center", "body", "blockquote"
     private List<Sentence> sentences;
 
     public Paragraph() {
@@ -22,6 +23,14 @@ public class Paragraph implements Serializable {
         this.sentences = sentences != null ? sentences : new ArrayList<>();
     }
 
+    public Paragraph(String paragraphId, int paragraphIndex, String fullText, String paragraphType, List<Sentence> sentences) {
+        this.paragraphId = paragraphId;
+        this.paragraphIndex = paragraphIndex;
+        this.fullText = fullText;
+        this.paragraphType = paragraphType != null ? paragraphType : "body";
+        this.sentences = sentences != null ? sentences : new ArrayList<>();
+    }
+
     public String getParagraphId() { return paragraphId; }
     public void setParagraphId(String paragraphId) { this.paragraphId = paragraphId; }
 
@@ -30,6 +39,9 @@ public class Paragraph implements Serializable {
 
     public String getFullText() { return fullText; }
     public void setFullText(String fullText) { this.fullText = fullText; }
+
+    public String getParagraphType() { return paragraphType; }
+    public void setParagraphType(String paragraphType) { this.paragraphType = paragraphType; }
 
     public List<Sentence> getSentences() { return sentences; }
     public void setSentences(List<Sentence> sentences) { this.sentences = sentences; }
