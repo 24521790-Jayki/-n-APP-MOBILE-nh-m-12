@@ -45,13 +45,18 @@ public class ReaderActivity extends AppCompatActivity
     private ReaderViewModel viewModel;
     private ReaderParagraphAdapter paragraphAdapter;
 
-    private final String selectedText = "Co nhung binh yen chi tim thay khi ta thoi voi va.";
+    private final String selectedText = "Có những bình yên chỉ tìm thấy khi ta thôi vội vã.";
 
     // Thong tin chuong va sach dang doc
     private int currentBookId = -1;
     private int currentChapterIndex = 0;
     private int totalChapters = 0;
     private BookContent currentBookContent;
+
+    // Trang thai hien thi Header & Footer va SeekBar
+    private boolean isHeaderFooterVisible = true;
+    private boolean isUserScrollingSeekBar = false;
+    private String currentThemeKey = "sepia";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +78,7 @@ public class ReaderActivity extends AppCompatActivity
             currentBookId = savedInstanceState.getInt("saved_book_id", -1);
             currentChapterIndex = savedInstanceState.getInt("saved_chapter_idx", 0);
             totalChapters = savedInstanceState.getInt("saved_total_chapters", 0);
+            currentThemeKey = savedInstanceState.getString("saved_theme_key", "sepia");
         } else if (bookId != -1) {
             currentBookId = bookId;
             currentChapterIndex = Math.max(0, targetChapter - 1);
@@ -82,7 +88,7 @@ public class ReaderActivity extends AppCompatActivity
             // Tai va phan tich file EPUB tu local hoac download tu server
             viewModel.loadOrDownloadBook(currentBookId);
         } else {
-            Toast.makeText(this, "Khong tim thay thong tin sach!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Không tìm thấy thông tin sách!", Toast.LENGTH_SHORT).show();
         }
 
         // Quan sat LiveData tu ViewModel
@@ -91,14 +97,14 @@ public class ReaderActivity extends AppCompatActivity
         // Quan sat LiveData vi tri doc va trang thai phat tu TTS Service
         setupTtsObservers();
 
-        // Khoi tao giao diện doc mac dinh (Sepia)
-        applyTheme("sepia");
+        // Khoi tao giao diện doc mac dinh
+        applyTheme(currentThemeKey);
 
         // An cac cua so noi mac dinh
         binding.cardFloatingToolbar.setVisibility(View.GONE);
         binding.cardThemeSettings.setVisibility(View.GONE);
 
-        // Lang nghe cac nut bam va thanh trượt tiến độ
+        // Lang nghe cac nut bam, hanh vi cuon (scroll) va thanh tien trinh
         setupClickListeners();
     }
 
@@ -113,10 +119,10 @@ public class ReaderActivity extends AppCompatActivity
             if (ttsService != null) {
                 ttsService.seekTo(currentChapterIndex, paragraphIndex, 0);
                 ttsService.startReading();
-                Toast.makeText(this, "Dang phat TTS tu doan " + (paragraphIndex + 1), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Đang phát TTS từ đoạn " + (paragraphIndex + 1), Toast.LENGTH_SHORT).show();
             } else {
                 startService(new Intent(this, TtsMediaSessionService.class));
-                Toast.makeText(this, "Dang khoi tao TTS Service...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Đang khởi tạo TTS Service...", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -159,12 +165,20 @@ public class ReaderActivity extends AppCompatActivity
         TtsMediaSessionService.getCurrentPositionLive().observe(this, position -> {
             if (position != null && position.chapterIndex == currentChapterIndex) {
                 paragraphAdapter.setHighlight(position.paragraphIndex, position.sentenceIndex);
-                binding.recyclerViewParagraphs.smoothScrollToPosition(position.paragraphIndex);
 
                 if (currentBookContent != null && currentChapterIndex < currentBookContent.getChapters().size()) {
-                    int totalParas = currentBookContent.getChapters().get(currentChapterIndex).getParagraphs().size();
-                    binding.seekBarProgress.setProgress(position.paragraphIndex);
+                    List<Paragraph> paras = currentBookContent.getChapters().get(currentChapterIndex).getParagraphs();
+                    int totalParas = (paras != null && !paras.isEmpty()) ? paras.size() : 1;
+
+                    if (totalParas > 1) {
+                        int percent = Math.min(100, Math.max(0, Math.round(((float) position.paragraphIndex / (totalParas - 1)) * 100f)));
+                        binding.seekBarProgress.setProgress(percent);
+                    }
                     updateProgressText(position.paragraphIndex, totalParas);
+
+                    if (!isUserScrollingSeekBar) {
+                        scrollToParagraphIndex(position.paragraphIndex);
+                    }
                 }
 
                 // Luu tien do doc
@@ -187,24 +201,49 @@ public class ReaderActivity extends AppCompatActivity
         currentChapterIndex = chapterIdx;
         Chapter chapter = chapters.get(chapterIdx);
 
-        binding.txtChapterNumber.setText("Chuong " + (chapterIdx + 1) + ": " + chapter.getTitle());
+        binding.txtChapterNumber.setText("Chương " + (chapterIdx + 1) + ": " + chapter.getTitle());
         paragraphAdapter.setParagraphs(chapter.getParagraphs());
 
         int totalParas = chapter.getParagraphs() != null ? chapter.getParagraphs().size() : 1;
-        binding.seekBarProgress.setMax(Math.max(1, totalParas - 1));
+        binding.seekBarProgress.setMax(100);
         binding.seekBarProgress.setProgress(0);
         updateProgressText(0, totalParas);
+
+        applyTheme(currentThemeKey);
+
+        // Cuon len dau trang khi sang chuong moi
+        binding.nestedScrollView.post(() -> binding.nestedScrollView.scrollTo(0, 0));
     }
 
     private void updateProgressText(int currentParaIdx, int totalParas) {
         int parasCount = Math.max(1, totalParas);
         int percent = (int) (((currentParaIdx + 1) * 100.0f) / parasCount);
         percent = Math.min(100, Math.max(0, percent));
-        binding.txtPageProgress.setText("Doan " + (currentParaIdx + 1) + "/" + parasCount + " - " + percent + "%");
+        binding.txtPageProgress.setText("Đoạn " + (currentParaIdx + 1) + "/" + parasCount + " - " + percent + "%");
     }
 
     private void setupClickListeners() {
         binding.btnBack.setOnClickListener(v -> finish());
+
+        // Click vao vung man hinh hoac doan van -> Bat/Tat Header va Progress bar
+        binding.readerRootContainer.setOnClickListener(v -> toggleHeaderAndFooter());
+
+        // Bat su kien cuon (scroll) tren NestedScrollView de tu dong an/hien va cap nhat tien do
+        binding.nestedScrollView.setOnScrollChangeListener((View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) -> {
+            int dy = scrollY - oldScrollY;
+
+            // Vuot xuong -> An Header & Footer; Vuot len -> Hien Header & Footer
+            if (dy > 12) {
+                hideHeaderAndFooter();
+            } else if (dy < -12) {
+                showHeaderAndFooter();
+            }
+
+            // Cap nhat tien do doc tu dong theo vi tri vuot scrollY
+            if (!isUserScrollingSeekBar) {
+                updateProgressFromScroll();
+            }
+        });
 
         // Nut bat/tat doc TTS va mo cai dat TTS
         binding.btnAudio.setOnClickListener(v -> {
@@ -212,18 +251,18 @@ public class ReaderActivity extends AppCompatActivity
             if (ttsService != null) {
                 if (ttsService.isCurrentlyPlaying()) {
                     ttsService.pauseReading();
-                    Toast.makeText(this, "Da tam dung TTS", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Đã tạm dừng TTS", Toast.LENGTH_SHORT).show();
                 } else {
                     if (currentBookContent != null) {
                         ttsService.setBookContent(currentBookContent);
-                        ttsService.seekTo(currentChapterIndex, binding.seekBarProgress.getProgress(), 0);
+                        ttsService.seekTo(currentChapterIndex, 0, 0);
                         ttsService.startReading();
                     }
                 }
             } else {
                 Intent intent = new Intent(this, TtsMediaSessionService.class);
                 startService(intent);
-                Toast.makeText(this, "Dang khoi tao dich vu TTS...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Đang khởi tạo dịch vụ TTS...", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -232,45 +271,115 @@ public class ReaderActivity extends AppCompatActivity
             return true;
         });
 
-        // Thanh trượt SeekBar tien trinh doc
+        // Thanh trượt SeekBar tien trinh doc liên tục 0% -> 100%
         binding.seekBarProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (fromUser && currentBookContent != null && currentChapterIndex < currentBookContent.getChapters().size()) {
-                    int totalParas = currentBookContent.getChapters().get(currentChapterIndex).getParagraphs().size();
-                    updateProgressText(progress, totalParas);
+                if (fromUser) {
+                    View child = binding.nestedScrollView.getChildAt(0);
+                    if (child != null) {
+                        int childHeight = child.getHeight();
+                        int scrollViewHeight = binding.nestedScrollView.getHeight();
+                        int maxScroll = Math.max(0, childHeight - scrollViewHeight);
+                        int targetY = Math.round((progress / 100.0f) * maxScroll);
+
+                        binding.nestedScrollView.scrollTo(0, targetY);
+
+                        int totalParas = 1;
+                        if (currentBookContent != null && currentChapterIndex < currentBookContent.getChapters().size()) {
+                            List<Paragraph> paras = currentBookContent.getChapters().get(currentChapterIndex).getParagraphs();
+                            if (paras != null && !paras.isEmpty()) {
+                                totalParas = paras.size();
+                            }
+                        }
+                        int currentParaIdx = Math.min(totalParas - 1, Math.round((progress / 100.0f) * (totalParas - 1)));
+                        updateProgressText(currentParaIdx, totalParas);
+                    }
                 }
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                isUserScrollingSeekBar = true;
+            }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                int targetPara = seekBar.getProgress();
-                binding.recyclerViewParagraphs.scrollToPosition(targetPara);
+                isUserScrollingSeekBar = false;
+                View child = binding.nestedScrollView.getChildAt(0);
+                if (child != null) {
+                    int childHeight = child.getHeight();
+                    int scrollViewHeight = binding.nestedScrollView.getHeight();
+                    int maxScroll = Math.max(0, childHeight - scrollViewHeight);
+                    int targetY = Math.round((seekBar.getProgress() / 100.0f) * maxScroll);
 
-                TtsMediaSessionService ttsService = TtsMediaSessionService.getInstance();
-                if (ttsService != null && ttsService.isCurrentlyPlaying()) {
-                    ttsService.seekTo(currentChapterIndex, targetPara, 0);
-                    ttsService.startReading();
+                    binding.nestedScrollView.smoothScrollTo(0, targetY);
+
+                    int totalParas = 1;
+                    if (currentBookContent != null && currentChapterIndex < currentBookContent.getChapters().size()) {
+                        List<Paragraph> paras = currentBookContent.getChapters().get(currentChapterIndex).getParagraphs();
+                        if (paras != null && !paras.isEmpty()) {
+                            totalParas = paras.size();
+                        }
+                    }
+                    int currentParaIdx = Math.min(totalParas - 1, Math.round((seekBar.getProgress() / 100.0f) * (totalParas - 1)));
+
+                    TtsMediaSessionService ttsService = TtsMediaSessionService.getInstance();
+                    if (ttsService != null && ttsService.isCurrentlyPlaying()) {
+                        ttsService.seekTo(currentChapterIndex, currentParaIdx, 0);
+                        ttsService.startReading();
+                    }
                 }
             }
         });
 
         // Nut Aa - Mo bang cai dat giao dien
         binding.btnAa.setOnClickListener(v -> {
-            int vis = binding.cardThemeSettings.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE;
-            binding.cardThemeSettings.setVisibility(vis);
+            showHeaderAndFooter();
+            if (binding.cardThemeSettings.getVisibility() == View.VISIBLE) {
+                binding.cardThemeSettings.setVisibility(View.GONE);
+            } else {
+                binding.cardThemeSettings.setVisibility(View.VISIBLE);
+                binding.cardThemeSettings.bringToFront();
+            }
         });
+
+        binding.cardThemeSettings.setOnClickListener(v -> {});
+        binding.cardFloatingToolbar.setOnClickListener(v -> {});
 
         binding.btnCloseSettings.setOnClickListener(v -> binding.cardThemeSettings.setVisibility(View.GONE));
 
-        // Click root container mo floating toolbar
-        binding.readerRootContainer.setOnClickListener(v -> {
-            int vis = binding.cardFloatingToolbar.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE;
-            binding.cardFloatingToolbar.setVisibility(vis);
-        });
+        View.OnClickListener lightListener = v -> {
+            applyTheme("light");
+            binding.cardThemeSettings.setVisibility(View.GONE);
+            Toast.makeText(this, "Chuyển sang giao diện Sáng", Toast.LENGTH_SHORT).show();
+        };
+        binding.themeLight.setOnClickListener(lightListener);
+        binding.cardLight.setOnClickListener(lightListener);
+
+        View.OnClickListener darkListener = v -> {
+            applyTheme("dark");
+            binding.cardThemeSettings.setVisibility(View.GONE);
+            Toast.makeText(this, "Chuyển sang giao diện Tối (Nền đen)", Toast.LENGTH_SHORT).show();
+        };
+        binding.themeDark.setOnClickListener(darkListener);
+        binding.cardDark.setOnClickListener(darkListener);
+
+        View.OnClickListener sepiaListener = v -> {
+            applyTheme("sepia");
+            binding.cardThemeSettings.setVisibility(View.GONE);
+            Toast.makeText(this, "Chuyển sang giao diện Vàng Dịu (Bảo vệ mắt)", Toast.LENGTH_SHORT).show();
+        };
+        binding.themeSepia.setOnClickListener(sepiaListener);
+        binding.cardSepia.setOnClickListener(sepiaListener);
+
+        View.OnClickListener systemListener = v -> {
+            applyTheme("system");
+            binding.cardThemeSettings.setVisibility(View.GONE);
+            Toast.makeText(this, "Chuyển sang giao diện Mặc định Hệ thống", Toast.LENGTH_SHORT).show();
+        };
+        binding.themeSystem.setOnClickListener(systemListener);
+        binding.cardSystem.setOnClickListener(systemListener);
 
         binding.btnTranslate.setOnClickListener(v -> {
             Intent intent = new Intent(this, AiDictionaryActivity.class);
@@ -291,31 +400,116 @@ public class ReaderActivity extends AppCompatActivity
         });
 
         binding.btnBookmark.setOnClickListener(v ->
-                Toast.makeText(this, "Da danh dau doan van!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Đã đánh dấu đoạn văn!", Toast.LENGTH_SHORT).show()
         );
 
         binding.btnPrevPage.setOnClickListener(v -> changeChapter(-1));
         binding.btnNextPage.setOnClickListener(v -> changeChapter(1));
+    }
 
-        binding.themeLight.setOnClickListener(v -> {
-            applyTheme("light");
-            binding.cardThemeSettings.setVisibility(View.GONE);
-        });
+    private void updateProgressFromScroll() {
+        View child = binding.nestedScrollView.getChildAt(0);
+        if (child == null) return;
 
-        binding.themeDark.setOnClickListener(v -> {
-            applyTheme("dark");
-            binding.cardThemeSettings.setVisibility(View.GONE);
-        });
+        int childHeight = child.getHeight();
+        int scrollViewHeight = binding.nestedScrollView.getHeight();
+        int maxScroll = childHeight - scrollViewHeight;
 
-        binding.themeSepia.setOnClickListener(v -> {
-            applyTheme("sepia");
-            binding.cardThemeSettings.setVisibility(View.GONE);
-        });
+        if (maxScroll <= 0) return;
 
-        binding.themeSystem.setOnClickListener(v -> {
-            applyTheme("system");
-            binding.cardThemeSettings.setVisibility(View.GONE);
-        });
+        int scrollY = binding.nestedScrollView.getScrollY();
+        float ratio = Math.max(0f, Math.min(1.0f, (float) scrollY / maxScroll));
+        int percent = Math.min(100, Math.max(0, Math.round(ratio * 100f)));
+
+        binding.seekBarProgress.setMax(100);
+        binding.seekBarProgress.setProgress(percent);
+
+        int totalParas = 1;
+        if (currentBookContent != null && currentChapterIndex < currentBookContent.getChapters().size()) {
+            List<Paragraph> paras = currentBookContent.getChapters().get(currentChapterIndex).getParagraphs();
+            if (paras != null && !paras.isEmpty()) {
+                totalParas = paras.size();
+            }
+        }
+
+        int currentParaIdx = Math.min(totalParas - 1, Math.round(ratio * (totalParas - 1)));
+        updateProgressText(currentParaIdx, totalParas);
+    }
+
+    private void scrollToParagraphIndex(int targetParaIdx) {
+        if (currentBookContent == null || currentBookContent.getChapters() == null) return;
+        List<Chapter> chapters = currentBookContent.getChapters();
+        if (currentChapterIndex < 0 || currentChapterIndex >= chapters.size()) return;
+
+        Chapter chapter = chapters.get(currentChapterIndex);
+        List<Paragraph> paras = chapter.getParagraphs();
+        if (paras == null || paras.isEmpty()) return;
+
+        int totalParas = paras.size();
+        int safeIdx = Math.max(0, Math.min(totalParas - 1, targetParaIdx));
+
+        View child = binding.nestedScrollView.getChildAt(0);
+        if (child == null) return;
+
+        int childHeight = child.getHeight();
+        int scrollViewHeight = binding.nestedScrollView.getHeight();
+        int maxScroll = Math.max(0, childHeight - scrollViewHeight);
+
+        int targetY = 0;
+        if (totalParas > 1) {
+            targetY = Math.round(((float) safeIdx / (totalParas - 1)) * maxScroll);
+        }
+
+        binding.nestedScrollView.smoothScrollTo(0, targetY);
+    }
+
+    private void hideHeaderAndFooter() {
+        if (!isHeaderFooterVisible) return;
+        isHeaderFooterVisible = false;
+
+        binding.topBar.animate()
+                .translationY(-binding.topBar.getHeight() - 20)
+                .alpha(0f)
+                .setDuration(250)
+                .withEndAction(() -> binding.topBar.setVisibility(View.GONE))
+                .start();
+
+        binding.bottomBar.animate()
+                .translationY(binding.bottomBar.getHeight() + 20)
+                .alpha(0f)
+                .setDuration(250)
+                .withEndAction(() -> binding.bottomBar.setVisibility(View.GONE))
+                .start();
+
+        binding.cardFloatingToolbar.setVisibility(View.GONE);
+        binding.cardThemeSettings.setVisibility(View.GONE);
+    }
+
+    private void showHeaderAndFooter() {
+        if (isHeaderFooterVisible) return;
+        isHeaderFooterVisible = true;
+
+        binding.topBar.setVisibility(View.VISIBLE);
+        binding.topBar.animate()
+                .translationY(0f)
+                .alpha(1f)
+                .setDuration(250)
+                .start();
+
+        binding.bottomBar.setVisibility(View.VISIBLE);
+        binding.bottomBar.animate()
+                .translationY(0f)
+                .alpha(1f)
+                .setDuration(250)
+                .start();
+    }
+
+    private void toggleHeaderAndFooter() {
+        if (isHeaderFooterVisible) {
+            hideHeaderAndFooter();
+        } else {
+            showHeaderAndFooter();
+        }
     }
 
     private void openTtsSettingsBottomSheet() {
@@ -323,6 +517,7 @@ public class ReaderActivity extends AppCompatActivity
         TtsSettingsBottomSheet bottomSheet = new TtsSettingsBottomSheet();
         if (ttsService != null) {
             bottomSheet.setTts(ttsService.getTtsInstance());
+            bottomSheet.setCurrentSpeed(ttsService.getCurrentSpeed());
         }
         bottomSheet.setListener(this);
         bottomSheet.show(getSupportFragmentManager(), "TtsSettings");
@@ -350,19 +545,19 @@ public class ReaderActivity extends AppCompatActivity
         if (ttsService != null) {
             ttsService.setEngine(enginePackage);
         }
-        Toast.makeText(this, "Da chuyen Engine TTS: " + enginePackage, Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Đã chuyển Engine TTS: " + enginePackage, Toast.LENGTH_SHORT).show();
     }
 
     private void changeChapter(int direction) {
         int nextChapter = currentChapterIndex + direction;
 
         if (nextChapter < 0) {
-            Toast.makeText(this, "Day la chuong dau tien!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Đây là chương đầu tiên!", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (totalChapters > 0 && nextChapter >= totalChapters) {
-            Toast.makeText(this, "Day la chuong cuoi cung!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Đây là chương cuối cùng!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -376,6 +571,7 @@ public class ReaderActivity extends AppCompatActivity
 
     private void applyTheme(String themeKey) {
         if (binding == null) return;
+        this.currentThemeKey = themeKey;
 
         binding.cardLight.setStrokeColor(Color.parseColor("#E2E8F0"));
         binding.cardLight.setStrokeWidth(1);
@@ -393,32 +589,76 @@ public class ReaderActivity extends AppCompatActivity
         binding.cardSystem.setStrokeWidth(1);
         binding.checkSystem.setVisibility(View.GONE);
 
+        int bgColor;
+        int topBottomBarColor;
+        int primaryTextColor;
+        int subtitleTextColor;
+        int paragraphTextColor;
+        int highlightBgColor;
+
         switch (themeKey) {
             case "light":
-                binding.readerRootContainer.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                bgColor = Color.parseColor("#FFFFFF");
+                topBottomBarColor = Color.parseColor("#FFFFFF");
+                primaryTextColor = Color.parseColor("#111827");
+                subtitleTextColor = Color.parseColor("#6B7280");
+                paragraphTextColor = Color.parseColor("#1F2937");
+                highlightBgColor = Color.parseColor("#FDE68A");
+
                 binding.cardLight.setStrokeColor(Color.parseColor("#2563EB"));
                 binding.cardLight.setStrokeWidth(6);
                 binding.checkLight.setVisibility(View.VISIBLE);
                 break;
             case "dark":
-                binding.readerRootContainer.setBackgroundColor(Color.parseColor("#1F2937"));
+                bgColor = Color.parseColor("#1F2937");
+                topBottomBarColor = Color.parseColor("#111827");
+                primaryTextColor = Color.parseColor("#F9FAFB");
+                subtitleTextColor = Color.parseColor("#9CA3AF");
+                paragraphTextColor = Color.parseColor("#E5E7EB");
+                highlightBgColor = Color.parseColor("#B45309");
+
                 binding.cardDark.setStrokeColor(Color.parseColor("#2563EB"));
                 binding.cardDark.setStrokeWidth(6);
                 binding.checkDark.setVisibility(View.VISIBLE);
                 break;
             case "sepia":
-                binding.readerRootContainer.setBackgroundColor(Color.parseColor("#FDF6E2"));
+                bgColor = Color.parseColor("#FDF6E2");
+                topBottomBarColor = Color.parseColor("#F7EED2");
+                primaryTextColor = Color.parseColor("#78350F");
+                subtitleTextColor = Color.parseColor("#92400E");
+                paragraphTextColor = Color.parseColor("#291D09");
+                highlightBgColor = Color.parseColor("#FDE68A");
+
                 binding.cardSepia.setStrokeColor(Color.parseColor("#2563EB"));
                 binding.cardSepia.setStrokeWidth(6);
                 binding.checkSepia.setVisibility(View.VISIBLE);
                 break;
             case "system":
             default:
-                binding.readerRootContainer.setBackgroundColor(Color.parseColor("#F8FAFC"));
+                bgColor = Color.parseColor("#F8FAFC");
+                topBottomBarColor = Color.parseColor("#FFFFFF");
+                primaryTextColor = Color.parseColor("#111827");
+                subtitleTextColor = Color.parseColor("#6B7280");
+                paragraphTextColor = Color.parseColor("#1F2937");
+                highlightBgColor = Color.parseColor("#FDE68A");
+
                 binding.cardSystem.setStrokeColor(Color.parseColor("#2563EB"));
                 binding.cardSystem.setStrokeWidth(6);
                 binding.checkSystem.setVisibility(View.VISIBLE);
                 break;
+        }
+
+        binding.readerRootContainer.setBackgroundColor(bgColor);
+        binding.topBar.setBackgroundColor(topBottomBarColor);
+        binding.bottomBar.setBackgroundColor(topBottomBarColor);
+
+        binding.txtBookName.setTextColor(primaryTextColor);
+        binding.txtChapterNumber.setTextColor(primaryTextColor);
+        binding.txtBookTitle.setTextColor(subtitleTextColor);
+        binding.txtPageProgress.setTextColor(primaryTextColor);
+
+        if (paragraphAdapter != null) {
+            paragraphAdapter.setTheme(paragraphTextColor, highlightBgColor);
         }
     }
 
@@ -440,7 +680,7 @@ public class ReaderActivity extends AppCompatActivity
 
             @Override
             public void onFailure(Call<BookChaptersResponse> call, Throwable t) {
-                Toast.makeText(ReaderActivity.this, "Loi ket noi API: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ReaderActivity.this, "Lỗi kết nối API: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -469,7 +709,7 @@ public class ReaderActivity extends AppCompatActivity
 
             @Override
             public void onFailure(Call<ChapterContentResponse> call, Throwable t) {
-                Toast.makeText(ReaderActivity.this, "Loi load chuong: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ReaderActivity.this, "Lỗi load chương: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -481,44 +721,29 @@ public class ReaderActivity extends AppCompatActivity
 
         Chapter chap = new Chapter();
         chap.setChapterIndex(currentChapterIndex);
-        chap.setTitle("Chuong " + data.getChapterNumber());
+        chap.setTitle("Chương " + data.getChapterNumber());
 
         List<Paragraph> paragraphs = new ArrayList<>();
         if (data.getContent() != null && !data.getContent().isEmpty()) {
             Document doc = Jsoup.parse(data.getContent());
-            doc.select("br").after("\n");
-            Elements pElements = doc.select("p, h1, h2, h3, h4, h5, h6");
+            String rawText = getWholeTextFromElementHelper(doc.body() != null ? doc.body() : doc);
 
-            if (pElements.isEmpty()) {
-                String plainText = doc.text();
-                String[] lines = plainText.split("\\r?\\n+");
-                int paraIdx = 0;
-                for (String line : lines) {
-                    String trimmed = line.trim();
-                    if (trimmed.isEmpty()) continue;
+            String[] lines = rawText.split("\\r?\\n+");
+            int paraIdx = 0;
+            for (String rawLine : lines) {
+                String formattedLine = formatParagraphLineHelper(rawLine);
+                if (formattedLine.isEmpty()) continue;
 
-                    List<Sentence> sentences = splitSentencesHelper(trimmed);
-                    paragraphs.add(new Paragraph("chap_" + currentChapterIndex + "_para_" + paraIdx, paraIdx, trimmed, sentences));
-                    paraIdx++;
-                }
-            } else {
-                int paraIdx = 0;
-                for (Element pEl : pElements) {
-                    if (!pEl.select("p").isEmpty()) continue;
-                    String text = pEl.text().trim();
-                    if (text.isEmpty()) continue;
-
-                    List<Sentence> sentences = splitSentencesHelper(text);
-                    paragraphs.add(new Paragraph("chap_" + currentChapterIndex + "_para_" + paraIdx, paraIdx, text, sentences));
-                    paraIdx++;
-                }
+                List<Sentence> sentences = splitSentencesHelper(formattedLine);
+                paragraphs.add(new Paragraph("chap_" + currentChapterIndex + "_para_" + paraIdx, paraIdx, formattedLine, sentences));
+                paraIdx++;
             }
         }
 
         if (paragraphs.isEmpty()) {
             List<Sentence> sentences = new ArrayList<>();
-            sentences.add(new Sentence(0, "Khong co noi dung chuong", 0, 20));
-            paragraphs.add(new Paragraph("chap_0_para_0", 0, "Khong co noi dung chuong", sentences));
+            sentences.add(new Sentence(0, "Không có nội dung chương", 0, 20));
+            paragraphs.add(new Paragraph("chap_0_para_0", 0, "Không có nội dung chương", sentences));
         }
 
         chap.setParagraphs(paragraphs);
@@ -527,6 +752,50 @@ public class ReaderActivity extends AppCompatActivity
         content.setChapters(chapters);
 
         return content;
+    }
+
+    private String formatParagraphLineHelper(String rawLine) {
+        if (rawLine == null) return "";
+        String line = Jsoup.parse(rawLine).text();
+        String body = line.replaceAll("[ \\t\\u00A0]+", " ").trim();
+        if (body.isEmpty()) return "";
+        return "    " + body;
+    }
+
+    private String getWholeTextFromElementHelper(org.jsoup.nodes.Node node) {
+        StringBuilder sb = new StringBuilder();
+        appendNodeTextHelper(node, sb);
+        return sb.toString();
+    }
+
+    private void appendNodeTextHelper(org.jsoup.nodes.Node node, StringBuilder sb) {
+        if (node instanceof org.jsoup.nodes.TextNode) {
+            String text = ((org.jsoup.nodes.TextNode) node).getWholeText();
+            sb.append(text);
+        } else if (node instanceof Element) {
+            Element element = (Element) node;
+            String tagName = element.tagName().toLowerCase();
+
+            if (tagName.equals("br")) {
+                sb.append("\n");
+                return;
+            }
+
+            boolean isBlock = element.isBlock() || tagName.equals("p") || tagName.equals("div")
+                    || tagName.startsWith("h") || tagName.equals("li") || tagName.equals("blockquote");
+
+            if (isBlock && sb.length() > 0 && sb.charAt(sb.length() - 1) != '\n') {
+                sb.append("\n");
+            }
+
+            for (org.jsoup.nodes.Node child : element.childNodes()) {
+                appendNodeTextHelper(child, sb);
+            }
+
+            if (isBlock && sb.length() > 0 && sb.charAt(sb.length() - 1) != '\n') {
+                sb.append("\n");
+            }
+        }
     }
 
     private List<Sentence> splitSentencesHelper(String text) {
@@ -549,5 +818,6 @@ public class ReaderActivity extends AppCompatActivity
         outState.putInt("saved_book_id", currentBookId);
         outState.putInt("saved_chapter_idx", currentChapterIndex);
         outState.putInt("saved_total_chapters", totalChapters);
+        outState.putString("saved_theme_key", currentThemeKey);
     }
 }

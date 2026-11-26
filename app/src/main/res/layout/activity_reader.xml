@@ -7,19 +7,64 @@
     android:layout_height="match_parent"
     android:background="#F8FAFC"
     tools:ignore="HardcodedText,ContentDescription,SmallSp,UseCompoundDrawables,DisableBaselineAlignment"
-    tools:context=".MainActivity">
+    tools:context=".ReaderActivity">
 
-    <!-- 1. TOP BAR CỐ ĐỊNH Ở ĐỈNH -->
+    <!-- 1. VÙNG VĂN BẢN CUỘN -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:paddingTop="60dp"
+        android:paddingBottom="90dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="32dp">
+
+            <TextView
+                android:id="@+id/txtBookName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:fontFamily="serif"
+                android:text="Arifureta"
+                android:textColor="#111827"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <WebView
+                android:id="@+id/webViewChapter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewParagraphs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- 2. TOP BAR CỐ ĐỊNH Ở ĐỈNH -->
     <RelativeLayout
         android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:background="#FFFFFF"
-        android:elevation="1dp"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="32dp"
-        android:paddingBottom="12dp">
+        android:elevation="4dp"
+        android:paddingHorizontal="12dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="10dp">
 
         <ImageButton
             android:id="@+id/btnBack"
@@ -33,34 +78,9 @@
             app:srcCompat="@drawable/ic_arrow_back"
             app:tint="#111827" />
 
-        <!-- Tiêu đề chính giữa -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txtChapterNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Chương 1"
-                android:textColor="#111827"
-                android:textSize="13sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtBookTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Arifureta"
-                android:textColor="#6B7280"
-                android:textSize="11sp" />
-        </LinearLayout>
-
         <!-- Cụm nút bên phải -->
         <LinearLayout
+            android:id="@+id/rightButtons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -71,12 +91,13 @@
                 android:id="@+id/btnAudio"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:clickable="true"
+                android:focusable="true"
                 app:cardBackgroundColor="#F1F5F9"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:strokeWidth="0dp"
-                android:clickable="true"
-                android:focusable="true">
+                app:strokeWidth="0dp">
+
                 <ImageView
                     android:layout_width="14dp"
                     android:layout_height="14dp"
@@ -91,12 +112,13 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
+                android:clickable="true"
+                android:focusable="true"
                 app:cardBackgroundColor="#EFF6FF"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:strokeWidth="0dp"
-                android:clickable="true"
-                android:focusable="true">
+                app:strokeWidth="0dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -107,9 +129,45 @@
                     android:textStyle="bold" />
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
+
+        <!-- Tiêu đề chính giữa (Co giãn thông minh, không đè nút) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/rightButtons"
+            android:layout_toEndOf="@id/btnBack"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtChapterNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="Chương 1"
+                android:textColor="#111827"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtBookTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="Arifureta"
+                android:textColor="#6B7280"
+                android:textSize="11sp" />
+        </LinearLayout>
     </RelativeLayout>
 
-    <!-- 2. BOTTOM BAR CỐ ĐỊNH Ở ĐÁY -->
+    <!-- 3. BOTTOM BAR CỐ ĐỊNH Ở ĐÁY -->
     <LinearLayout
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
@@ -119,20 +177,22 @@
         android:elevation="8dp"
         android:orientation="vertical"
         android:paddingHorizontal="16dp"
-        android:paddingVertical="16dp">
+        android:paddingVertical="12dp">
 
-        <!-- Hàng 1: Điều hướng -->
+        <!-- Hàng 1: Điều hướng & tiến độ -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/btnPrevPage"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Previous"
+                android:padding="4dp"
                 android:src="@drawable/ic_chevron_left"
                 app:tint="#2563EB" />
 
@@ -141,18 +201,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="Doan 1/1 - 0%"
+                android:text="Đoạn 1/1 - 0%"
                 android:textColor="#111827"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/btnNextPage"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Next"
+                android:padding="4dp"
                 android:src="@drawable/ic_chevron_right"
                 app:tint="#2563EB" />
         </RelativeLayout>
@@ -162,491 +224,464 @@
             android:id="@+id/seekBarProgress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:progress="25"
+            android:layout_marginTop="8dp"
+            android:progress="0"
             android:progressTint="#2563EB"
             android:thumbTint="#2563EB" />
-
-        <!-- Hàng 3: Thời gian còn lại -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:gravity="center"
-            android:text="Còn 6 phút trong chương"
-            android:textColor="#9CA3AF"
-            android:textSize="10sp" />
     </LinearLayout>
 
-    <!-- 3. VÙNG VĂN BẢN CUỘN -->
-    <androidx.core.widget.NestedScrollView
+    <!-- 4. FLOATING TOOLBAR CHỌN VĂN BẢN (Nổi trên cùng, phía trên BottomBar) -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardFloatingToolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@id/bottomBar"
-        android:layout_below="@id/topBar"
-        android:clipToPadding="false"
-        android:fillViewport="true">
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="12dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardCornerRadius="14dp"
+        app:cardElevation="16dp"
+        app:strokeColor="#E2E8F0"
+        app:strokeWidth="1dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:weightSum="4">
+
+            <!-- Nút 1: Tra từ / Dịch thuật -->
+            <LinearLayout
+                android:id="@+id/btnTranslate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="Translate"
+                    android:src="@drawable/ic_translate" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Tra từ / Dịch"
+                    android:textColor="#2563EB"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <!-- Nút 2: Tạo ảnh Quote -->
+            <LinearLayout
+                android:id="@+id/btnQuote"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="Quote"
+                    android:src="@drawable/ic_quote" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Tạo Quote"
+                    android:textColor="#2563EB"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <!-- Nút 3: Hỏi đáp AI -->
+            <LinearLayout
+                android:id="@+id/btnAiChat"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="AI Chat"
+                    android:src="@drawable/ic_sparkles"
+                    app:tint="#2563EB" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Hỏi đáp AI"
+                    android:textColor="#2563EB"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <!-- Nút 4: Đánh dấu -->
+            <LinearLayout
+                android:id="@+id/btnBookmark"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:contentDescription="Bookmark"
+                    android:src="@drawable/ic_bookmark" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Đánh dấu"
+                    android:textColor="#2563EB"
+                    android:textSize="10sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- 5. BẢNG TÙY CHỈNH GIAO DIỆN ĐỌC (Nổi trên cùng, phía trên BottomBar) -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardThemeSettings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottomBar"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="12dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:cardBackgroundColor="#FFFFFF"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="16dp"
+        app:strokeColor="#E2E8F0"
+        app:strokeWidth="1dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="24dp"
-            android:paddingTop="24dp"
-            android:paddingBottom="32dp">
+            android:padding="16dp">
 
-            <TextView
-                android:id="@+id/txtBookName"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:fontFamily="serif"
-                android:text="Arifureta"
-                android:textColor="#111827"
-                android:textSize="26sp"
-                android:textStyle="bold" />
+                android:layout_height="wrap_content">
 
-            <WebView
-                android:id="@+id/webViewChapter"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:background="@android:color/transparent" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewParagraphs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false" />
-
-            <!-- POPUP TOOLBAR CHỌN VĂN BẢN (Floating Selection Card) -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardFloatingToolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:visibility="gone"
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="6dp"
-                app:strokeColor="#E2E8F0"
-                app:strokeWidth="1dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="8dp"
-                    android:weightSum="4">
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:text="Giao diện đọc"
+                    android:textColor="#111827"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
 
-                    <!-- Nút 1: Tra từ / Dịch thuật -->
-                    <LinearLayout
-                        android:id="@+id/btnTranslate"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="?attr/selectableItemBackground"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                <ImageButton
+                    android:id="@+id/btnCloseSettings"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Close"
+                    android:padding="2dp"
+                    app:srcCompat="@drawable/ic_close"
+                    app:tint="#9CA3AF" />
+            </RelativeLayout>
 
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:contentDescription="Translate"
-                            android:src="@drawable/ic_translate" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Tra từ / Dịch"
-                            android:textColor="#2563EB"
-                            android:textSize="10sp" />
-                    </LinearLayout>
-
-                    <!-- Nút 2: Tạo ảnh Quote -->
-                    <LinearLayout
-                        android:id="@+id/btnQuote"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="?attr/selectableItemBackground"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:contentDescription="Quote"
-                            android:src="@drawable/ic_quote" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Tạo Quote"
-                            android:textColor="#2563EB"
-                            android:textSize="10sp" />
-                    </LinearLayout>
-
-                    <!-- Nút 3: Hỏi đáp AI -->
-                    <LinearLayout
-                        android:id="@+id/btnAiChat"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="?attr/selectableItemBackground"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:contentDescription="AI Chat"
-                            android:src="@drawable/ic_sparkles"
-                            app:tint="#2563EB" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Hỏi đáp AI"
-                            android:textColor="#2563EB"
-                            android:textSize="10sp" />
-                    </LinearLayout>
-
-                    <!-- Nút 4: Đánh dấu -->
-                    <LinearLayout
-                        android:id="@+id/btnBookmark"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="?attr/selectableItemBackground"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:contentDescription="Bookmark"
-                            android:src="@drawable/ic_bookmark" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Đánh dấu"
-                            android:textColor="#2563EB"
-                            android:textSize="10sp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- BẢNG TÙY CHỈNH GIAO DIỆN ĐỌC (Theme Settings Bottom Sheet / Dialog Card) -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardThemeSettings"
+            <!-- LinearLayout ngang 4 tùy chọn theme -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:visibility="gone"
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="8dp"
-                app:strokeColor="#E2E8F0"
-                app:strokeWidth="1dp">
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:weightSum="4">
 
+                <!-- Option 1: Light -->
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/themeLight"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                    <RelativeLayout
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardLight"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="64dp"
+                        app:cardBackgroundColor="#FFFFFF"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="#E2E8F0"
+                        app:strokeWidth="1dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true"
-                            android:text="Giao diện đọc"
-                            android:textColor="#111827"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
-
-                        <ImageButton
-                            android:id="@+id/btnCloseSettings"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_centerVertical="true"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:contentDescription="Close"
-                            android:padding="2dp"
-                            app:srcCompat="@drawable/ic_close"
-                            app:tint="#9CA3AF" />
-                    </RelativeLayout>
-
-                    <!-- LinearLayout ngang 4 tùy chọn theme -->
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:orientation="horizontal"
-                        android:weightSum="4">
-
-                        <!-- Option 1: Light -->
-                        <LinearLayout
-                            android:id="@+id/themeLight"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="4dp"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <com.google.android.material.card.MaterialCardView
-                                android:id="@+id/cardLight"
-                                android:layout_width="match_parent"
-                                android:layout_height="64dp"
-                                app:cardBackgroundColor="#FFFFFF"
-                                app:cardCornerRadius="12dp"
-                                app:cardElevation="0dp"
-                                app:strokeColor="#E2E8F0"
-                                app:strokeWidth="1dp">
-
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:padding="6dp">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_centerInParent="true"
-                                        android:text="Aa"
-                                        android:textColor="#111827"
-                                        android:textSize="14sp"
-                                        android:textStyle="bold" />
-
-                                    <FrameLayout
-                                        android:id="@+id/checkLight"
-                                        android:layout_width="16dp"
-                                        android:layout_height="16dp"
-                                        android:layout_alignParentEnd="true"
-                                        android:layout_alignParentTop="true"
-                                        android:visibility="gone"
-                                        android:background="@drawable/bg_home_indicator"
-                                        android:backgroundTint="#2563EB">
-
-                                        <ImageView
-                                            android:layout_width="10dp"
-                                            android:layout_height="10dp"
-                                            android:layout_gravity="center"
-                                            android:contentDescription="Check"
-                                            android:src="@drawable/ic_check_small" />
-                                    </FrameLayout>
-                                </RelativeLayout>
-                            </com.google.android.material.card.MaterialCardView>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="6dp">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="Light"
-                                android:textColor="#6B7280"
-                                android:textSize="11sp" />
-                        </LinearLayout>
-
-                        <!-- Option 2: Dark -->
-                        <LinearLayout
-                            android:id="@+id/themeDark"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="3dp"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <com.google.android.material.card.MaterialCardView
-                                android:id="@+id/cardDark"
-                                android:layout_width="match_parent"
-                                android:layout_height="64dp"
-                                app:cardBackgroundColor="#1F2937"
-                                app:cardCornerRadius="12dp"
-                                app:cardElevation="0dp"
-                                app:strokeColor="#E2E8F0"
-                                app:strokeWidth="0dp">
-
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:padding="6dp">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_centerInParent="true"
-                                        android:text="Aa"
-                                        android:textColor="#FFFFFF"
-                                        android:textSize="14sp"
-                                        android:textStyle="bold" />
-
-                                    <FrameLayout
-                                        android:id="@+id/checkDark"
-                                        android:layout_width="16dp"
-                                        android:layout_height="16dp"
-                                        android:layout_alignParentEnd="true"
-                                        android:layout_alignParentTop="true"
-                                        android:visibility="gone"
-                                        android:background="@drawable/bg_home_indicator"
-                                        android:backgroundTint="#2563EB">
-
-                                        <ImageView
-                                            android:layout_width="10dp"
-                                            android:layout_height="10dp"
-                                            android:layout_gravity="center"
-                                            android:contentDescription="Check"
-                                            android:src="@drawable/ic_check_small" />
-                                    </FrameLayout>
-                                </RelativeLayout>
-                            </com.google.android.material.card.MaterialCardView>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="Dark"
-                                android:textColor="#6B7280"
-                                android:textSize="11sp" />
-                        </LinearLayout>
-
-                        <!-- Option 3: Eye-Care Sepia (Active) -->
-                        <LinearLayout
-                            android:id="@+id/themeSepia"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="3dp"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <com.google.android.material.card.MaterialCardView
-                                android:id="@+id/cardSepia"
-                                android:layout_width="match_parent"
-                                android:layout_height="64dp"
-                                app:cardBackgroundColor="#FDF6E2"
-                                app:cardCornerRadius="12dp"
-                                app:cardElevation="0dp"
-                                app:strokeColor="#2563EB"
-                                app:strokeWidth="2dp">
-
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:padding="6dp">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_centerInParent="true"
-                                        android:text="Aa"
-                                        android:textColor="#78350F"
-                                        android:textSize="14sp"
-                                        android:textStyle="bold" />
-
-                                    <FrameLayout
-                                        android:id="@+id/checkSepia"
-                                        android:layout_width="16dp"
-                                        android:layout_height="16dp"
-                                        android:layout_alignParentEnd="true"
-                                        android:layout_alignParentTop="true"
-                                        android:background="@drawable/bg_home_indicator"
-                                        android:backgroundTint="#2563EB">
-
-                                        <ImageView
-                                            android:layout_width="10dp"
-                                            android:layout_height="10dp"
-                                            android:layout_gravity="center"
-                                            android:contentDescription="Check"
-                                            android:src="@drawable/ic_check_small" />
-                                    </FrameLayout>
-                                </RelativeLayout>
-                            </com.google.android.material.card.MaterialCardView>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="Eye-Care"
-                                android:textColor="#2563EB"
-                                android:textSize="11sp"
+                                android:layout_centerInParent="true"
+                                android:text="Aa"
+                                android:textColor="#111827"
+                                android:textSize="14sp"
                                 android:textStyle="bold" />
-                        </LinearLayout>
 
-                        <!-- Option 4: System Default -->
-                        <LinearLayout
-                            android:id="@+id/themeSystem"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:orientation="vertical">
+                            <FrameLayout
+                                android:id="@+id/checkLight"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentTop="true"
+                                android:background="@drawable/bg_home_indicator"
+                                android:backgroundTint="#2563EB"
+                                android:visibility="gone">
 
-                            <com.google.android.material.card.MaterialCardView
-                                android:id="@+id/cardSystem"
+                                <ImageView
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:layout_gravity="center"
+                                    android:contentDescription="Check"
+                                    android:src="@drawable/ic_check_small" />
+                            </FrameLayout>
+                        </RelativeLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Light"
+                        android:textColor="#6B7280"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <!-- Option 2: Dark -->
+                <LinearLayout
+                    android:id="@+id/themeDark"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="3dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardDark"
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        app:cardBackgroundColor="#1F2937"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="#E2E8F0"
+                        app:strokeWidth="0dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="6dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:text="Aa"
+                                android:textColor="#FFFFFF"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <FrameLayout
+                                android:id="@+id/checkDark"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentTop="true"
+                                android:background="@drawable/bg_home_indicator"
+                                android:backgroundTint="#2563EB"
+                                android:visibility="gone">
+
+                                <ImageView
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:layout_gravity="center"
+                                    android:contentDescription="Check"
+                                    android:src="@drawable/ic_check_small" />
+                            </FrameLayout>
+                        </RelativeLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Dark"
+                        android:textColor="#6B7280"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <!-- Option 3: Eye-Care Sepia (Active) -->
+                <LinearLayout
+                    android:id="@+id/themeSepia"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="3dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardSepia"
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        app:cardBackgroundColor="#FDF6E2"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="#2563EB"
+                        app:strokeWidth="2dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="6dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:text="Aa"
+                                android:textColor="#78350F"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                            <FrameLayout
+                                android:id="@+id/checkSepia"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentTop="true"
+                                android:background="@drawable/bg_home_indicator"
+                                android:backgroundTint="#2563EB">
+
+                                <ImageView
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:layout_gravity="center"
+                                    android:contentDescription="Check"
+                                    android:src="@drawable/ic_check_small" />
+                            </FrameLayout>
+                        </RelativeLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Eye-Care"
+                        android:textColor="#2563EB"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <!-- Option 4: System Default -->
+                <LinearLayout
+                    android:id="@+id/themeSystem"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardSystem"
+                        android:layout_width="match_parent"
+                        android:layout_height="64dp"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="#E2E8F0"
+                        app:strokeWidth="1dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:padding="6dp">
+
+                            <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="64dp"
-                                app:cardCornerRadius="12dp"
-                                app:cardElevation="0dp"
-                                app:strokeColor="#E2E8F0"
-                                app:strokeWidth="1dp">
+                                android:layout_height="match_parent"
+                                android:orientation="horizontal"
+                                android:weightSum="2">
 
-                                <RelativeLayout
-                                    android:layout_width="match_parent"
+                                <View
+                                    android:layout_width="0dp"
                                     android:layout_height="match_parent"
-                                    android:padding="6dp">
+                                    android:layout_weight="1"
+                                    android:background="#FFFFFF" />
 
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:orientation="horizontal"
-                                        android:weightSum="2">
+                                <View
+                                    android:layout_width="0dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1"
+                                    android:background="#1F2937" />
+                            </LinearLayout>
 
-                                        <View
-                                            android:layout_width="0dp"
-                                            android:layout_height="match_parent"
-                                            android:layout_weight="1"
-                                            android:background="#FFFFFF" />
+                            <FrameLayout
+                                android:id="@+id/checkSystem"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentTop="true"
+                                android:background="@drawable/bg_home_indicator"
+                                android:backgroundTint="#2563EB"
+                                android:visibility="gone">
 
-                                        <View
-                                            android:layout_width="0dp"
-                                            android:layout_height="match_parent"
-                                            android:layout_weight="1"
-                                            android:background="#1F2937" />
-                                    </LinearLayout>
-
-                                    <FrameLayout
-                                        android:id="@+id/checkSystem"
-                                        android:layout_width="16dp"
-                                        android:layout_height="16dp"
-                                        android:layout_alignParentEnd="true"
-                                        android:layout_alignParentTop="true"
-                                        android:visibility="gone"
-                                        android:background="@drawable/bg_home_indicator"
-                                        android:backgroundTint="#2563EB">
-
-                                        <ImageView
-                                            android:layout_width="10dp"
-                                            android:layout_height="10dp"
-                                            android:layout_gravity="center"
-                                            android:contentDescription="Check"
-                                            android:src="@drawable/ic_check_small" />
-                                    </FrameLayout>
-                                </RelativeLayout>
-                            </com.google.android.material.card.MaterialCardView>
+                                <ImageView
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:layout_gravity="center"
+                                    android:contentDescription="Check"
+                                    android:src="@drawable/ic_check_small" />
+                            </FrameLayout>
+                        </RelativeLayout>
+                    </com.google.android.material.card.MaterialCardView>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -659,9 +694,6 @@
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
+    </com.google.android.material.card.MaterialCardView>
 
 </RelativeLayout>

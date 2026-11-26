@@ -21,9 +21,11 @@ import com.example.group12.util.TtsEngineHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 // Media3 Service boc Android TextToSpeech
-// Quan ly phat giong noi chay nen, dieu khien tu man hinh khoa/thong bao
+// Quan ly phat giong noi chay nen voi Da luong (Multi-threading), dieu khien tu man hinh khoa/thong bao
 public class TtsMediaSessionService extends MediaSessionService
         implements TextToSpeech.OnInitListener {
 
@@ -33,7 +35,10 @@ public class TtsMediaSessionService extends MediaSessionService
 
     private MediaSession mediaSession;
     private TextToSpeech tts;
-    private boolean ttsReady = false;
+    private volatile boolean ttsReady = false;
+
+    // Running background operations for TTS in a single-thread executor
+    private final ExecutorService ttsExecutor = Executors.newSingleThreadExecutor();
 
     // Du lieu sach dang doc
     private BookContent currentBook;
@@ -41,7 +46,7 @@ public class TtsMediaSessionService extends MediaSessionService
     private int currentParaIdx = 0;
     private int currentSentIdx = 0;
     private float currentSpeed = 1.0f;
-    private boolean isPlaying = false;
+    private volatile boolean isPlaying = false;
 
     // LiveData de thong bao UI vi tri hien tai dang doc
     private static final MutableLiveData<TtsPosition> currentPosition = new MutableLiveData<>();
@@ -84,22 +89,25 @@ public class TtsMediaSessionService extends MediaSessionService
     }
 
     private void initTtsEngine() {
-        tts = new TextToSpeech(this, this);
+        ttsExecutor.execute(() -> tts = new TextToSpeech(TtsMediaSessionService.this, TtsMediaSessionService.this));
     }
 
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            setupTts();
+            ttsExecutor.execute(this::setupTtsInternal);
         } else {
             Log.e(TAG, "Khoi tao TextToSpeech that bai voi status: " + status);
             ttsReady = false;
         }
     }
 
-    private void setupTts() {
+    private void setupTtsInternal() {
+        if (tts == null) return;
+
         // Dat ngon ngu tieng Viet voi fallback an toan
         TtsEngineHelper.setVietnameseLanguage(tts);
+        tts.setSpeechRate(currentSpeed);
 
         // Lang nghe tien trinh doc
         tts.setOnUtteranceProgressListener(new UtteranceProgressListener() {
@@ -114,7 +122,9 @@ public class TtsMediaSessionService extends MediaSessionService
             @Override
             public void onDone(String utteranceId) {
                 Log.d(TAG, "Doc xong: " + utteranceId);
-                moveToNextSentence();
+                if (isPlaying) {
+                    ttsExecutor.execute(() -> moveToNextSentenceInternal());
+                }
             }
 
             @Override
@@ -128,49 +138,55 @@ public class TtsMediaSessionService extends MediaSessionService
         ttsReady = true;
         Log.d(TAG, "TTS Engine da san sang va thiet lap hoan tat");
 
-        // Neu da co lenh phat va book content -> Bat dau doc ngay
+        // Neu da co lenh phat va book content -> Bat dau doc ngay tu vi tri hien tai
         if (isPlaying && currentBook != null) {
-            speakCurrentSentence();
+            speakCurrentSentenceInternal();
         }
     }
 
-    // Dat sach can doc
+    // Dat sach can doc (Chi reset chi so neu la sach MOI)
     public void setBookContent(BookContent book) {
         if (book == null) return;
-        this.currentBook = book;
-        this.currentChapterIdx = 0;
-        this.currentParaIdx = 0;
-        this.currentSentIdx = 0;
+        if (this.currentBook == null || this.currentBook.getBookId() != book.getBookId()) {
+            this.currentBook = book;
+            this.currentChapterIdx = 0;
+            this.currentParaIdx = 0;
+            this.currentSentIdx = 0;
+        } else {
+            this.currentBook = book;
+        }
     }
 
     // Bat dau doc tu vi tri hien tai
     public void startReading() {
-        if (tts == null || !ttsReady) {
-            Log.w(TAG, "TTSEngine chua san sang, dang khoi tao lai...");
-            isPlaying = true;
-            if (tts == null) {
-                initTtsEngine();
-            }
-            return;
-        }
-
-        if (currentBook == null) {
-            Log.w(TAG, "Chua co du lieu bookContent de doc");
-            return;
-        }
-
         isPlaying = true;
         playingState.postValue(true);
-        speakCurrentSentence();
+
+        ttsExecutor.execute(() -> {
+            if (tts == null || !ttsReady) {
+                Log.w(TAG, "TTSEngine chua san sang, dang khoi tao lai...");
+                initTtsEngine();
+                return;
+            }
+
+            if (currentBook == null) {
+                Log.w(TAG, "Chua co du lieu bookContent de doc");
+                return;
+            }
+
+            speakCurrentSentenceInternal();
+        });
     }
 
     // Tam dung
     public void pauseReading() {
-        if (tts != null) {
-            tts.stop();
-        }
         isPlaying = false;
         playingState.postValue(false);
+        ttsExecutor.execute(() -> {
+            if (tts != null) {
+                tts.stop();
+            }
+        });
     }
 
     // Tiep tuc doc
@@ -178,53 +194,85 @@ public class TtsMediaSessionService extends MediaSessionService
         startReading();
     }
 
-    // Nhay den vi tri cu the (khi nguoi dung cham vao doan van tren Reader UI)
+    // Nhay den vi tri cu the
     public void seekTo(int chapterIdx, int paraIdx, int sentIdx) {
         this.currentChapterIdx = chapterIdx;
         this.currentParaIdx = paraIdx;
         this.currentSentIdx = sentIdx;
 
-        if (tts != null) {
-            tts.stop();
-        }
-
-        if (isPlaying) {
-            speakCurrentSentence();
-        }
+        ttsExecutor.execute(() -> {
+            if (tts != null) {
+                tts.stop();
+            }
+            if (isPlaying) {
+                speakCurrentSentenceInternal();
+            }
+        });
     }
 
-    // Dat toc do doc
+    // Dat toc do doc (Multi-thread safe)
     public void setSpeed(float speed) {
         this.currentSpeed = speed;
-        if (tts != null) {
-            tts.setSpeechRate(speed);
-        }
+        ttsExecutor.execute(() -> {
+            if (tts != null && ttsReady) {
+                tts.setSpeechRate(currentSpeed);
+                if (isPlaying) {
+                    tts.stop();
+                    speakCurrentSentenceInternal();
+                }
+            }
+        });
     }
 
-    // Dat giong doc
+    // Dat giong doc (Fix loi reset tien trinh doc)
     public void setVoice(Voice voice) {
-        if (tts != null && voice != null) {
-            tts.setVoice(voice);
-        }
+        if (voice == null) return;
+        ttsExecutor.execute(() -> {
+            if (tts != null && ttsReady) {
+                int res = tts.setVoice(voice);
+                Log.d(TAG, "Cap nhat giong doc TTS: " + voice.getName() + " (code " + res + ")");
+                if (isPlaying) {
+                    tts.stop();
+                    speakCurrentSentenceInternal();
+                }
+            }
+        });
     }
 
     // Thay doi Engine TTS
     public void setEngine(String enginePackage) {
         if (enginePackage == null || enginePackage.isEmpty()) return;
 
-        if (tts != null) {
-            tts.stop();
-            tts.shutdown();
-        }
+        final int savedChap = currentChapterIdx;
+        final int savedPara = currentParaIdx;
+        final int savedSent = currentSentIdx;
+        final boolean savedPlaying = isPlaying;
 
-        ttsReady = false;
-        tts = new TextToSpeech(this, status -> {
-            if (status == TextToSpeech.SUCCESS) {
-                setupTts();
-            } else {
-                Log.e(TAG, "Loi khoi tao engine moi: " + enginePackage);
+        ttsExecutor.execute(() -> {
+            if (tts != null) {
+                tts.stop();
+                tts.shutdown();
             }
-        }, enginePackage);
+
+            ttsReady = false;
+            currentChapterIdx = savedChap;
+            currentParaIdx = savedPara;
+            currentSentIdx = savedSent;
+            isPlaying = savedPlaying;
+
+            tts = new TextToSpeech(TtsMediaSessionService.this, status -> {
+                if (status == TextToSpeech.SUCCESS) {
+                    ttsExecutor.execute(() -> {
+                        setupTtsInternal();
+                        if (savedPlaying) {
+                            speakCurrentSentenceInternal();
+                        }
+                    });
+                } else {
+                    Log.e(TAG, "Loi khoi tao engine moi: " + enginePackage);
+                }
+            }, enginePackage);
+        });
     }
 
     // Lay instance TextToSpeech
@@ -232,8 +280,8 @@ public class TtsMediaSessionService extends MediaSessionService
         return tts;
     }
 
-    // Doc cau hien tai
-    private void speakCurrentSentence() {
+    // Doc cau hien tai (Chay tren ttsExecutor thread)
+    private void speakCurrentSentenceInternal() {
         if (currentBook == null || tts == null || !ttsReady) return;
 
         List<Chapter> chapters = currentBook.getChapters();
@@ -249,7 +297,7 @@ public class TtsMediaSessionService extends MediaSessionService
             currentChapterIdx++;
             currentParaIdx = 0;
             currentSentIdx = 0;
-            speakCurrentSentence();
+            speakCurrentSentenceInternal();
             return;
         }
 
@@ -265,7 +313,7 @@ public class TtsMediaSessionService extends MediaSessionService
         if (currentSentIdx >= sentences.size()) {
             currentParaIdx++;
             currentSentIdx = 0;
-            speakCurrentSentence();
+            speakCurrentSentenceInternal();
             return;
         }
 
@@ -279,18 +327,63 @@ public class TtsMediaSessionService extends MediaSessionService
         Bundle params = new Bundle();
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, utteranceId);
 
+        // Phat cau hien tai voi QUEUE_FLUSH
         int result = tts.speak(sentence.getText(), TextToSpeech.QUEUE_FLUSH, params, utteranceId);
         if (result == TextToSpeech.ERROR) {
             Log.e(TAG, "Loi tts.speak voi cau: " + sentence.getText());
+        } else {
+            // Pre-queue cau ke tiếp neu co
+            preQueueNextSentence(sentences);
         }
     }
 
-    // Chuyen sang cau tiep theo
-    private void moveToNextSentence() {
+    // Hang doi truoc (Pre-queue) cau ke tiep de phat mượt va khong bi khuc khac
+    private void preQueueNextSentence(List<Sentence> currentSentences) {
+        if (tts == null || !ttsReady) return;
+
+        int nextSent = currentSentIdx + 1;
+        int nextPara = currentParaIdx;
+        int nextChap = currentChapterIdx;
+
+        List<Sentence> targetSentences = currentSentences;
+
+        if (nextSent >= targetSentences.size()) {
+            nextPara++;
+            nextSent = 0;
+            List<Chapter> chapters = currentBook.getChapters();
+            if (chapters != null && nextChap < chapters.size()) {
+                List<Paragraph> paras = chapters.get(nextChap).getParagraphs();
+                if (paras != null && nextPara < paras.size()) {
+                    targetSentences = paras.get(nextPara).getSentences();
+                } else {
+                    nextChap++;
+                    nextPara = 0;
+                    if (chapters != null && nextChap < chapters.size()) {
+                        List<Paragraph> nextChapParas = chapters.get(nextChap).getParagraphs();
+                        if (nextChapParas != null && !nextChapParas.isEmpty()) {
+                            targetSentences = nextChapParas.get(0).getSentences();
+                        }
+                    }
+                }
+            }
+        }
+
+        if (targetSentences != null && nextSent < targetSentences.size()) {
+            Sentence nextSentence = targetSentences.get(nextSent);
+            String nextUtteranceId = "chap_" + nextChap + "_para_" + nextPara + "_sent_" + nextSent;
+            Bundle params = new Bundle();
+            params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, nextUtteranceId);
+
+            tts.speak(nextSentence.getText(), TextToSpeech.QUEUE_ADD, params, nextUtteranceId);
+        }
+    }
+
+    // Chuyen sang cau tiep theo khi cau hien tai doc xong
+    private void moveToNextSentenceInternal() {
         if (!isPlaying || currentBook == null) return;
 
         currentSentIdx++;
-        speakCurrentSentence();
+        speakCurrentSentenceInternal();
     }
 
     // Phan tich utteranceId de cap nhat vi tri
@@ -301,6 +394,9 @@ public class TtsMediaSessionService extends MediaSessionService
                 int chapIdx = Integer.parseInt(parts[1]);
                 int paraIdx = Integer.parseInt(parts[3]);
                 int sentIdx = Integer.parseInt(parts[5]);
+                this.currentChapterIdx = chapIdx;
+                this.currentParaIdx = paraIdx;
+                this.currentSentIdx = sentIdx;
                 currentPosition.postValue(
                         new TtsPosition(chapIdx, paraIdx, sentIdx, utteranceId));
             }
@@ -313,6 +409,7 @@ public class TtsMediaSessionService extends MediaSessionService
     public int getCurrentChapterIdx() { return currentChapterIdx; }
     public int getCurrentParaIdx() { return currentParaIdx; }
     public int getCurrentSentIdx() { return currentSentIdx; }
+    public float getCurrentSpeed() { return currentSpeed; }
     public boolean isCurrentlyPlaying() { return isPlaying; }
 
     @Nullable
@@ -323,10 +420,13 @@ public class TtsMediaSessionService extends MediaSessionService
 
     @Override
     public void onDestroy() {
-        if (tts != null) {
-            tts.stop();
-            tts.shutdown();
-        }
+        ttsExecutor.execute(() -> {
+            if (tts != null) {
+                tts.stop();
+                tts.shutdown();
+            }
+        });
+        ttsExecutor.shutdown();
         if (mediaSession != null) {
             mediaSession.release();
         }

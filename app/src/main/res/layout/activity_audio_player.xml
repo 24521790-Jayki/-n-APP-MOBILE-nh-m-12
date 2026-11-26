@@ -178,16 +178,16 @@
                 android:textSize="13sp" />
 
             <TextView
+                android:id="@+id/tvVoiceName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:gravity="center"
-                android:text="Giọng đọc: Hà Linh"
+                android:text="Giọng đọc: AI Tiếng Việt"
                 android:textColor="#9CA3AF"
                 android:textSize="11sp" />
 
-            <!-- Khối chương & Tốc độ phát nằm cùng 1 hàng -->
-            <!-- Khối chương, tốc độ & nút đổi giọng đọc -->
+            <!-- Khối thông tin chương & Nút đổi giọng -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -199,93 +199,145 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
+                    android:layout_toStartOf="@id/btnVoiceSettings"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="Chương 1 - Mở đầu"
                     android:textColor="#4B5563"
-                    android:textSize="12sp"
+                    android:textSize="13sp"
                     android:textStyle="bold" />
 
-                <!-- Cụm nút Đổi Giọng Đọc & Tốc độ -->
-                <LinearLayout
+                <!-- Nút Đổi Giọng Đọc -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/btnVoiceSettings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:orientation="horizontal">
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="#F3E8FF"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
 
-                    <!-- Nút Đổi Giọng Đọc -->
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/btnVoiceSettings"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        app:cardBackgroundColor="#F3E8FF"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="0dp"
-                        app:strokeWidth="0dp"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:orientation="horizontal"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="4dp">
-
-                            <ImageView
-                                android:layout_width="14dp"
-                                android:layout_height="14dp"
-                                android:contentDescription="Voice"
-                                android:src="@drawable/ic_equalizer"
-                                app:tint="#7C3AED" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="4dp"
-                                android:text="Đổi giọng"
-                                android:textColor="#7C3AED"
-                                android:textSize="11sp"
-                                android:textStyle="bold" />
-                        </LinearLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- Selector Tốc Độ dạng pill -->
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_home_indicator"
-                        android:backgroundTint="#EDE9FE"
+                        android:gravity="center"
                         android:orientation="horizontal"
-                        android:padding="2dp">
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp">
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:contentDescription="Voice"
+                            android:src="@drawable/ic_equalizer"
+                            app:tint="#7C3AED" />
 
                         <TextView
-                            android:id="@+id/btnSpeed10"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_home_indicator"
-                            android:backgroundTint="#7C3AED"
-                            android:paddingHorizontal="8dp"
-                            android:paddingVertical="4dp"
-                            android:text="1.0x"
-                            android:textColor="#FFFFFF"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/btnSpeed125"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingHorizontal="8dp"
-                            android:paddingVertical="4dp"
-                            android:text="1.25x"
+                            android:layout_marginStart="4dp"
+                            android:text="Đổi giọng"
                             android:textColor="#7C3AED"
                             android:textSize="11sp"
                             android:textStyle="bold" />
                     </LinearLayout>
-                </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
             </RelativeLayout>
+
+            <!-- Khối chọn Tốc độ đọc (1x, 1.25x, 1.5x, 1.75x, 2x) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="Tốc độ:"
+                    android:textColor="#6B7280"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_home_indicator"
+                    android:backgroundTint="#EDE9FE"
+                    android:orientation="horizontal"
+                    android:padding="2dp"
+                    android:weightSum="5">
+
+                    <TextView
+                        android:id="@+id/btnSpeed10"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_home_indicator"
+                        android:backgroundTint="#7C3AED"
+                        android:gravity="center"
+                        android:paddingVertical="6dp"
+                        android:text="1x"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/btnSpeed125"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingVertical="6dp"
+                        android:text="1.25x"
+                        android:textColor="#7C3AED"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/btnSpeed150"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingVertical="6dp"
+                        android:text="1.5x"
+                        android:textColor="#7C3AED"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/btnSpeed175"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingVertical="6dp"
+                        android:text="1.75x"
+                        android:textColor="#7C3AED"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/btnSpeed20"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingVertical="6dp"
+                        android:text="2x"
+                        android:textColor="#7C3AED"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </LinearLayout>
 
             <!-- Khối trạng thái phát Audio (Thay thế cho thanh tiến trình thời gian) -->
             <com.google.android.material.card.MaterialCardView
@@ -314,140 +366,47 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:weightSum="5">
-
-                <!-- Nút Tua lùi 15s -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <FrameLayout
-                        android:id="@+id/btnRewind15"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="@drawable/bg_circle_light_purple"
-                        android:backgroundTint="#F3E8FF">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:layout_gravity="center"
-                            android:contentDescription="Rewind 15s"
-                            android:src="@drawable/ic_replay_15"
-                            app:tint="#7C3AED" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom|center_horizontal"
-                            android:layout_marginBottom="4dp"
-                            android:text="15s"
-                            android:textColor="#7C3AED"
-                            android:textSize="8sp"
-                            android:textStyle="bold" />
-                    </FrameLayout>
-                </LinearLayout>
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <!-- Nút Bài trước -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <ImageButton
-                        android:id="@+id/btnPrevious"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="@drawable/bg_circle_light_purple"
-                        android:backgroundTint="#F3E8FF"
-                        android:contentDescription="Previous"
-                        android:padding="12dp"
-                        app:srcCompat="@drawable/ic_skip_previous"
-                        app:tint="#7C3AED" />
-                </LinearLayout>
+                <ImageButton
+                    android:id="@+id/btnPrevious"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="32dp"
+                    android:background="@drawable/bg_circle_light_purple"
+                    android:backgroundTint="#F3E8FF"
+                    android:contentDescription="Previous"
+                    android:padding="12dp"
+                    app:srcCompat="@drawable/ic_skip_previous"
+                    app:tint="#7C3AED" />
 
                 <!-- Nút Play/Pause lớn (Tím đậm nổi bật) -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <ImageButton
-                        android:id="@+id/btnPlayPause"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:background="@drawable/bg_circle_purple_solid"
-                        android:backgroundTint="#7C3AED"
-                        android:contentDescription="Play/Pause"
-                        android:elevation="6dp"
-                        android:padding="18dp"
-                        app:srcCompat="@drawable/ic_pause"
-                        app:tint="#FFFFFF" />
-                </LinearLayout>
+                <ImageButton
+                    android:id="@+id/btnPlayPause"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bg_circle_purple_solid"
+                    android:backgroundTint="#7C3AED"
+                    android:contentDescription="Play/Pause"
+                    android:elevation="6dp"
+                    android:padding="18dp"
+                    app:srcCompat="@drawable/ic_pause"
+                    app:tint="#FFFFFF" />
 
                 <!-- Nút Bài tiếp theo -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <ImageButton
-                        android:id="@+id/btnNext"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="@drawable/bg_circle_light_purple"
-                        android:backgroundTint="#F3E8FF"
-                        android:contentDescription="Next"
-                        android:padding="12dp"
-                        app:srcCompat="@drawable/ic_skip_next"
-                        app:tint="#7C3AED" />
-                </LinearLayout>
-
-                <!-- Nút Tua tới 15s -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <FrameLayout
-                        android:id="@+id/btnForward15"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="@drawable/bg_circle_light_purple"
-                        android:backgroundTint="#F3E8FF">
-
-                        <ImageView
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:layout_gravity="center"
-                            android:contentDescription="Forward 15s"
-                            android:src="@drawable/ic_forward_15"
-                            app:tint="#7C3AED" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="bottom|center_horizontal"
-                            android:layout_marginBottom="4dp"
-                            android:text="15s"
-                            android:textColor="#7C3AED"
-                            android:textSize="8sp"
-                            android:textStyle="bold" />
-                    </FrameLayout>
-                </LinearLayout>
+                <ImageButton
+                    android:id="@+id/btnNext"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="32dp"
+                    android:background="@drawable/bg_circle_light_purple"
+                    android:backgroundTint="#F3E8FF"
+                    android:contentDescription="Next"
+                    android:padding="12dp"
+                    app:srcCompat="@drawable/ic_skip_next"
+                    app:tint="#7C3AED" />
             </LinearLayout>
 
             <!-- Hàng nút chức năng phụ (Hẹn giờ tắt & Danh sách chương) -->
